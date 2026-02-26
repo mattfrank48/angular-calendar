@@ -9,355 +9,359 @@ import {
   dateToZonedDateTime,
   dateToPlainDate,
   getWeekRange,
-} from '@dayflow/core';
-import { Temporal } from 'temporal-polyfill';
+} from "@dayflow/core"
+import { Temporal } from "temporal-polyfill"
 
 export interface KeyboardShortcutsConfig {
   /**
    * Whether to enable default shortcuts
    * @default true
    */
-  enabled?: boolean;
+  enabled?: boolean
   /**
    * Custom key mappings
    */
   keyMap?: {
-    today?: string;
-    search?: string;
-    prev?: string;
-    next?: string;
-    undo?: string;
-    copy?: string;
-    cut?: string;
-    paste?: string;
-    delete?: string;
-    newEvent?: string;
-  };
+    today?: string
+    search?: string
+    prev?: string
+    next?: string
+    undo?: string
+    copy?: string
+    cut?: string
+    paste?: string
+    delete?: string
+    newEvent?: string
+  }
 }
 
-function handleTabNavigation(app: ICalendarApp, reverse: boolean) {
-  const events = app.getEvents();
-  const currentView = app.state.currentView;
-  const currentDate = app.getCurrentDate();
+function handleTabNavigation ( app: ICalendarApp, reverse: boolean ) {
+  const events = app.getEvents ()
+  const currentView = app.state.currentView
+  const currentDate = app.getCurrentDate ()
 
-  let visibleEvents: Event[] = [];
+  let visibleEvents: Event[] = []
 
-  switch (currentView) {
+  switch ( currentView ) {
     case ViewType.DAY: {
-      visibleEvents = events.filter(e => {
-        const s = temporalToDate(e.start);
-        return s.toDateString() === currentDate.toDateString();
-      });
-      break;
+      visibleEvents = events.filter ( e => {
+        const s = temporalToDate ( e.start )
+        return s.toDateString () === currentDate.toDateString ()
+      } )
+      break
     }
     case ViewType.WEEK: {
-      const { monday: start, sunday: end } = getWeekRange(currentDate);
-      visibleEvents = events.filter(e => {
-        const s = temporalToDate(e.start);
-        return s >= start && s <= end;
-      });
-      break;
+      const { monday: start, sunday: end } = getWeekRange ( currentDate )
+      visibleEvents = events.filter ( e => {
+        const s = temporalToDate ( e.start )
+        return s >= start && s <= end
+      } )
+      break
     }
     case ViewType.MONTH: {
-      const visibleMonth = app.getVisibleMonth();
-      const start = new Date(
-        visibleMonth.getFullYear(),
-        visibleMonth.getMonth(),
-        1
-      );
-      const end = new Date(
-        visibleMonth.getFullYear(),
-        visibleMonth.getMonth() + 1,
-        0
-      );
-      visibleEvents = events.filter(e => {
-        const s = temporalToDate(e.start);
-        return s >= start && s <= end;
-      });
-      break;
+      const visibleMonth = app.getVisibleMonth ()
+      const start = new Date (
+        visibleMonth.getFullYear (),
+        visibleMonth.getMonth (),
+        1,
+      )
+      const end = new Date (
+        visibleMonth.getFullYear (),
+        visibleMonth.getMonth () + 1,
+        0,
+      )
+      visibleEvents = events.filter ( e => {
+        const s = temporalToDate ( e.start )
+        return s >= start && s <= end
+      } )
+      break
     }
     case ViewType.YEAR: {
-      const year = currentDate.getFullYear();
-      const yearConfig = app.getViewConfig(ViewType.YEAR);
+      const year = currentDate.getFullYear ()
+      const yearConfig = app.getViewConfig ( ViewType.YEAR )
       const showTimedEvents =
-        (yearConfig as { showTimedEventsInYearView?: boolean })
-          .showTimedEventsInYearView ?? false;
-      visibleEvents = events.filter(e => {
-        if (!showTimedEvents && !e.allDay) return false;
-        return temporalToDate(e.start).getFullYear() === year;
-      });
-      break;
+        ( yearConfig as { showTimedEventsInYearView?: boolean } )
+          .showTimedEventsInYearView ?? false
+      visibleEvents = events.filter ( e => {
+        if ( !showTimedEvents && !e.allDay ) return false
+        return temporalToDate ( e.start ).getFullYear () === year
+      } )
+      break
     }
     default:
-      break;
+      break
   }
 
-  visibleEvents.sort((a, b) => {
-    const dateA = temporalToDate(a.start);
-    const dateB = temporalToDate(b.start);
-    const timeDiff = dateA.getTime() - dateB.getTime();
-    if (timeDiff !== 0) return timeDiff;
-    if (a.allDay && !b.allDay) return -1;
-    if (!a.allDay && b.allDay) return 1;
-    return 0;
-  });
+  visibleEvents.sort ( ( a, b ) => {
+    const dateA = temporalToDate ( a.start )
+    const dateB = temporalToDate ( b.start )
+    const timeDiff = dateA.getTime () - dateB.getTime ()
+    if ( timeDiff !== 0 ) return timeDiff
+    if ( a.allDay && !b.allDay ) return -1
+    if ( !a.allDay && b.allDay ) return 1
+    return 0
+  } )
 
-  if (visibleEvents.length === 0) return;
+  if ( visibleEvents.length === 0 ) return
 
-  let nextIndex = 0;
-  const selectedId = app.state.selectedEventId;
-  if (selectedId) {
-    const currentIndex = visibleEvents.findIndex(e => e.id === selectedId);
-    if (currentIndex !== -1) {
-      if (reverse) {
-        nextIndex = currentIndex - 1;
-        if (nextIndex < 0) nextIndex = visibleEvents.length - 1;
+  let nextIndex = 0
+  const selectedId = app.state.selectedEventId
+  if ( selectedId ) {
+    const currentIndex = visibleEvents.findIndex ( e => e.id === selectedId )
+    if ( currentIndex !== -1 ) {
+      if ( reverse ) {
+        nextIndex = currentIndex - 1
+        if ( nextIndex < 0 ) nextIndex = visibleEvents.length - 1
       } else {
-        nextIndex = currentIndex + 1;
-        if (nextIndex >= visibleEvents.length) nextIndex = 0;
+        nextIndex = currentIndex + 1
+        if ( nextIndex >= visibleEvents.length ) nextIndex = 0
       }
     }
   }
 
-  const nextEvent = visibleEvents[nextIndex];
-  if (nextEvent) {
-    app.selectEvent(nextEvent.id);
-    app.highlightEvent(nextEvent.id);
+  const nextEvent = visibleEvents[nextIndex]
+  if ( nextEvent ) {
+    app.selectEvent ( nextEvent.id )
+    app.highlightEvent ( nextEvent.id )
   }
 }
 
-async function handlePaste(app: ICalendarApp) {
+async function handlePaste ( app: ICalendarApp ) {
   try {
-    let eventData = clipboardStore.getEvent();
-    if (!eventData) {
-      const text = await navigator.clipboard.readText();
-      if (text) {
+    let eventData = clipboardStore.getEvent ()
+    if ( !eventData ) {
+      const text = await navigator.clipboard.readText ()
+      if ( text ) {
         try {
-          eventData = JSON.parse(text);
-        } catch (err) {
-          console.error('Failed to parse clipboard text:', err);
+          eventData = JSON.parse ( text )
+        } catch ( err ) {
+          console.error ( "Failed to parse clipboard text:", err )
         }
       }
     }
 
     if (
       eventData &&
-      typeof eventData === 'object' &&
-      (eventData as { title?: string }).title
+      typeof eventData === "object" &&
+      ( eventData as { title?: string } ).title
     ) {
-      const originalStart = temporalToDate(eventData.start as unknown as Date);
-      const originalEnd = temporalToDate(eventData.end as unknown as Date);
-      const duration = originalEnd.getTime() - originalStart.getTime();
+      const originalStart = temporalToDate ( eventData.start as unknown as Date )
+      const originalEnd = temporalToDate ( eventData.end as unknown as Date )
+      const duration = originalEnd.getTime () - originalStart.getTime ()
 
-      let targetStart = new Date();
-      const selectedId = app.state.selectedEventId;
+      let targetStart = new Date ()
+      const selectedId = app.state.selectedEventId
 
-      if (selectedId) {
-        const selectedEvent = app.getEvents().find(e => e.id === selectedId);
-        if (selectedEvent) {
-          targetStart = temporalToDate(selectedEvent.start);
+      if ( selectedId ) {
+        const selectedEvent = app.getEvents ().find ( e => e.id === selectedId )
+        if ( selectedEvent ) {
+          targetStart = temporalToDate ( selectedEvent.start )
         } else {
-          targetStart = new Date(app.getCurrentDate());
+          targetStart = new Date ( app.getCurrentDate () )
         }
       } else {
-        targetStart = new Date(app.getCurrentDate());
+        targetStart = new Date ( app.getCurrentDate () )
       }
 
-      targetStart.setHours(
-        originalStart.getHours(),
-        originalStart.getMinutes(),
-        originalStart.getSeconds(),
-        0
-      );
+      targetStart.setHours (
+        originalStart.getHours (),
+        originalStart.getMinutes (),
+        originalStart.getSeconds (),
+        0,
+      )
 
-      const targetEnd = new Date(
-        targetStart.getTime() + (duration > 0 ? duration : 3600000)
-      );
-      const cleanEventData = eventData;
+      const targetEnd = new Date (
+        targetStart.getTime () + ( duration > 0 ? duration : 3600000 ),
+      )
+      const cleanEventData = eventData
 
       const newEvent: Event = {
         ...cleanEventData,
-        id: generateUniKey(),
+        id: generateUniKey (),
         start: eventData.allDay
-          ? dateToPlainDate(targetStart)
-          : dateToZonedDateTime(targetStart, Temporal.Now.timeZoneId()),
+          ? dateToPlainDate ( targetStart )
+          : dateToZonedDateTime ( targetStart, Temporal.Now.timeZoneId () ),
         end: eventData.allDay
-          ? dateToPlainDate(targetEnd)
-          : dateToZonedDateTime(targetEnd, Temporal.Now.timeZoneId()),
+          ? dateToPlainDate ( targetEnd )
+          : dateToZonedDateTime ( targetEnd, Temporal.Now.timeZoneId () ),
         calendarId:
           eventData.calendarId &&
-          app.getCalendarRegistry().has(eventData.calendarId)
+          app.getCalendarRegistry ().has ( eventData.calendarId )
             ? eventData.calendarId
-            : app.getCalendarRegistry().getDefaultCalendarId() || 'default',
-      };
+            : app.getCalendarRegistry ().getDefaultCalendarId () || "default",
+      }
 
-      app.addEvent(newEvent);
-      app.selectEvent(newEvent.id);
-      app.highlightEvent(newEvent.id);
+      app.addEvent ( newEvent )
+      app.selectEvent ( newEvent.id )
+      app.highlightEvent ( newEvent.id )
     }
-  } catch (err) {
-    console.error('Failed to paste', err);
+  } catch ( err ) {
+    console.error ( "Failed to paste", err )
   }
 }
 
-export function createKeyboardShortcutsPlugin(
-  config: KeyboardShortcutsConfig = {}
+export function createKeyboardShortcutsPlugin (
+  config: KeyboardShortcutsConfig = {},
 ): CalendarPlugin {
-  const { enabled = true, keyMap = {} } = config;
+  const { enabled = true, keyMap = {} } = config
 
   return {
-    name: 'keyboard-shortcuts',
-    install(app: ICalendarApp) {
-      if (!enabled) return;
+    name: "keyboard-shortcuts",
+    install ( app: ICalendarApp ) {
+      if ( !enabled ) return
 
-      const handleKeyDown = async (e: KeyboardEvent) => {
-        const activeElement = document.activeElement;
+      const handleKeyDown = async ( e: KeyboardEvent ) => {
+        const activeElement = document.activeElement
         const isTyping =
           activeElement &&
-          (activeElement.tagName === 'INPUT' ||
-            activeElement.tagName === 'TEXTAREA' ||
-            (activeElement as HTMLElement).isContentEditable);
+          ( activeElement.tagName === "INPUT" ||
+            activeElement.tagName === "TEXTAREA" ||
+            ( activeElement as HTMLElement ).isContentEditable )
 
         // 1. Search (Cmd/Ctrl + F)
-        const searchKey = keyMap.search || 'f';
-        if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === searchKey) {
-          e.preventDefault();
-          const searchInput = document.querySelector(
-            '#dayflow-search-input'
-          ) as HTMLElement | null;
-          if (searchInput) {
-            searchInput.focus();
+        const searchKey = keyMap.search || "f"
+        if ( ( e.metaKey || e.ctrlKey ) && e.key.toLowerCase () === searchKey ) {
+          e.preventDefault ()
+          const searchInput = document.querySelector (
+            "#dayflow-search-input",
+          ) as HTMLElement | null
+          if ( searchInput ) {
+            searchInput.focus ()
           }
-          return;
+          return
         }
 
         // 2. Today (Cmd/Ctrl + T)
-        const todayKey = keyMap.today || 't';
-        if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === todayKey) {
-          e.preventDefault();
-          app.goToToday();
-          return;
+        const todayKey = keyMap.today || "t"
+        if ( ( e.metaKey || e.ctrlKey ) && e.key.toLowerCase () === todayKey ) {
+          e.preventDefault ()
+          app.goToToday ()
+          return
         }
 
         // 3. Quick Create (Cmd/Ctrl + N)
-        const newEventKey = keyMap.newEvent || 'n';
-        if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === newEventKey) {
-          e.preventDefault();
-          const addBtn = document.querySelector(
-            '#dayflow-add-event-btn'
-          ) as HTMLElement | null;
-          if (addBtn) {
-            addBtn.click();
+        const newEventKey = keyMap.newEvent || "n"
+        if ( ( e.metaKey || e.ctrlKey ) && e.key.toLowerCase () === newEventKey ) {
+          e.preventDefault ()
+          const addBtn = document.querySelector (
+            "#dayflow-add-event-btn",
+          ) as HTMLElement | null
+          if ( addBtn ) {
+            addBtn.click ()
           }
-          return;
+          return
         }
 
         // 4. Dismiss (Esc)
-        if (e.key === 'Escape') {
-          app.dismissUI();
-          return;
+        if ( e.key === "Escape" ) {
+          app.dismissUI ()
+          return
         }
 
         // Navigation (Left/Right) - only if not typing
-        if (!isTyping) {
-          const prevKey = keyMap.prev || 'ArrowLeft';
-          const nextKey = keyMap.next || 'ArrowRight';
+        if ( !isTyping ) {
+          const prevKey = keyMap.prev || "ArrowLeft"
+          const nextKey = keyMap.next || "ArrowRight"
 
-          if (e.key === prevKey) {
-            e.preventDefault();
-            app.goToPrevious();
-            return;
+          if ( e.key === prevKey ) {
+            e.preventDefault ()
+            app.goToPrevious ()
+            return
           }
-          if (e.key === nextKey) {
-            e.preventDefault();
-            app.goToNext();
-            return;
+          if ( e.key === nextKey ) {
+            e.preventDefault ()
+            app.goToNext ()
+            return
           }
         }
 
         // 5. Tab Navigation
-        if (e.key === 'Tab') {
-          e.preventDefault();
-          handleTabNavigation(app, e.shiftKey);
-          return;
+        if ( e.key === "Tab" ) {
+          e.preventDefault ()
+          handleTabNavigation ( app, e.shiftKey )
+          return
         }
 
         // 6. Clipboard & Undo Operations (Cmd/Ctrl + C/X/V/Z)
-        if ((e.metaKey || e.ctrlKey) && !isTyping) {
-          const undoKey = keyMap.undo || 'z';
-          const copyKey = keyMap.copy || 'c';
-          const cutKey = keyMap.cut || 'x';
-          const pasteKey = keyMap.paste || 'v';
+        if ( ( e.metaKey || e.ctrlKey ) && !isTyping ) {
+          const undoKey = keyMap.undo || "z"
+          const copyKey = keyMap.copy || "c"
+          const cutKey = keyMap.cut || "x"
+          const pasteKey = keyMap.paste || "v"
 
-          switch (e.key.toLowerCase()) {
+          switch ( e.key.toLowerCase () ) {
             case undoKey: {
-              e.preventDefault();
-              app.undo();
-              break;
+              e.preventDefault ()
+              app.undo ()
+              break
             }
             case copyKey: {
-              const selectedIdC = app.state.selectedEventId;
-              if (selectedIdC) {
-                const event = app.getEvents().find(ev => ev.id === selectedIdC);
-                if (event) {
+              const selectedIdC = app.state.selectedEventId
+              if ( selectedIdC ) {
+                const event = app
+                  .getEvents ()
+                  .find ( ev => ev.id === selectedIdC )
+                if ( event ) {
                   try {
-                    await navigator.clipboard.writeText(
-                      JSON.stringify(event, null, 2)
-                    );
-                    clipboardStore.setEvent(event);
-                  } catch (err) {
-                    console.error('Failed to copy event', err);
+                    await navigator.clipboard.writeText (
+                      JSON.stringify ( event, null, 2 ),
+                    )
+                    clipboardStore.setEvent ( event )
+                  } catch ( err ) {
+                    console.error ( "Failed to copy event", err )
                   }
                 }
               }
-              break;
+              break
             }
             case cutKey: {
-              const selectedIdX = app.state.selectedEventId;
-              if (selectedIdX) {
-                const event = app.getEvents().find(ev => ev.id === selectedIdX);
-                if (event) {
+              const selectedIdX = app.state.selectedEventId
+              if ( selectedIdX ) {
+                const event = app
+                  .getEvents ()
+                  .find ( ev => ev.id === selectedIdX )
+                if ( event ) {
                   try {
-                    await navigator.clipboard.writeText(
-                      JSON.stringify(event, null, 2)
-                    );
-                    clipboardStore.setEvent(event);
-                    app.deleteEvent(event.id);
-                    app.selectEvent(null);
-                  } catch (err) {
-                    console.error('Failed to cut event', err);
+                    await navigator.clipboard.writeText (
+                      JSON.stringify ( event, null, 2 ),
+                    )
+                    clipboardStore.setEvent ( event )
+                    app.deleteEvent ( event.id )
+                    app.selectEvent ( null )
+                  } catch ( err ) {
+                    console.error ( "Failed to cut event", err )
                   }
                 }
               }
-              break;
+              break
             }
             case pasteKey: {
-              handlePaste(app);
-              break;
+              handlePaste ( app )
+              break
             }
             default:
-              break;
+              break
           }
         }
 
         // 7. Delete (Backspace/Delete)
-        const deleteKey = keyMap.delete || 'Delete';
-        if (e.key === 'Backspace' || e.key === deleteKey) {
-          if (isTyping) return;
+        const deleteKey = keyMap.delete || "Delete"
+        if ( e.key === "Backspace" || e.key === deleteKey ) {
+          if ( isTyping ) return
 
-          const selectedIdD = app.state.selectedEventId;
-          if (selectedIdD) {
-            app.deleteEvent(selectedIdD);
-            app.selectEvent(null);
+          const selectedIdD = app.state.selectedEventId
+          if ( selectedIdD ) {
+            app.deleteEvent ( selectedIdD )
+            app.selectEvent ( null )
           }
         }
-      };
-      if (typeof window !== 'undefined') {
-        window.addEventListener('keydown', handleKeyDown);
+      }
+      if ( typeof window !== "undefined" ) {
+        window.addEventListener ( "keydown", handleKeyDown )
       }
 
       // Cleanup is tricky for plugins as there's no uninstall yet in DayFlow core,
       // but we can store it or just let it live with the app instance.
     },
-  };
+  }
 }

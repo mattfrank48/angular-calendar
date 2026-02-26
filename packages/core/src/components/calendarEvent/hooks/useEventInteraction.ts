@@ -1,30 +1,30 @@
-import { useRef, useState } from 'preact/hooks';
+import { useRef, useState } from "preact/hooks"
 
-import { MultiDayEventSegment } from '@/components/monthView/WeekComponent';
-import { Event, ICalendarApp } from '@/types';
+import { MultiDayEventSegment } from "@/components/monthView/WeekComponent"
+import { Event, ICalendarApp } from "@/types"
 
 interface UseEventInteractionProps {
-  event: Event;
-  isTouchEnabled: boolean;
-  onMoveStart?: (e: MouseEvent | TouchEvent, event: Event) => void;
-  onEventLongPress?: (eventId: string) => void;
-  onEventSelect?: (eventId: string | null) => void;
-  onDetailPanelToggle?: (key: string | null) => void;
-  canOpenDetail: boolean;
-  app?: ICalendarApp;
+  event: Event
+  isTouchEnabled: boolean
+  onMoveStart?: ( e: MouseEvent | TouchEvent, event: Event ) => void
+  onEventLongPress?: ( eventId: string ) => void
+  onEventSelect?: ( eventId: string | null ) => void
+  onDetailPanelToggle?: ( key: string | null ) => void
+  canOpenDetail: boolean
+  app?: ICalendarApp
   multiDaySegmentInfo?: {
-    startHour?: number;
-    endHour?: number;
-    isFirst: boolean;
-    isLast: boolean;
-    dayIndex?: number;
-  };
-  isMultiDay?: boolean;
-  segment?: MultiDayEventSegment;
-  detailPanelKey: string;
+    startHour?: number
+    endHour?: number
+    isFirst: boolean
+    isLast: boolean
+    dayIndex?: number
+  }
+  isMultiDay?: boolean
+  segment?: MultiDayEventSegment
+  detailPanelKey: string
 }
 
-export const useEventInteraction = ({
+export const useEventInteraction = ( {
   event,
   isTouchEnabled,
   onMoveStart,
@@ -37,29 +37,29 @@ export const useEventInteraction = ({
   isMultiDay,
   segment,
   detailPanelKey,
-}: UseEventInteractionProps) => {
-  const [isSelected, setIsSelected] = useState(false);
-  const [isPressed, setIsPressed] = useState(false);
-  const longPressTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const touchStartPosRef = useRef<{ x: number; y: number } | null>(null);
+}: UseEventInteractionProps ) => {
+  const [ isSelected, setIsSelected ] = useState ( false )
+  const [ isPressed, setIsPressed ] = useState ( false )
+  const longPressTimerRef = useRef<ReturnType<typeof setTimeout> | null> ( null )
+  const touchStartPosRef = useRef<{ x: number; y: number } | null> ( null )
 
-  const handleTouchStart = (e: TouchEvent) => {
-    if (!onMoveStart || !isTouchEnabled) return;
-    e.stopPropagation();
-    setIsPressed(true);
+  const handleTouchStart = ( e: TouchEvent ) => {
+    if ( !onMoveStart || !isTouchEnabled ) return
+    e.stopPropagation ()
+    setIsPressed ( true )
 
-    const touch = e.touches[0];
-    const clientX = touch.clientX;
-    const clientY = touch.clientY;
-    const currentTarget = e.currentTarget as HTMLElement;
+    const touch = e.touches[0]
+    const clientX = touch.clientX
+    const clientY = touch.clientY
+    const currentTarget = e.currentTarget as HTMLElement
 
-    touchStartPosRef.current = { x: clientX, y: clientY };
+    touchStartPosRef.current = { x: clientX, y: clientY }
 
-    longPressTimerRef.current = setTimeout(() => {
-      if (onEventLongPress) {
-        onEventLongPress(event.id);
+    longPressTimerRef.current = setTimeout ( () => {
+      if ( onEventLongPress ) {
+        onEventLongPress ( event.id )
       } else {
-        setIsSelected(true);
+        setIsSelected ( true )
       }
 
       const syntheticEvent = {
@@ -70,18 +70,18 @@ export const useEventInteraction = ({
           /* noop */
         },
         currentTarget: currentTarget,
-        touches: [{ clientX, clientY }],
+        touches: [ { clientX, clientY } ],
         cancelable: false,
-      } as unknown as MouseEvent | TouchEvent;
+      } as unknown as MouseEvent | TouchEvent
 
-      if (multiDaySegmentInfo) {
+      if ( multiDaySegmentInfo ) {
         const adjustedEvent = {
           ...event,
           day: multiDaySegmentInfo.dayIndex ?? event.day,
           _segmentInfo: multiDaySegmentInfo,
-        };
-        onMoveStart(syntheticEvent, adjustedEvent as Event);
-      } else if (isMultiDay && segment) {
+        }
+        onMoveStart ( syntheticEvent, adjustedEvent as Event )
+      } else if ( isMultiDay && segment ) {
         const adjustedEvent = {
           ...event,
           day: segment.startDayIndex,
@@ -90,63 +90,63 @@ export const useEventInteraction = ({
             isFirst: segment.isFirstSegment,
             isLast: segment.isLastSegment,
           },
-        };
-        onMoveStart(syntheticEvent, adjustedEvent as Event);
+        }
+        onMoveStart ( syntheticEvent, adjustedEvent as Event )
       } else {
-        onMoveStart(syntheticEvent, event);
+        onMoveStart ( syntheticEvent, event )
       }
-      longPressTimerRef.current = null;
-      touchStartPosRef.current = null;
+      longPressTimerRef.current = null
+      touchStartPosRef.current = null
 
-      if (navigator.vibrate) {
-        navigator.vibrate(50);
+      if ( navigator.vibrate ) {
+        navigator.vibrate ( 50 )
       }
-    }, 500);
-  };
+    }, 500 )
+  }
 
-  const handleTouchMove = (e: TouchEvent) => {
-    if (longPressTimerRef.current && touchStartPosRef.current) {
-      const dx = Math.abs(e.touches[0].clientX - touchStartPosRef.current.x);
-      const dy = Math.abs(e.touches[0].clientY - touchStartPosRef.current.y);
-      if (dx > 10 || dy > 10) {
-        clearTimeout(longPressTimerRef.current);
-        longPressTimerRef.current = null;
-        touchStartPosRef.current = null;
-        setIsPressed(false);
+  const handleTouchMove = ( e: TouchEvent ) => {
+    if ( longPressTimerRef.current && touchStartPosRef.current ) {
+      const dx = Math.abs ( e.touches[0].clientX - touchStartPosRef.current.x )
+      const dy = Math.abs ( e.touches[0].clientY - touchStartPosRef.current.y )
+      if ( dx > 10 || dy > 10 ) {
+        clearTimeout ( longPressTimerRef.current )
+        longPressTimerRef.current = null
+        touchStartPosRef.current = null
+        setIsPressed ( false )
       }
     }
-  };
+  }
 
-  const handleTouchEnd = (e: TouchEvent) => {
-    setIsPressed(false);
-    if (longPressTimerRef.current) {
-      clearTimeout(longPressTimerRef.current);
-      longPressTimerRef.current = null;
+  const handleTouchEnd = ( e: TouchEvent ) => {
+    setIsPressed ( false )
+    if ( longPressTimerRef.current ) {
+      clearTimeout ( longPressTimerRef.current )
+      longPressTimerRef.current = null
     }
 
-    if (isTouchEnabled && touchStartPosRef.current) {
-      e.preventDefault();
-      e.stopPropagation();
+    if ( isTouchEnabled && touchStartPosRef.current ) {
+      e.preventDefault ()
+      e.stopPropagation ()
 
-      if (onEventSelect) {
-        onEventSelect(event.id);
-      } else if (canOpenDetail) {
-        setIsSelected(true);
+      if ( onEventSelect ) {
+        onEventSelect ( event.id )
+      } else if ( canOpenDetail ) {
+        setIsSelected ( true )
       }
 
-      if (app) {
-        app.onEventClick(event);
+      if ( app ) {
+        app.onEventClick ( event )
       }
 
-      if (canOpenDetail) {
-        onDetailPanelToggle?.(detailPanelKey);
+      if ( canOpenDetail ) {
+        onDetailPanelToggle ?. ( detailPanelKey )
       } else {
-        onDetailPanelToggle?.(null);
+        onDetailPanelToggle ?. ( null )
       }
     }
 
-    touchStartPosRef.current = null;
-  };
+    touchStartPosRef.current = null
+  }
 
   return {
     isSelected,
@@ -156,5 +156,5 @@ export const useEventInteraction = ({
     handleTouchStart,
     handleTouchMove,
     handleTouchEnd,
-  };
-};
+  }
+}

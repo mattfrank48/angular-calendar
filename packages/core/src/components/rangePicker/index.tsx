@@ -1,16 +1,16 @@
-import { JSX } from 'preact';
-import { createPortal } from 'preact/compat';
+import { JSX } from "preact";
+import { createPortal } from "preact/compat";
 import {
   useCallback,
   useEffect,
   useMemo,
   useRef,
   useState,
-} from 'preact/hooks';
-import { Temporal } from 'temporal-polyfill';
+} from "preact/hooks";
+import { Temporal } from "temporal-polyfill";
 
-import { MoveRight } from '@/components/common/Icons';
-import { getMonthLabels, getWeekDaysLabels } from '@/locale';
+import { MoveRight } from "@/components/common/Icons";
+import { getMonthLabels, getWeekDaysLabels } from "@/locale";
 import {
   mergeFormatTemplate,
   buildParseRegExp,
@@ -18,12 +18,12 @@ import {
   getZoneId,
   normalizeToZoned,
   formatTemporal,
-} from '@/utils/rangePicker';
-import { isPlainDate } from '@/utils/temporal';
+} from "@/utils/rangePicker";
+import { isPlainDate } from "@/utils/temporal";
 
-import RangePickerPanel from './components/RangePickerPanel';
-import { DEFAULT_FORMAT, DEFAULT_TIME_FORMAT } from './constants';
-import { RangePickerProps, ZonedRange } from './types';
+import RangePickerPanel from "./components/RangePickerPanel";
+import { DEFAULT_FORMAT, DEFAULT_TIME_FORMAT } from "./constants";
+import { RangePickerProps, ZonedRange } from "./types";
 
 const RangePicker = ({
   value,
@@ -34,39 +34,39 @@ const RangePicker = ({
   onOk,
   timeZone,
   disabled = false,
-  placement = 'bottomLeft',
+  placement = "bottomLeft",
   autoAdjustOverflow = true,
   getPopupContainer,
   matchTriggerWidth = false,
-  locale = 'en-US',
+  locale = "en-US",
 }: RangePickerProps) => {
   const localeCode = useMemo(
-    () => (typeof locale === 'string' ? locale : locale?.code || 'en-US'),
-    [locale]
+    () => (typeof locale === "string" ? locale : locale?.code || "en-US"),
+    [locale],
   );
 
   const isTimeEnabled = useMemo(() => {
     if (showTime === undefined) return true;
-    if (typeof showTime === 'object') return true;
+    if (typeof showTime === "object") return true;
     return Boolean(showTime);
   }, [showTime]);
 
   const monthLabels = useMemo(
-    () => getMonthLabels(localeCode, 'short'),
-    [localeCode]
+    () => getMonthLabels(localeCode, "short"),
+    [localeCode],
   );
 
   const weekDayLabels = useMemo(
-    () => getWeekDaysLabels(localeCode, 'narrow'),
-    [localeCode]
+    () => getWeekDaysLabels(localeCode, "narrow"),
+    [localeCode],
   );
 
   const effectiveTimeFormat = useMemo(() => {
     if (!isTimeEnabled) {
-      return '';
+      return "";
     }
 
-    if (typeof showTime === 'object' && showTime?.format) {
+    if (typeof showTime === "object" && showTime?.format) {
       return showTime.format;
     }
 
@@ -75,12 +75,12 @@ const RangePicker = ({
 
   const formatTemplate = useMemo(
     () => mergeFormatTemplate(format, effectiveTimeFormat),
-    [format, effectiveTimeFormat]
+    [format, effectiveTimeFormat],
   );
 
   const parseRegExp = useMemo(
     () => buildParseRegExp(formatTemplate),
-    [formatTemplate]
+    [formatTemplate],
   );
 
   const normalizedValue = useMemo<ZonedRange>(() => {
@@ -99,7 +99,7 @@ const RangePicker = ({
 
   const [draftRange, setDraftRange] = useState<ZonedRange>(normalizedValue);
   const lastNormalizedRef = useRef<ZonedRange>(normalizedValue);
-  const [focusedField, setFocusedField] = useState<'start' | 'end'>('start');
+  const [focusedField, setFocusedField] = useState<"start" | "end">("start");
   const [inputValues, setInputValues] = useState<[string, string]>([
     formatTemporal(normalizedValue[0], format, effectiveTimeFormat),
     formatTemporal(normalizedValue[1], format, effectiveTimeFormat),
@@ -110,7 +110,7 @@ const RangePicker = ({
   ]);
   const draftRangeRef = useRef<ZonedRange>(normalizedValue);
   const [visibleMonth, setVisibleMonth] = useState<Temporal.PlainDate>(
-    normalizedValue[0].toPlainDate().with({ day: 1 })
+    normalizedValue[0].toPlainDate().with({ day: 1 }),
   );
   const [isOpen, setIsOpenInternal] = useState(false);
 
@@ -162,7 +162,7 @@ const RangePicker = ({
     (
       container: HTMLElement | null,
       activeItem: HTMLElement | null,
-      topPadding = 0
+      topPadding = 0,
     ) => {
       if (!container || !activeItem) return;
 
@@ -172,29 +172,29 @@ const RangePicker = ({
         itemRect.top - containerRect.top + container.scrollTop - topPadding;
 
       const prefersReducedMotion = window.matchMedia?.(
-        '(prefers-reduced-motion: reduce)'
+        "(prefers-reduced-motion: reduce)",
       ).matches;
-      const behavior: ScrollBehavior = prefersReducedMotion ? 'auto' : 'smooth';
+      const behavior: ScrollBehavior = prefersReducedMotion ? "auto" : "smooth";
 
       // Only scroll if offset is significant to avoid micro-jitter
       if (Math.abs(container.scrollTop - delta) > 1) {
         container.scrollTo({ top: delta, behavior });
       }
     },
-    []
+    [],
   );
 
   const scrollToActiveTime = useCallback(
-    (field: 'start' | 'end') => {
+    (field: "start" | "end") => {
       // Use double requestAnimationFrame to ensure DOM is fully updated
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
           const refs = timeListRefs.current[field];
-          (['hour', 'minute'] as const).forEach(type => {
+          (["hour", "minute"] as const).forEach((type) => {
             const container = refs[type];
             if (!container) return;
             const active = container.querySelector<HTMLElement>(
-              '[data-active="true"]'
+              '[data-active="true"]',
             );
             if (active) {
               alignActiveToTop(container, active, 0);
@@ -203,7 +203,7 @@ const RangePicker = ({
         });
       });
     },
-    [alignActiveToTop]
+    [alignActiveToTop],
   );
 
   // Scroll when panel opens or field changes (but NOT when draftRange changes to avoid interfering with user clicks)
@@ -256,7 +256,7 @@ const RangePicker = ({
         return;
       }
 
-      const closestPopup = target.closest('[data-range-picker-popup]');
+      const closestPopup = target.closest("[data-range-picker-popup]");
       if (closestPopup) {
         return;
       }
@@ -267,19 +267,19 @@ const RangePicker = ({
 
     // Delay adding listener to ensure popup is rendered
     const timerId = setTimeout(() => {
-      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener("mousedown", handleClickOutside);
     }, 100); // Increased delay to ensure Portal is mounted
 
     return () => {
       clearTimeout(timerId);
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [isOpen]);
 
   useEffect(() => {
     if (isOpen) return;
     // Reset to 'start' when panel closes
-    setFocusedField('start');
+    setFocusedField("start");
     if (!committedRef.current) {
       setDraftRange(normalizedValue);
     }
@@ -294,7 +294,7 @@ const RangePicker = ({
         formatTemporal(range[1], format, effectiveTimeFormat),
       ]);
     },
-    [effectiveTimeFormat, format, onChange]
+    [effectiveTimeFormat, format, onChange],
   );
 
   const emitOk = useCallback(
@@ -305,18 +305,18 @@ const RangePicker = ({
         formatTemporal(range[1], format, effectiveTimeFormat),
       ]);
     },
-    [effectiveTimeFormat, format, onOk]
+    [effectiveTimeFormat, format, onOk],
   );
 
   const updateRange = useCallback(
-    (field: 'start' | 'end', nextValue: Temporal.ZonedDateTime) => {
-      setDraftRange(prev => {
+    (field: "start" | "end", nextValue: Temporal.ZonedDateTime) => {
+      setDraftRange((prev) => {
         const current: ZonedRange = [...prev] as ZonedRange;
-        if (field === 'start') {
+        if (field === "start") {
           const safeEnd = normalizeToZoned(
             current[1],
             getZoneId(nextValue),
-            nextValue
+            nextValue,
           );
           const adjustedEnd =
             Temporal.ZonedDateTime.compare(nextValue, safeEnd) > 0
@@ -328,7 +328,7 @@ const RangePicker = ({
         const safeStart = normalizeToZoned(
           current[0],
           getZoneId(nextValue),
-          nextValue
+          nextValue,
         );
         const adjustedStart =
           Temporal.ZonedDateTime.compare(safeStart, nextValue) > 0
@@ -337,7 +337,7 @@ const RangePicker = ({
         return [adjustedStart, nextValue];
       });
     },
-    []
+    [],
   );
 
   const handleDaySelect = (day: Temporal.PlainDate) => {
@@ -345,7 +345,7 @@ const RangePicker = ({
 
     const buildValue = (
       base: Temporal.ZonedDateTime,
-      source: Temporal.PlainDate
+      source: Temporal.PlainDate,
     ): Temporal.ZonedDateTime => {
       const zoneId = getZoneId(base);
       return Temporal.ZonedDateTime.from({
@@ -362,7 +362,7 @@ const RangePicker = ({
       });
     };
 
-    if (focusedField === 'start') {
+    if (focusedField === "start") {
       const nextStart = buildValue(draftRange[0], day);
 
       // Calculate the duration between original start and end to preserve time span
@@ -400,10 +400,10 @@ const RangePicker = ({
   };
 
   const handleHourSelect = useCallback(
-    (field: 'start' | 'end', hour: number) => {
+    (field: "start" | "end", hour: number) => {
       if (disabled) return;
-      const index = field === 'start' ? 0 : 1;
-      setDraftRange(prev => {
+      const index = field === "start" ? 0 : 1;
+      setDraftRange((prev) => {
         const current = prev[index];
         const nextValue = current.with({
           hour,
@@ -415,11 +415,11 @@ const RangePicker = ({
         });
 
         // Update the range using the same logic as updateRange
-        if (field === 'start') {
+        if (field === "start") {
           const safeEnd = normalizeToZoned(
             prev[1],
             getZoneId(nextValue),
-            nextValue
+            nextValue,
           );
           const adjustedEnd =
             Temporal.ZonedDateTime.compare(nextValue, safeEnd) > 0
@@ -431,7 +431,7 @@ const RangePicker = ({
         const safeStart = normalizeToZoned(
           prev[0],
           getZoneId(nextValue),
-          nextValue
+          nextValue,
         );
         const adjustedStart =
           Temporal.ZonedDateTime.compare(safeStart, nextValue) > 0
@@ -446,7 +446,7 @@ const RangePicker = ({
           const container = timeListRefs.current[field].hour;
           if (!container) return;
           const active = container.querySelector<HTMLElement>(
-            '[data-active="true"]'
+            '[data-active="true"]',
           );
           if (active) {
             alignActiveToTop(container, active, 0);
@@ -454,15 +454,15 @@ const RangePicker = ({
         });
       });
     },
-    [disabled]
+    [disabled],
   );
 
   const handleMinuteSelect = useCallback(
-    (field: 'start' | 'end', minute: number) => {
+    (field: "start" | "end", minute: number) => {
       if (disabled) return;
 
-      const index = field === 'start' ? 0 : 1;
-      setDraftRange(prev => {
+      const index = field === "start" ? 0 : 1;
+      setDraftRange((prev) => {
         const current = prev[index];
         const nextValue = current.with({
           minute,
@@ -473,11 +473,11 @@ const RangePicker = ({
         });
 
         // Update the range using the same logic as updateRange
-        if (field === 'start') {
+        if (field === "start") {
           const safeEnd = normalizeToZoned(
             prev[1],
             getZoneId(nextValue),
-            nextValue
+            nextValue,
           );
           const adjustedEnd =
             Temporal.ZonedDateTime.compare(nextValue, safeEnd) > 0
@@ -489,7 +489,7 @@ const RangePicker = ({
         const safeStart = normalizeToZoned(
           prev[0],
           getZoneId(nextValue),
-          nextValue
+          nextValue,
         );
         const adjustedStart =
           Temporal.ZonedDateTime.compare(safeStart, nextValue) > 0
@@ -504,7 +504,7 @@ const RangePicker = ({
           const container = timeListRefs.current[field].minute;
           if (!container) return;
           const active = container.querySelector<HTMLElement>(
-            '[data-active="true"]'
+            '[data-active="true"]',
           );
           if (active) {
             alignActiveToTop(container, active, 0);
@@ -512,73 +512,73 @@ const RangePicker = ({
         });
       });
     },
-    [disabled]
+    [disabled],
   );
 
   const updateInputValue = useCallback(
-    (field: 'start' | 'end', next: string) => {
-      const index = field === 'start' ? 0 : 1;
-      setInputValues(prev => {
+    (field: "start" | "end", next: string) => {
+      const index = field === "start" ? 0 : 1;
+      setInputValues((prev) => {
         const candidate: [string, string] = [...prev] as [string, string];
         candidate[index] = next;
         return candidate;
       });
     },
-    []
+    [],
   );
 
   const commitInputValue = useCallback(
-    (field: 'start' | 'end', rawValue: string) => {
-      const index = field === 'start' ? 0 : 1;
+    (field: "start" | "end", rawValue: string) => {
+      const index = field === "start" ? 0 : 1;
       const reference = draftRange[index];
       const zoneId = getZoneId(reference);
       const parsed = parseTemporalString(
         rawValue,
         parseRegExp,
         reference,
-        zoneId
+        zoneId,
       );
 
       if (parsed) {
         updateRange(field, parsed);
         const month = parsed.toPlainDate().with({ day: 1 });
         setVisibleMonth(month);
-        if (field === 'start') {
-          setFocusedField('end');
+        if (field === "start") {
+          setFocusedField("end");
         }
         return true;
       }
 
-      setInputValues(prev => {
+      setInputValues((prev) => {
         const next: [string, string] = [...prev] as [string, string];
         next[index] = formatTemporal(
           draftRange[index],
           format,
-          effectiveTimeFormat
+          effectiveTimeFormat,
         );
         return next;
       });
       return false;
     },
-    [draftRange, effectiveTimeFormat, format, parseRegExp, updateRange]
+    [draftRange, effectiveTimeFormat, format, parseRegExp, updateRange],
   );
 
   const handleInputChange = useCallback(
-    (field: 'start' | 'end') =>
+    (field: "start" | "end") =>
       (event: JSX.TargetedEvent<HTMLInputElement, globalThis.Event>) => {
         const newValue = event.currentTarget.value;
         isEditingRef.current = true;
         updateInputValue(field, newValue);
 
         // Try to parse and sync to popup in real-time
-        const index = field === 'start' ? 0 : 1;
+        const index = field === "start" ? 0 : 1;
         const reference = draftRangeRef.current[index];
         const zoneId = getZoneId(reference);
         const parsed = parseTemporalString(
           newValue,
           parseRegExp,
           reference,
-          zoneId
+          zoneId,
         );
         if (parsed) {
           updateRange(field, parsed);
@@ -587,11 +587,11 @@ const RangePicker = ({
           scrollToActiveTime(field);
         }
       },
-    [updateInputValue, parseRegExp, updateRange, scrollToActiveTime]
+    [updateInputValue, parseRegExp, updateRange, scrollToActiveTime],
   );
 
   const handleInputBlur = useCallback(
-    (field: 'start' | 'end') =>
+    (field: "start" | "end") =>
       (event: JSX.TargetedFocusEvent<HTMLInputElement>) => {
         if (disabled) return;
         isEditingRef.current = false;
@@ -599,13 +599,13 @@ const RangePicker = ({
         if (isOpen) {
           // Reset input text to canonical format of current draftRange
           // (draftRange was already synced in real-time for valid inputs)
-          const index = field === 'start' ? 0 : 1;
+          const index = field === "start" ? 0 : 1;
           const formatted = formatTemporal(
             draftRangeRef.current[index],
             format,
-            effectiveTimeFormat
+            effectiveTimeFormat,
           );
-          setInputValues(prev => {
+          setInputValues((prev) => {
             const next: [string, string] = [...prev] as [string, string];
             next[index] = formatted;
             return next;
@@ -619,22 +619,22 @@ const RangePicker = ({
           commitInputValue(field, event.currentTarget.value);
         }
       },
-    [commitInputValue, disabled, isOpen, format, effectiveTimeFormat]
+    [commitInputValue, disabled, isOpen, format, effectiveTimeFormat],
   );
 
   const handleInputKeyDown = useCallback(
-    (field: 'start' | 'end') =>
+    (field: "start" | "end") =>
       (event: JSX.TargetedKeyboardEvent<HTMLInputElement>) => {
-        if (event.key === 'Enter') {
+        if (event.key === "Enter") {
           event.preventDefault();
           isEditingRef.current = false;
           commitInputValue(field, event.currentTarget.value);
         }
-        if (event.key === 'Escape') {
+        if (event.key === "Escape") {
           event.currentTarget.blur();
         }
       },
-    [commitInputValue]
+    [commitInputValue],
   );
 
   const handleOk = () => {
@@ -646,11 +646,11 @@ const RangePicker = ({
   };
 
   const changeMonth = (months: number) => {
-    setVisibleMonth(prev => prev.add({ months }).with({ day: 1 }));
+    setVisibleMonth((prev) => prev.add({ months }).with({ day: 1 }));
   };
 
   const changeYear = (years: number) => {
-    setVisibleMonth(prev => prev.add({ years }).with({ day: 1 }));
+    setVisibleMonth((prev) => prev.add({ years }).with({ day: 1 }));
   };
 
   const calendarDays = useMemo(() => {
@@ -658,7 +658,7 @@ const RangePicker = ({
     const offset = startOfMonth.dayOfWeek % 7;
     const gridStart = startOfMonth.subtract({ days: offset });
     return Array.from({ length: 42 }, (__, index) =>
-      gridStart.add({ days: index })
+      gridStart.add({ days: index }),
     );
   }, [visibleMonth]);
 
@@ -680,48 +680,48 @@ const RangePicker = ({
       let finalPlacement = basePlacement;
 
       if (
-        finalPlacement.startsWith('bottom') &&
+        finalPlacement.startsWith("bottom") &&
         spaceBelow < popupHeight &&
         spaceAbove > spaceBelow
       ) {
         finalPlacement = finalPlacement.replace(
-          'bottom',
-          'top'
+          "bottom",
+          "top",
         ) as typeof placement;
       } else if (
-        finalPlacement.startsWith('top') &&
+        finalPlacement.startsWith("top") &&
         spaceAbove < popupHeight &&
         spaceBelow > spaceAbove
       ) {
         finalPlacement = finalPlacement.replace(
-          'top',
-          'bottom'
+          "top",
+          "bottom",
         ) as typeof placement;
       }
 
       if (
-        finalPlacement.endsWith('Left') &&
+        finalPlacement.endsWith("Left") &&
         spaceRight < popupWidth &&
         spaceLeft > spaceRight
       ) {
         finalPlacement = finalPlacement.replace(
-          'Left',
-          'Right'
+          "Left",
+          "Right",
         ) as typeof placement;
       } else if (
-        finalPlacement.endsWith('Right') &&
+        finalPlacement.endsWith("Right") &&
         spaceLeft < popupWidth &&
         spaceRight > spaceLeft
       ) {
         finalPlacement = finalPlacement.replace(
-          'Right',
-          'Left'
+          "Right",
+          "Left",
         ) as typeof placement;
       }
 
       return finalPlacement;
     },
-    [autoAdjustOverflow, matchTriggerWidth, placement]
+    [autoAdjustOverflow, matchTriggerWidth, placement],
   );
 
   const adjustPopupPlacement = useCallback(() => {
@@ -732,10 +732,10 @@ const RangePicker = ({
     }
   }, [calculateOptimalPlacement]);
 
-  const openPanelForField = (field: 'start' | 'end') => {
+  const openPanelForField = (field: "start" | "end") => {
     if (disabled) return;
     setFocusedField(field);
-    const index = field === 'start' ? 0 : 1;
+    const index = field === "start" ? 0 : 1;
     const targetMonth = draftRange[index].toPlainDate().with({ day: 1 });
     setVisibleMonth(targetMonth);
     const initialPlacement = calculateOptimalPlacement();
@@ -753,11 +753,11 @@ const RangePicker = ({
     adjustPopupPlacement();
 
     const handleResize = () => adjustPopupPlacement();
-    window.addEventListener('resize', handleResize);
-    window.addEventListener('scroll', handleResize, true);
+    window.addEventListener("resize", handleResize);
+    window.addEventListener("scroll", handleResize, true);
     return () => {
-      window.removeEventListener('resize', handleResize);
-      window.removeEventListener('scroll', handleResize, true);
+      window.removeEventListener("resize", handleResize);
+      window.removeEventListener("scroll", handleResize, true);
     };
   }, [isOpen, adjustPopupPlacement]);
 
@@ -767,19 +767,19 @@ const RangePicker = ({
     const triggerRect = containerRef.current.getBoundingClientRect();
     const placementDom = popupPlacementRef.current;
     const style: JSX.CSSProperties = {
-      position: 'fixed',
+      position: "fixed",
       zIndex: 9999,
     };
 
     // Vertical positioning
-    if (placementDom.startsWith('bottom')) {
+    if (placementDom.startsWith("bottom")) {
       style.top = triggerRect.bottom + 8;
     } else {
       style.bottom = window.innerHeight - triggerRect.top + 8;
     }
 
     // Horizontal positioning
-    if (placement.endsWith('Left')) {
+    if (placement.endsWith("Left")) {
       style.left = triggerRect.left;
     } else {
       style.right = window.innerWidth - triggerRect.right;
@@ -793,60 +793,60 @@ const RangePicker = ({
   };
 
   return (
-    <div className='relative max-w-100' ref={containerRef}>
+    <div className="relative max-w-100" ref={containerRef}>
       <div
         className={`flex items-center gap-2 rounded-lg border text-sm shadow-sm transition ${
           disabled
-            ? 'cursor-not-allowed border-slate-200 bg-slate-50 text-slate-400 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-500'
+            ? "cursor-not-allowed border-slate-200 bg-slate-50 text-slate-400 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-500"
             : isOpen
-              ? 'border-primary bg-white shadow-md dark:bg-gray-700'
-              : 'border-slate-200 bg-white dark:border-gray-600 dark:bg-gray-700'
+              ? "border-primary bg-white shadow-md dark:bg-gray-700"
+              : "border-slate-200 bg-white dark:border-gray-600 dark:bg-gray-700"
         }`}
       >
-        <div className='flex min-w-0 flex-1 flex-col gap-1'>
+        <div className="flex min-w-0 flex-1 flex-col gap-1">
           <input
-            type='text'
-            name='range-start'
+            type="text"
+            name="range-start"
             value={inputValues[0]}
-            onChange={handleInputChange('start')}
-            onFocus={() => openPanelForField('start')}
-            onClick={() => openPanelForField('start')}
-            onBlur={handleInputBlur('start')}
-            onKeyDown={handleInputKeyDown('start')}
+            onChange={handleInputChange("start")}
+            onFocus={() => openPanelForField("start")}
+            onClick={() => openPanelForField("start")}
+            onBlur={handleInputBlur("start")}
+            onKeyDown={handleInputKeyDown("start")}
             className={`w-full rounded-md border px-2 py-1.5 text-sm font-medium transition focus:ring-2 focus:outline-none ${
               disabled
-                ? 'cursor-not-allowed border-transparent bg-transparent text-slate-400 dark:text-gray-500'
-                : focusedField === 'start' && isOpen
-                  ? 'bg-white text-primary dark:bg-gray-700'
-                  : 'border-transparent bg-transparent text-slate-700 dark:text-gray-300'
+                ? "cursor-not-allowed border-transparent bg-transparent text-slate-400 dark:text-gray-500"
+                : focusedField === "start" && isOpen
+                  ? "bg-white text-primary dark:bg-gray-700"
+                  : "border-transparent bg-transparent text-slate-700 dark:text-gray-300"
             }`}
             placeholder={formatTemplate}
-            autoComplete='off'
+            autoComplete="off"
             disabled={disabled}
           />
         </div>
 
-        <MoveRight className='text-slate-400 dark:text-gray-500' />
+        <MoveRight className="text-slate-400 dark:text-gray-500" />
 
-        <div className='flex min-w-0 flex-1 flex-col gap-1'>
+        <div className="flex min-w-0 flex-1 flex-col gap-1">
           <input
-            type='text'
-            name='range-end'
+            type="text"
+            name="range-end"
             value={inputValues[1]}
-            onChange={handleInputChange('end')}
-            onFocus={() => openPanelForField('end')}
-            onClick={() => openPanelForField('end')}
-            onBlur={handleInputBlur('end')}
-            onKeyDown={handleInputKeyDown('end')}
+            onChange={handleInputChange("end")}
+            onFocus={() => openPanelForField("end")}
+            onClick={() => openPanelForField("end")}
+            onBlur={handleInputBlur("end")}
+            onKeyDown={handleInputKeyDown("end")}
             className={`w-full rounded-md border px-2 py-1.5 text-sm font-medium transition focus:ring-2 focus:outline-none ${
               disabled
-                ? 'cursor-not-allowed border-transparent bg-transparent text-slate-400 dark:text-gray-500'
-                : focusedField === 'end' && isOpen
-                  ? 'bg-white text-primary dark:bg-gray-700'
-                  : 'border-transparent bg-transparent text-slate-700 dark:text-gray-300'
+                ? "cursor-not-allowed border-transparent bg-transparent text-slate-400 dark:text-gray-500"
+                : focusedField === "end" && isOpen
+                  ? "bg-white text-primary dark:bg-gray-700"
+                  : "border-transparent bg-transparent text-slate-700 dark:text-gray-300"
             }`}
             placeholder={formatTemplate}
-            autoComplete='off'
+            autoComplete="off"
             disabled={disabled}
           />
         </div>
@@ -875,7 +875,7 @@ const RangePicker = ({
                 onOk={handleOk}
                 getPopupStyle={getPopupStyle}
               />,
-              getPopupContainer()
+              getPopupContainer(),
             )
           : createPortal(
               <RangePickerPanel
@@ -898,7 +898,7 @@ const RangePicker = ({
                 onOk={handleOk}
                 getPopupStyle={getPopupStyle}
               />,
-              document.body
+              document.body,
             ))}
     </div>
   );

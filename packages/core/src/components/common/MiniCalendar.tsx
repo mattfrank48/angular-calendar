@@ -1,6 +1,6 @@
-import { useMemo } from 'preact/hooks';
+import { useMemo } from "preact/hooks";
 
-import { useLocale, getWeekDaysLabels } from '@/locale';
+import { useLocale, getWeekDaysLabels } from "@/locale";
 import {
   miniCalendarDay,
   miniCalendarDayHeader,
@@ -9,9 +9,9 @@ import {
   miniCalendarOtherMonth,
   miniCalendarToday,
   miniCalendarSelected,
-} from '@/styles/classNames';
+} from "@/styles/classNames";
 
-import { ChevronLeft, ChevronRight } from './Icons';
+import { ChevronLeft, ChevronRight } from "./Icons";
 
 interface MiniCalendarProps {
   visibleMonth: Date;
@@ -34,17 +34,17 @@ export const MiniCalendar = ({
   const currentDateKey = currentDate.toDateString();
 
   const weekdayLabels = useMemo(
-    () => getWeekDaysLabels(locale, 'narrow'),
-    [locale]
+    () => getWeekDaysLabels(locale, "narrow"),
+    [locale],
   );
 
   const monthLabel = useMemo(
     () =>
       visibleMonth.toLocaleDateString(locale, {
-        month: 'long',
-        year: 'numeric',
+        month: "long",
+        year: "numeric",
       }),
-    [visibleMonth, locale]
+    [visibleMonth, locale],
   );
 
   const miniCalendarDays = useMemo(() => {
@@ -77,31 +77,31 @@ export const MiniCalendar = ({
   }, [visibleMonth, currentDateKey, todayKey]);
 
   return (
-    <div className='px-3 py-3'>
+    <div className="px-3 py-3">
       {showHeader ? (
-        <div className='mb-3 flex items-center justify-between'>
+        <div className="mb-3 flex items-center justify-between">
           <button
-            type='button'
-            className='flex h-7 w-7 items-center justify-center rounded-full text-gray-500 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-slate-800'
+            type="button"
+            className="flex h-7 w-7 items-center justify-center rounded-full text-gray-500 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-slate-800"
             onClick={() => onMonthChange(-1)}
-            aria-label='Previous month'
+            aria-label="Previous month"
           >
-            <ChevronLeft className='h-4 w-4' />
+            <ChevronLeft className="h-4 w-4" />
           </button>
-          <span className='text-sm font-semibold text-gray-700 dark:text-gray-200'>
+          <span className="text-sm font-semibold text-gray-700 dark:text-gray-200">
             {monthLabel}
           </span>
           <button
-            type='button'
-            className='flex h-7 w-7 items-center justify-center rounded-full text-gray-500 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-slate-800'
+            type="button"
+            className="flex h-7 w-7 items-center justify-center rounded-full text-gray-500 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-slate-800"
             onClick={() => onMonthChange(1)}
-            aria-label='Next month'
+            aria-label="Next month"
           >
-            <ChevronRight className='h-4 w-4' />
+            <ChevronRight className="h-4 w-4" />
           </button>
         </div>
       ) : (
-        ''
+        ""
       )}
       <div className={miniCalendarGrid}>
         {weekdayLabels.map((label, index) => (
@@ -112,11 +112,11 @@ export const MiniCalendar = ({
             {label}
           </div>
         ))}
-        {miniCalendarDays.map(day => (
+        {miniCalendarDays.map((day) => (
           <button
-            type='button'
+            type="button"
             key={day.fullDate.getTime()}
-            className={` ${miniCalendarDay} ${day.isToday ? miniCalendarToday : day.isCurrentMonth ? miniCalendarCurrentMonth : miniCalendarOtherMonth} ${day.isSelected && !day.isToday ? miniCalendarSelected : ''} `}
+            className={` ${miniCalendarDay} ${day.isToday ? miniCalendarToday : day.isCurrentMonth ? miniCalendarCurrentMonth : miniCalendarOtherMonth} ${day.isSelected && !day.isToday ? miniCalendarSelected : ""} `}
             onClick={() => onDateSelect(day.fullDate)}
           >
             {day.date}

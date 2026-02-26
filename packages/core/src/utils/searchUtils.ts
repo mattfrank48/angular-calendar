@@ -1,40 +1,40 @@
-import { Temporal } from 'temporal-polyfill';
+import { Temporal } from "temporal-polyfill"
 
-import { TranslationKey } from '@/locale/types';
-import { CalendarSearchEvent } from '@/types/search';
+import { TranslationKey } from "@/locale/types"
+import { CalendarSearchEvent } from "@/types/search"
 
-import { temporalToDate } from './temporal';
+import { temporalToDate } from "./temporal"
 
 /**
  * Helper to get date object from event start
  * @param dateInput Date, string, or Temporal object
  * @returns Date object
  */
-export const getDateObj = (dateInput: unknown): Date => {
+export const getDateObj = ( dateInput: unknown ): Date => {
   try {
-    if (dateInput instanceof Date) return dateInput;
-    if (typeof dateInput === 'string') return new Date(dateInput);
-    return temporalToDate(
+    if ( dateInput instanceof Date ) return dateInput
+    if ( typeof dateInput === "string" ) return new Date ( dateInput )
+    return temporalToDate (
       dateInput as
         | Temporal.PlainDate
         | Temporal.PlainDateTime
-        | Temporal.ZonedDateTime
-    );
+        | Temporal.ZonedDateTime,
+    )
   } catch {
-    return new Date();
+    return new Date ()
   }
-};
+}
 
 /**
  * Helper to normalize date (reset time to 00:00:00)
  * @param date Date object
  * @returns Normalized Date object
  */
-export const normalizeDate = (date: Date): Date => {
-  const d = new Date(date);
-  d.setHours(0, 0, 0, 0);
-  return d;
-};
+export const normalizeDate = ( date: Date ): Date => {
+  const d = new Date ( date )
+  d.setHours ( 0, 0, 0, 0 )
+  return d
+}
 
 /**
  * Helper to get header text and color for a date group in search results
@@ -48,40 +48,40 @@ export const getSearchHeaderInfo = (
   groupDate: Date,
   today: Date,
   locale: string,
-  t: (key: TranslationKey) => string
+  t: ( key: TranslationKey ) => string,
 ): { title: string; colorClass: string } => {
-  const diffTime = groupDate.getTime() - today.getTime();
-  const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
+  const diffTime = groupDate.getTime () - today.getTime ()
+  const diffDays = Math.round ( diffTime / ( 1000 * 60 * 60 * 24 ) )
 
-  let title = '';
-  let colorClass = 'text-gray-500 dark:text-gray-400'; // Default gray
+  let title = ""
+  let colorClass = "text-gray-500 dark:text-gray-400" // Default gray
 
-  if (diffDays === 0) {
+  if ( diffDays === 0 ) {
     // Today
-    title = t('today') || 'Today';
-    colorClass = 'text-primary'; // Primary color
-  } else if (diffDays === 1 || diffDays === 2) {
+    title = t ( "today" ) || "Today"
+    colorClass = "text-primary" // Primary color
+  } else if ( diffDays === 1 || diffDays === 2 ) {
     // Tomorrow or Day after tomorrow
     try {
-      const rtf = new Intl.RelativeTimeFormat(locale, { numeric: 'auto' });
-      const relative = rtf.format(diffDays, 'day');
-      title = relative.charAt(0).toUpperCase() + relative.slice(1);
-      colorClass = 'text-black dark:text-white'; // Black/White for tomorrow/day after
+      const rtf = new Intl.RelativeTimeFormat ( locale, { numeric: "auto" } )
+      const relative = rtf.format ( diffDays, "day" )
+      title = relative.charAt ( 0 ).toUpperCase () + relative.slice ( 1 )
+      colorClass = "text-black dark:text-white" // Black/White for tomorrow/day after
     } catch {
-      title = groupDate.toLocaleDateString(locale, { weekday: 'long' });
+      title = groupDate.toLocaleDateString ( locale, { weekday: "long" } )
     }
   } else {
     // Others
-    title = groupDate.toLocaleDateString(locale, {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      weekday: 'long',
-    });
+    title = groupDate.toLocaleDateString ( locale, {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      weekday: "long",
+    } )
   }
 
-  return { title, colorClass };
-};
+  return { title, colorClass }
+}
 
 /**
  * Helper to group search results by date
@@ -91,34 +91,34 @@ export const getSearchHeaderInfo = (
  */
 export const groupSearchResults = (
   results: CalendarSearchEvent[],
-  today: Date
+  today: Date,
 ): Array<{ date: Date; events: CalendarSearchEvent[] }> => {
   const groupsMap = new Map<
     number,
     { date: Date; events: CalendarSearchEvent[] }
-  >();
+  > ()
 
-  results.forEach(event => {
-    const dateObj = getDateObj(event.start);
-    const normalized = normalizeDate(dateObj);
-    const timeKey = normalized.getTime();
+  results.forEach ( event => {
+    const dateObj = getDateObj ( event.start )
+    const normalized = normalizeDate ( dateObj )
+    const timeKey = normalized.getTime ()
 
-    if (!groupsMap.has(timeKey)) {
-      groupsMap.set(timeKey, { date: normalized, events: [] });
+    if ( !groupsMap.has ( timeKey ) ) {
+      groupsMap.set ( timeKey, { date: normalized, events: [] } )
     }
-    groupsMap.get(timeKey)?.events.push(event);
-  });
+    groupsMap.get ( timeKey )?.events.push ( event )
+  } )
 
   // Ensure "Today" group exists
-  const todayKey = today.getTime();
-  if (!groupsMap.has(todayKey)) {
-    groupsMap.set(todayKey, { date: today, events: [] });
+  const todayKey = today.getTime ()
+  if ( !groupsMap.has ( todayKey ) ) {
+    groupsMap.set ( todayKey, { date: today, events: [] } )
   }
 
   // Sort groups by time
-  const sortedGroups = Array.from(groupsMap.values()).toSorted(
-    (a, b) => a.date.getTime() - b.date.getTime()
-  );
+  const sortedGroups = Array.from ( groupsMap.values () ).toSorted (
+    ( a, b ) => a.date.getTime () - b.date.getTime (),
+  )
 
-  return sortedGroups;
-};
+  return sortedGroups
+}

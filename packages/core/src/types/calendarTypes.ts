@@ -5,13 +5,13 @@
  */
 export interface CalendarColors {
   /** Event background color */
-  eventColor: string;
+  eventColor: string
   /** Selected event background color */
-  eventSelectedColor: string;
+  eventSelectedColor: string
   /** Border/line color */
-  lineColor: string;
+  lineColor: string
   /** Text color */
-  textColor: string;
+  textColor: string
 }
 
 /**
@@ -20,43 +20,43 @@ export interface CalendarColors {
  */
 export interface CalendarType {
   /** Unique identifier (e.g., 'work', 'personal') */
-  id: string;
+  id: string
 
   /** Display name (e.g., 'Work', 'Personal') */
-  name: string;
+  name: string
 
   /** Optional description */
-  description?: string;
+  description?: string
 
   /** Light mode colors */
-  colors: CalendarColors;
+  colors: CalendarColors
 
   /** Dark mode colors (optional, falls back to light mode if not provided) */
-  darkColors?: CalendarColors;
+  darkColors?: CalendarColors
 
   /** Optional icon (emoji or icon name) */
-  icon?: string;
+  icon?: string
 
   /** Whether this is a system default type */
-  isDefault?: boolean;
+  isDefault?: boolean
 
   /** Whether events of this type should be visible */
-  isVisible?: boolean;
+  isVisible?: boolean
 }
 
 /**
  * Theme mode
  */
-export type ThemeMode = 'light' | 'dark' | 'auto';
+export type ThemeMode = "light" | "dark" | "auto"
 
 /**
  * System-level theme colors
  */
 export interface ThemeColors {
-  background?: string;
-  text?: string;
-  border?: string;
-  [key: string]: string | undefined;
+  background?: string
+  text?: string
+  border?: string
+  [key: string]: string | undefined
 }
 
 /**
@@ -64,10 +64,10 @@ export interface ThemeColors {
  */
 export interface ThemeConfig {
   /** Current theme mode */
-  mode: ThemeMode;
+  mode: ThemeMode
 
   /** System-level theme colors (optional) */
-  colors?: ThemeColors;
+  colors?: ThemeColors
 }
 
 /**
@@ -75,11 +75,11 @@ export interface ThemeConfig {
  */
 export interface CalendarsConfig {
   /** Array of calendar types */
-  calendars?: CalendarType[];
+  calendars?: CalendarType[]
 
   /** Default calendar for new events */
-  defaultCalendar?: string;
+  defaultCalendar?: string
 
   /** Theme configuration */
-  theme?: ThemeConfig;
+  theme?: ThemeConfig
 }

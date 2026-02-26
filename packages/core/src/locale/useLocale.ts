@@ -1,10 +1,10 @@
-import { useContext } from 'preact/hooks';
+import { useContext } from "preact/hooks"
 
-import { LocaleContext, LocaleContextValue } from './LocaleContext';
+import { LocaleContext, LocaleContextValue } from "./LocaleContext"
 
 /**
  * Hook to use the locale context in functional components.
  */
-export function useLocale(): LocaleContextValue {
-  return useContext(LocaleContext);
+export function useLocale (): LocaleContextValue {
+  return useContext ( LocaleContext )
 }

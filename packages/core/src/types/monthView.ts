@@ -1,45 +1,45 @@
-import { JSX, RefObject } from 'preact';
+import { JSX, RefObject } from "preact"
 
-import { WeeksData } from './calendar';
+import { WeeksData } from "./calendar"
 
 export interface UseVirtualMonthScrollProps {
-  currentDate: Date;
-  weekHeight: number;
-  onCurrentMonthChange?: (month: string, year: number) => void;
-  initialWeeksToLoad?: number;
-  locale?: string;
-  isEnabled?: boolean;
+  currentDate: Date
+  weekHeight: number
+  onCurrentMonthChange?: ( month: string, year: number ) => void
+  initialWeeksToLoad?: number
+  locale?: string
+  isEnabled?: boolean
 }
 
 // Hook return value interface
 export interface UseVirtualMonthScrollReturn {
-  scrollTop: number;
-  containerHeight: number;
-  currentMonth: string;
-  currentYear: number;
-  isScrolling: boolean;
-  isNavigating: boolean;
+  scrollTop: number
+  containerHeight: number
+  currentMonth: string
+  currentYear: number
+  isScrolling: boolean
+  isNavigating: boolean
   virtualData: {
-    totalHeight: number;
-    visibleItems: VirtualWeekItem[];
-    displayStartIndex: number; // Index of the first week that should actually be displayed
-  };
-  scrollElementRef: RefObject<HTMLDivElement>;
+    totalHeight: number
+    visibleItems: VirtualWeekItem[]
+    displayStartIndex: number // Index of the first week that should actually be displayed
+  }
+  scrollElementRef: RefObject<HTMLDivElement>
   handleScroll: (
-    e: JSX.TargetedEvent<HTMLDivElement, globalThis.Event>
-  ) => void;
-  scrollToDate: (targetDate: Date, smooth?: boolean) => void;
-  handlePreviousMonth: () => void;
-  handleNextMonth: () => void;
-  handleToday: () => void;
-  setScrollTop: (val: number | ((prev: number) => number)) => void;
-  setContainerHeight: (val: number | ((prev: number) => number)) => void;
-  setCurrentMonth: (val: string | ((prev: string) => string)) => void;
-  setCurrentYear: (val: number | ((prev: number) => number)) => void;
-  setIsScrolling: (val: boolean | ((prev: boolean) => boolean)) => void;
-  cache: WeekDataCache;
-  scrollElementRefCallback: (element: HTMLDivElement | null) => void;
-  weeksData: WeeksData[];
+    e: JSX.TargetedEvent<HTMLDivElement, globalThis.Event>,
+  ) => void
+  scrollToDate: ( targetDate: Date, smooth?: boolean ) => void
+  handlePreviousMonth: () => void
+  handleNextMonth: () => void
+  handleToday: () => void
+  setScrollTop: ( val: number | ( ( prev: number ) => number ) ) => void
+  setContainerHeight: ( val: number | ( ( prev: number ) => number ) ) => void
+  setCurrentMonth: ( val: string | ( ( prev: string ) => string ) ) => void
+  setCurrentYear: ( val: number | ( ( prev: number ) => number ) ) => void
+  setIsScrolling: ( val: boolean | ( ( prev: boolean ) => boolean ) ) => void
+  cache: WeekDataCache
+  scrollElementRefCallback: ( element: HTMLDivElement | null ) => void
+  weeksData: WeeksData[]
 }
 
 // Virtual scroll configuration
@@ -54,68 +54,68 @@ export const VIRTUAL_MONTH_SCROLL_CONFIG = {
   MOBILE_WEEK_HEIGHT: 80,
   TABLET_WEEK_HEIGHT: 90,
   WEEK_HEIGHT: 119,
-} as const;
+} as const
 
 // Virtual scroll item interface
 export interface VirtualWeekItem {
-  index: number;
-  weekData: WeeksData;
-  top: number;
-  height: number;
+  index: number
+  weekData: WeeksData
+  top: number
+  height: number
 }
 
 // High-performance week data cache class
 export class WeekDataCache {
-  private cache = new Map<string, WeeksData>();
-  private accessOrder: string[] = [];
-  private maxSize: number;
+  private cache = new Map<string, WeeksData> ()
+  private accessOrder: string[] = []
+  private maxSize: number
 
-  constructor(maxSize: number = VIRTUAL_MONTH_SCROLL_CONFIG.BUFFER_SIZE) {
-    this.maxSize = maxSize;
+  constructor ( maxSize: number = VIRTUAL_MONTH_SCROLL_CONFIG.BUFFER_SIZE ) {
+    this.maxSize = maxSize
   }
 
-  private static getKey(date: Date): string {
-    return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
+  private static getKey ( date: Date ): string {
+    return `${date.getFullYear ()}-${date.getMonth ()}-${date.getDate ()}`
   }
 
-  get(weekStartDate: Date): WeeksData | undefined {
-    const key = WeekDataCache.getKey(weekStartDate);
-    const data = this.cache.get(key);
-    if (data) {
-      this.updateAccessOrder(key);
-      return data;
+  get ( weekStartDate: Date ): WeeksData | undefined {
+    const key = WeekDataCache.getKey ( weekStartDate )
+    const data = this.cache.get ( key )
+    if ( data ) {
+      this.updateAccessOrder ( key )
+      return data
     }
-    return undefined;
+    return undefined
   }
 
-  set(weekStartDate: Date, data: WeeksData): void {
-    const key = WeekDataCache.getKey(weekStartDate);
+  set ( weekStartDate: Date, data: WeeksData ): void {
+    const key = WeekDataCache.getKey ( weekStartDate )
 
-    if (this.cache.size >= this.maxSize) {
-      const oldestKey = this.accessOrder.shift();
-      if (oldestKey !== undefined) {
-        this.cache.delete(oldestKey);
+    if ( this.cache.size >= this.maxSize ) {
+      const oldestKey = this.accessOrder.shift ()
+      if ( oldestKey !== undefined ) {
+        this.cache.delete ( oldestKey )
       }
     }
 
-    this.cache.set(key, data);
-    this.updateAccessOrder(key);
+    this.cache.set ( key, data )
+    this.updateAccessOrder ( key )
   }
 
-  private updateAccessOrder(key: string): void {
-    const index = this.accessOrder.indexOf(key);
-    if (index > -1) {
-      this.accessOrder.splice(index, 1);
+  private updateAccessOrder ( key: string ): void {
+    const index = this.accessOrder.indexOf ( key )
+    if ( index > -1 ) {
+      this.accessOrder.splice ( index, 1 )
     }
-    this.accessOrder.push(key);
+    this.accessOrder.push ( key )
   }
 
-  getSize(): number {
-    return this.cache.size;
+  getSize (): number {
+    return this.cache.size
   }
 
-  clear(): void {
-    this.cache.clear();
-    this.accessOrder = [];
+  clear (): void {
+    this.cache.clear ()
+    this.accessOrder = []
   }
 }

@@ -1,9 +1,9 @@
-import { handlePasteEvent } from '@/components/contextMenu/utils';
-import { useLocale } from '@/locale';
-import { ICalendarApp, ViewType } from '@/types';
-import { clipboardStore } from '@/utils/clipboardStore';
+import { handlePasteEvent } from "@/components/contextMenu/utils";
+import { useLocale } from "@/locale";
+import { ICalendarApp, ViewType } from "@/types";
+import { clipboardStore } from "@/utils/clipboardStore";
 
-import { ContextMenu, ContextMenuItem } from './Primitives';
+import { ContextMenu, ContextMenuItem } from "./Primitives";
 
 interface GridContextMenuProps {
   x: number;
@@ -33,17 +33,17 @@ const GridContextMenu = ({
   };
 
   return (
-    <ContextMenu x={x} y={y} onClose={onClose} className='df-context-menu'>
+    <ContextMenu x={x} y={y} onClose={onClose} className="df-context-menu">
       <ContextMenuItem
         onClick={() => {
           onCreateEvent();
           onClose();
         }}
       >
-        {t('newEvent') || 'New Event'}
+        {t("newEvent") || "New Event"}
       </ContextMenuItem>
       <ContextMenuItem onClick={handlePaste} disabled={!hasCopiedEvent}>
-        {t('pasteHere') || 'Paste Here'}
+        {t("pasteHere") || "Paste Here"}
       </ContextMenuItem>
     </ContextMenu>
   );

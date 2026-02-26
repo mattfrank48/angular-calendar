@@ -1,5 +1,5 @@
-import { h, ComponentChildren } from 'preact';
-import { createPortal } from 'preact/compat';
+import { h, ComponentChildren } from "preact";
+import { createPortal } from "preact/compat";
 import {
   useCallback,
   useEffect,
@@ -7,37 +7,37 @@ import {
   useRef,
   useContext,
   useState,
-} from 'preact/hooks';
+} from "preact/hooks";
 
-import CalendarHeader from '@/components/common/CalendarHeader';
-import { CreateCalendarDialog } from '@/components/common/CreateCalendarDialog';
-import DefaultEventDetailDialog from '@/components/common/DefaultEventDetailDialog';
-import { QuickCreateEventPopup } from '@/components/common/QuickCreateEventPopup';
-import { MobileEventDrawer } from '@/components/mobileEventDrawer';
-import MobileSearchDialog from '@/components/search/MobileSearchDialog';
-import SearchDrawer from '@/components/search/SearchDrawer';
-import { ThemeProvider } from '@/contexts/ThemeContext';
-import { LocaleProvider } from '@/locale/LocaleProvider';
-import { LocaleCode, Locale, LocaleMessages } from '@/locale/types';
-import { useLocale } from '@/locale/useLocale';
-import { useSidebarBridge } from '@/plugins/sidebarBridge';
+import CalendarHeader from "@/components/common/CalendarHeader";
+import { CreateCalendarDialog } from "@/components/common/CreateCalendarDialog";
+import DefaultEventDetailDialog from "@/components/common/DefaultEventDetailDialog";
+import { QuickCreateEventPopup } from "@/components/common/QuickCreateEventPopup";
+import { MobileEventDrawer } from "@/components/mobileEventDrawer";
+import MobileSearchDialog from "@/components/search/MobileSearchDialog";
+import SearchDrawer from "@/components/search/SearchDrawer";
+import { ThemeProvider } from "@/contexts/ThemeContext";
+import { LocaleProvider } from "@/locale/LocaleProvider";
+import { LocaleCode, Locale, LocaleMessages } from "@/locale/types";
+import { useLocale } from "@/locale/useLocale";
+import { useSidebarBridge } from "@/plugins/sidebarBridge";
 import {
   EventDetailContentRenderer,
   EventDetailDialogRenderer,
   ICalendarApp,
   TNode,
   Event as CalendarEvent,
-} from '@/types';
-import { ThemeMode } from '@/types/calendarTypes';
-import { CalendarSearchProps } from '@/types/search';
+} from "@/types";
+import { ThemeMode } from "@/types/calendarTypes";
+import { CalendarSearchProps } from "@/types/search";
 
-import { ContentSlot } from './ContentSlot';
-import { CustomRenderingContext } from './CustomRenderingContext';
-import { useAppSubscription } from './hooks/useAppSubscription';
-import { useEventDialogController } from './hooks/useEventDialogController';
-import { useQuickCreateController } from './hooks/useQuickCreateController';
-import { useResponsive } from './hooks/useResponsive';
-import { useSearchController } from './hooks/useSearchController';
+import { ContentSlot } from "./ContentSlot";
+import { CustomRenderingContext } from "./CustomRenderingContext";
+import { useAppSubscription } from "./hooks/useAppSubscription";
+import { useEventDialogController } from "./hooks/useEventDialogController";
+import { useQuickCreateController } from "./hooks/useQuickCreateController";
+import { useResponsive } from "./hooks/useResponsive";
+import { useSearchController } from "./hooks/useSearchController";
 
 interface CalendarRootProps {
   app: ICalendarApp;
@@ -56,7 +56,7 @@ interface CalendarRootProps {
 }
 
 // Internal locale gate — only wraps with LocaleProvider when no parent
-// provider is already present (e.g. when used inside a Vue/Angular adapter
+// provider is already present (e.g. when used inside an Angular adapter
 // that sets up its own locale context).
 const CalendarInternalLocaleProvider = ({
   locale,
@@ -105,7 +105,7 @@ export const CalendarRoot = ({
   const eventDialog = useEventDialogController(
     app,
     effectiveEventDetailDialog,
-    tick
+    tick,
   );
   // Sidebar
   const sidebar = useSidebarBridge(app);
@@ -115,13 +115,13 @@ export const CalendarRoot = ({
   const [theme, setTheme] = useState<ThemeMode>(() => app.getTheme());
 
   useEffect(
-    () => app.subscribeThemeChange(newTheme => setTheme(newTheme)),
-    [app]
+    () => app.subscribeThemeChange((newTheme) => setTheme(newTheme)),
+    [app],
   );
 
   const handleThemeChange = useCallback(
     (newTheme: ThemeMode) => app.setTheme(newTheme),
-    [app]
+    [app],
   );
   // Cross-cutting: dismiss UI
   // Patches the app callback so that app.dismissUI() collapses any open
@@ -153,7 +153,7 @@ export const CalendarRoot = ({
   useEffect(() => {
     if (!isMobile || !eventDialog.detailPanelEventId) return;
 
-    const rawEventId = eventDialog.detailPanelEventId.split('::')[0];
+    const rawEventId = eventDialog.detailPanelEventId.split("::")[0];
     const event = app
       .getEvents()
       .find((e: CalendarEvent) => e.id === rawEventId);
@@ -169,12 +169,12 @@ export const CalendarRoot = ({
       app.setCurrentDate(date);
       app.selectEvent(null);
     },
-    [app]
+    [app],
   );
 
   const handleEventSelect = useCallback(
     (id: string | null) => app.selectEvent(id),
-    [app]
+    [app],
   );
 
   // Layout helpers
@@ -202,11 +202,11 @@ export const CalendarRoot = ({
       isCollapsed: sidebar.isCollapsed,
       toggleCollapsed: sidebar.toggleCollapsed,
     }),
-    [sidebar.isCollapsed, sidebar.toggleCollapsed]
+    [sidebar.isCollapsed, sidebar.toggleCollapsed],
   );
 
   const miniSidebarWidth =
-    collapsedSafeAreaLeft === null ? sidebar.miniWidth : '0px';
+    collapsedSafeAreaLeft === null ? sidebar.miniWidth : "0px";
 
   const effectiveCollapsedSafeAreaLeft = collapsedSafeAreaLeft ?? null;
   const safeAreaLeft =
@@ -230,34 +230,34 @@ export const CalendarRoot = ({
 
   const renderHeader = () => {
     if (headerConfig === false) return null;
-    if (typeof headerConfig === 'function') return headerConfig(headerProps);
+    if (typeof headerConfig === "function") return headerConfig(headerProps);
     return h(CalendarHeader, headerProps);
   };
 
   // Only create the Preact fallback portal when the slot is NOT yet overridden
   // by a framework adapter, to prevent a brief flash of the default dialog
-  // while React/Vue sets up its override via setOverrides().
+  // while React sets up its override via setOverrides().
   const renderEventDetailDialog = () => {
     if (!eventDialog.dialogProps) return null;
 
     const DialogComponent = effectiveEventDetailDialog!;
-    const portalTarget = typeof document === 'undefined' ? null : document.body;
+    const portalTarget = typeof document === "undefined" ? null : document.body;
     if (!portalTarget) return null;
 
     const isOverridden =
-      customRenderingStore?.isOverridden('eventDetailDialog');
+      customRenderingStore?.isOverridden("eventDetailDialog");
 
     return (
       <ContentSlot
         store={customRenderingStore}
-        generatorName='eventDetailDialog'
+        generatorName="eventDetailDialog"
         generatorArgs={eventDialog.dialogProps}
         defaultContent={
           isOverridden
             ? null
             : createPortal(
                 h(DialogComponent, eventDialog.dialogProps),
-                portalTarget
+                portalTarget,
               )
         }
       />
@@ -274,14 +274,14 @@ export const CalendarRoot = ({
         locale={app.state.locale}
         messages={customMessages}
       >
-        <div className='df-calendar-container relative flex flex-row overflow-hidden select-none'>
+        <div className="df-calendar-container relative flex flex-row overflow-hidden select-none">
           <ContentSlot
             store={customRenderingStore}
-            generatorName='titleBarSlot'
+            generatorName="titleBarSlot"
             generatorArgs={titleBarSlotArgs}
             defaultContent={
               titleBarSlot &&
-              (typeof titleBarSlot === 'function'
+              (typeof titleBarSlot === "function"
                 ? titleBarSlot(titleBarSlotArgs)
                 : titleBarSlot)
             }
@@ -289,7 +289,7 @@ export const CalendarRoot = ({
 
           {sidebar.enabled && (
             <aside
-              className='absolute top-0 bottom-0 left-0 z-0 h-full'
+              className="absolute top-0 bottom-0 left-0 z-0 h-full"
               style={{ width: sidebar.width }}
             >
               {sidebar.content}
@@ -297,7 +297,7 @@ export const CalendarRoot = ({
           )}
 
           <div
-            className={`relative z-10 flex h-full flex-1 flex-col overflow-hidden border-l bg-white transition-all duration-250 ease-in-out dark:bg-gray-900 ${sidebar.isCollapsed ? 'border-gray-200 shadow-xl dark:border-gray-700' : 'border-transparent'}`}
+            className={`relative z-10 flex h-full flex-1 flex-col overflow-hidden border-l bg-white transition-all duration-250 ease-in-out dark:bg-gray-900 ${sidebar.isCollapsed ? "border-gray-200 shadow-xl dark:border-gray-700" : "border-transparent"}`}
             style={{
               marginLeft: sidebar.enabled
                 ? sidebar.isCollapsed
@@ -308,9 +308,9 @@ export const CalendarRoot = ({
           >
             {renderHeader()}
 
-            <div className='relative flex-1 overflow-hidden' ref={calendarRef}>
-              <div className='calendar-renderer relative flex h-full flex-row'>
-                <div className='h-full flex-1 overflow-hidden'>
+            <div className="relative flex-1 overflow-hidden" ref={calendarRef}>
+              <div className="calendar-renderer relative flex h-full flex-row">
+                <div className="h-full flex-1 overflow-hidden">
                   <ViewComponent {...viewProps} />
                 </div>
 
@@ -376,7 +376,7 @@ export const CalendarRoot = ({
           {quickCreate.isCreateCalendarOpen && (
             <CreateCalendarDialog
               onClose={() => quickCreate.setIsCreateCalendarOpen(false)}
-              onCreate={calendar => {
+              onCreate={(calendar) => {
                 app.createCalendar(calendar);
                 quickCreate.setIsCreateCalendarOpen(false);
               }}

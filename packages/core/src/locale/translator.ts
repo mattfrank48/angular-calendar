@@ -1,7 +1,7 @@
-import { getIntlLabel, capitalize } from './intl';
-import { LOCALES } from './locales';
-import type { TranslationKey, LocaleCode } from './types';
-import { normalizeLocale } from './utils';
+import { getIntlLabel, capitalize } from "./intl"
+import { LOCALES } from "./locales"
+import type { TranslationKey, LocaleCode } from "./types"
+import { normalizeLocale } from "./utils"
 
 /**
  * Core translation function.
@@ -10,21 +10,21 @@ import { normalizeLocale } from './utils';
  * 3. Fall back to English dictionary.
  * 4. Fall back to the key itself.
  */
-export function t(key: TranslationKey, locale: LocaleCode = 'en-US'): string {
+export function t ( key: TranslationKey, locale: LocaleCode = "en-US" ): string {
   // 1. Try Intl API for specific keys
-  if (['today', 'day', 'week', 'month', 'year'].includes(key)) {
-    const intl = getIntlLabel(key as 'day' | 'week' | 'month' | 'year', locale);
-    if (intl) return capitalize(intl);
+  if ( [ "today", "day", "week", "month", "year" ].includes ( key ) ) {
+    const intl = getIntlLabel ( key as "day" | "week" | "month" | "year", locale )
+    if ( intl ) return capitalize ( intl )
   }
 
   // 2. Dictionary Lookup
-  const lang = normalizeLocale(locale);
-  const localeObj = LOCALES[lang];
-  const text = localeObj?.messages?.[key];
+  const lang = normalizeLocale ( locale )
+  const localeObj = LOCALES[lang]
+  const text = localeObj?.messages?.[key]
 
-  if (text) return text;
+  if ( text ) return text
 
   // 3. Fallback to English
-  const enMessages = LOCALES.en.messages;
-  return enMessages?.[key] || key;
+  const enMessages = LOCALES.en.messages
+  return enMessages?.[key] || key
 }

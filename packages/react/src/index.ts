@@ -1,5 +1,5 @@
-export * from './DayFlowCalendar';
-export * from './hooks/useCalendarApp';
+export * from "./DayFlowCalendar"
+export * from "./hooks/useCalendarApp"
 // Re-export core parts for convenience
 export {
   CalendarApp,
@@ -10,5 +10,5 @@ export {
   createMonthView,
   createYearView,
   ViewType,
-} from '@dayflow/core';
-export * from '@dayflow/core';
+} from "@dayflow/core"
+export * from "@dayflow/core"

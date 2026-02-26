@@ -8,7 +8,7 @@
  * for backward compatibility and future-proofing.
  */
 
-import { Temporal } from 'temporal-polyfill';
+import { Temporal } from "temporal-polyfill"
 
 import {
   extractHourFromTemporal,
@@ -17,7 +17,7 @@ import {
   getEndOfTemporal,
   isPlainDate,
   isSamePlainDate,
-} from './temporal';
+} from "./temporal"
 
 // ============================================================================
 // Date/Time Conversion Tools (Event-specific - Temporal Compatible)
@@ -33,15 +33,15 @@ export const extractHourFromDate = (
     | Date
     | Temporal.PlainDate
     | Temporal.PlainDateTime
-    | Temporal.ZonedDateTime
+    | Temporal.ZonedDateTime,
 ): number => {
-  if (dateTime instanceof Date) {
-    const hours = dateTime.getHours();
-    const minutes = dateTime.getMinutes();
-    return hours + minutes / 60;
+  if ( dateTime instanceof Date ) {
+    const hours = dateTime.getHours ()
+    const minutes = dateTime.getMinutes ()
+    return hours + minutes / 60
   }
-  return extractHourFromTemporal(dateTime);
-};
+  return extractHourFromTemporal ( dateTime )
+}
 
 /**
  * Create a new date-time object based on given date but set to specified hour
@@ -55,17 +55,17 @@ export const createDateWithHour = (
     | Temporal.PlainDate
     | Temporal.PlainDateTime
     | Temporal.ZonedDateTime,
-  hour: number
+  hour: number,
 ): Date | Temporal.PlainDateTime | Temporal.ZonedDateTime => {
-  if (baseDateTime instanceof Date) {
-    const newDate = new Date(baseDateTime);
-    const hours = Math.floor(hour);
-    const minutes = Math.round((hour - hours) * 60);
-    newDate.setHours(hours, minutes, 0, 0);
-    return newDate;
+  if ( baseDateTime instanceof Date ) {
+    const newDate = new Date ( baseDateTime )
+    const hours = Math.floor ( hour )
+    const minutes = Math.round ( ( hour - hours ) * 60 )
+    newDate.setHours ( hours, minutes, 0, 0 )
+    return newDate
   }
-  return createTemporalWithHour(baseDateTime, hour);
-};
+  return createTemporalWithHour ( baseDateTime, hour )
+}
 
 /**
  * Get start of day (00:00:00.000)
@@ -77,15 +77,15 @@ export const getStartOfDay = (
     | Date
     | Temporal.PlainDate
     | Temporal.PlainDateTime
-    | Temporal.ZonedDateTime
+    | Temporal.ZonedDateTime,
 ): Date | Temporal.ZonedDateTime => {
-  if (dateTime instanceof Date) {
-    const newDate = new Date(dateTime);
-    newDate.setHours(0, 0, 0, 0);
-    return newDate;
+  if ( dateTime instanceof Date ) {
+    const newDate = new Date ( dateTime )
+    newDate.setHours ( 0, 0, 0, 0 )
+    return newDate
   }
-  return getStartOfTemporal(dateTime);
-};
+  return getStartOfTemporal ( dateTime )
+}
 
 /**
  * Get end of day (23:59:59.999)
@@ -97,15 +97,15 @@ export const getEndOfDay = (
     | Date
     | Temporal.PlainDate
     | Temporal.PlainDateTime
-    | Temporal.ZonedDateTime
+    | Temporal.ZonedDateTime,
 ): Date | Temporal.ZonedDateTime => {
-  if (dateTime instanceof Date) {
-    const newDate = new Date(dateTime);
-    newDate.setHours(23, 59, 59, 999);
-    return newDate;
+  if ( dateTime instanceof Date ) {
+    const newDate = new Date ( dateTime )
+    newDate.setHours ( 23, 59, 59, 999 )
+    return newDate
   }
-  return getEndOfTemporal(dateTime);
-};
+  return getEndOfTemporal ( dateTime )
+}
 
 /**
  * Check if two dates are on the same day
@@ -123,40 +123,40 @@ export const isSameDay = (
     | Date
     | Temporal.PlainDate
     | Temporal.PlainDateTime
-    | Temporal.ZonedDateTime
+    | Temporal.ZonedDateTime,
 ): boolean => {
-  if (date1 instanceof Date && date2 instanceof Date) {
+  if ( date1 instanceof Date && date2 instanceof Date ) {
     return (
-      date1.getFullYear() === date2.getFullYear() &&
-      date1.getMonth() === date2.getMonth() &&
-      date1.getDate() === date2.getDate()
-    );
+      date1.getFullYear () === date2.getFullYear () &&
+      date1.getMonth () === date2.getMonth () &&
+      date1.getDate () === date2.getDate ()
+    )
   }
 
   const temporal1 =
     date1 instanceof Date
-      ? Temporal.PlainDate.from({
-          year: date1.getFullYear(),
-          month: date1.getMonth() + 1,
-          day: date1.getDate(),
-        })
-      : isPlainDate(date1)
+      ? Temporal.PlainDate.from ( {
+        year: date1.getFullYear (),
+        month: date1.getMonth () + 1,
+        day: date1.getDate (),
+      } )
+      : isPlainDate ( date1 )
         ? date1
-        : date1.toPlainDate();
+        : date1.toPlainDate ()
 
   const temporal2 =
     date2 instanceof Date
-      ? Temporal.PlainDate.from({
-          year: date2.getFullYear(),
-          month: date2.getMonth() + 1,
-          day: date2.getDate(),
-        })
-      : isPlainDate(date2)
+      ? Temporal.PlainDate.from ( {
+        year: date2.getFullYear (),
+        month: date2.getMonth () + 1,
+        day: date2.getDate (),
+      } )
+      : isPlainDate ( date2 )
         ? date2
-        : date2.toPlainDate();
+        : date2.toPlainDate ()
 
-  return isSamePlainDate(temporal1, temporal2);
-};
+  return isSamePlainDate ( temporal1, temporal2 )
+}
 
 /**
  * Check if event spans multiple days
@@ -174,5 +174,5 @@ export const isMultiDayEvent = (
     | Date
     | Temporal.PlainDate
     | Temporal.PlainDateTime
-    | Temporal.ZonedDateTime
-): boolean => !isSameDay(start, end);
+    | Temporal.ZonedDateTime,
+): boolean => !isSameDay ( start, end )

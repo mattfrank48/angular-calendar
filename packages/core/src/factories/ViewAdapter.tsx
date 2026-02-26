@@ -1,4 +1,4 @@
-import { useMemo, useCallback } from 'preact/hooks';
+import { useMemo, useCallback } from "preact/hooks";
 
 import {
   ViewType,
@@ -7,7 +7,7 @@ import {
   EventsService,
   DragService,
   Event,
-} from '@/types';
+} from "@/types";
 
 export const ViewAdapter = ({
   originalComponent: OriginalComponent,
@@ -25,8 +25,8 @@ export const ViewAdapter = ({
   onDetailPanelToggle,
 }: ViewAdapterProps) => {
   // Get plugin services
-  const eventsService = app.getPlugin<EventsService>('events');
-  const dragService = app.getPlugin<DragService>('drag');
+  const eventsService = app.getPlugin<EventsService>("events");
+  const dragService = app.getPlugin<DragService>("drag");
 
   // Basic state
   const currentDate = app.getCurrentDate();
@@ -42,7 +42,7 @@ export const ViewAdapter = ({
         app.updateEvent(event.id, event);
       }
     },
-    [eventsService, app]
+    [eventsService, app],
   );
 
   const handleEventDelete = useCallback(
@@ -53,7 +53,7 @@ export const ViewAdapter = ({
         app.deleteEvent(eventId);
       }
     },
-    [eventsService, app]
+    [eventsService, app],
   );
 
   const handleEventCreate = useCallback(
@@ -64,7 +64,7 @@ export const ViewAdapter = ({
         app.addEvent(event);
       }
     },
-    [eventsService, app]
+    [eventsService, app],
   );
 
   const handleDateChange = useCallback(
@@ -75,14 +75,14 @@ export const ViewAdapter = ({
         app.setCurrentDate(date);
       }
     },
-    [app, onDateChange]
+    [app, onDateChange],
   );
 
   const handleViewChange = useCallback(
     (view: ViewType) => {
       app.changeView(view);
     },
-    [app]
+    [app],
   );
 
   // Merge configuration
@@ -131,7 +131,7 @@ export const ViewAdapter = ({
       detailPanelEventId,
       onEventSelect,
       onDetailPanelToggle,
-    ]
+    ],
   );
 
   // Special handling: prepare compatible props for existing components
@@ -142,8 +142,8 @@ export const ViewAdapter = ({
       events,
       setEvents: (newEvents: Event[]) => {
         // Clear existing events and add new events
-        events.forEach(event => handleEventDelete(event.id));
-        newEvents.forEach(event => handleEventCreate(event));
+        events.forEach((event) => handleEventDelete(event.id));
+        newEvents.forEach((event) => handleEventCreate(event));
       },
       updateEvent: handleEventUpdate,
       deleteEvent: handleEventDelete,

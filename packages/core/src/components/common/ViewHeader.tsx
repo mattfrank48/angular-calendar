@@ -1,16 +1,16 @@
-import { useLocale } from '@/locale';
+import { useLocale } from "@/locale";
 import {
   headerContainer,
   headerTitle,
   headerSubtitle,
   textGray900,
-} from '@/styles/classNames';
-import { ICalendarApp } from '@/types';
+} from "@/styles/classNames";
+import { ICalendarApp } from "@/types";
 
-import TodayBox from './TodayBox';
+import TodayBox from "./TodayBox";
 
-export type ViewHeaderType = 'day' | 'week' | 'month' | 'year';
-export type ViewSwitcherMode = 'buttons' | 'select';
+export type ViewHeaderType = "day" | "week" | "month" | "year";
+export type ViewSwitcherMode = "buttons" | "select";
 
 interface ViewHeaderProps {
   calendar: ICalendarApp;
@@ -62,30 +62,30 @@ const ViewHeader = ({
   // Generate default title
   const getDefaultTitle = (): string => {
     switch (viewType) {
-      case 'day':
+      case "day":
         return currentDate.toLocaleDateString(locale, {
-          day: 'numeric',
-          month: 'long',
-          year: 'numeric',
+          day: "numeric",
+          month: "long",
+          year: "numeric",
         });
-      case 'week':
-      case 'month':
+      case "week":
+      case "month":
         return currentDate.toLocaleDateString(locale, {
-          month: 'long',
-          year: 'numeric',
+          month: "long",
+          year: "numeric",
         });
-      case 'year':
+      case "year":
         return currentDate.getFullYear().toString();
       default:
-        return '';
+        return "";
     }
   };
 
   // Generate default subtitle (only for Day view)
   const getDefaultSubtitle = (): string | null => {
-    if (viewType === 'day') {
+    if (viewType === "day") {
       return currentDate.toLocaleDateString(locale, {
-        weekday: 'long',
+        weekday: "long",
       });
     }
     return null;
@@ -93,33 +93,33 @@ const ViewHeader = ({
 
   const title = customTitle || getDefaultTitle();
   const subtitle =
-    viewType === 'day' ? customSubtitle || getDefaultSubtitle() : null;
+    viewType === "day" ? customSubtitle || getDefaultSubtitle() : null;
 
   return (
     <div
       className={headerContainer}
-      style={{ position: 'relative' }}
-      onContextMenu={e => e.preventDefault()}
+      style={{ position: "relative" }}
+      onContextMenu={(e) => e.preventDefault()}
     >
-      <div className='flex-1'>
+      <div className="flex-1">
         {/* For Year view: show sticky year if available, otherwise show title */}
-        {viewType === 'year' && stickyYear ? (
+        {viewType === "year" && stickyYear ? (
           <div
             style={{
-              position: 'relative',
-              overflow: 'hidden',
-              height: '1.5em',
+              position: "relative",
+              overflow: "hidden",
+              height: "1.5em",
             }}
           >
             {/* Current sticky year - being pushed up */}
             <h1
               className={headerTitle}
               style={{
-                position: 'absolute',
+                position: "absolute",
                 top: 0,
                 left: 0,
                 transform: `translateY(-${stickyYearOffset}px)`,
-                willChange: 'transform',
+                willChange: "transform",
               }}
             >
               {stickyYear}
@@ -129,11 +129,11 @@ const ViewHeader = ({
               <h1
                 className={headerTitle}
                 style={{
-                  position: 'absolute',
+                  position: "absolute",
                   top: 0,
                   left: 0,
                   transform: `translateY(${nextYearOffset}px)`,
-                  willChange: 'transform',
+                  willChange: "transform",
                 }}
               >
                 {nextYear}
@@ -150,7 +150,7 @@ const ViewHeader = ({
 
       {/* Right side: TodayBox */}
       {shouldShowTodayBox && onPrevious && onNext && onToday && (
-        <div className='flex items-center gap-2'>
+        <div className="flex items-center gap-2">
           <TodayBox
             handlePreviousMonth={onPrevious}
             handleNextMonth={onNext}

@@ -1,10 +1,10 @@
 // Factory function for creating Week view
-import { h } from 'preact';
+import { h } from "preact"
 
-import { WeekViewConfig, WeekViewProps, ViewFactory, ViewType } from '@/types';
-import WeekView from '@/views/WeekView';
+import { WeekViewConfig, WeekViewProps, ViewFactory, ViewType } from "@/types"
+import WeekView from "@/views/WeekView"
 
-import { ViewAdapter } from './ViewAdapter';
+import { ViewAdapter } from "./ViewAdapter"
 
 // Default Week view configuration
 const defaultWeekViewConfig: WeekViewConfig = {
@@ -19,21 +19,21 @@ const defaultWeekViewConfig: WeekViewConfig = {
   firstHour: 0,
   lastHour: 24,
   allDayHeight: 28,
-};
+}
 
 // Week view factory function
-export const createWeekView: ViewFactory<WeekViewConfig> = (config = {}) => {
+export const createWeekView: ViewFactory<WeekViewConfig> = ( config = {} ) => {
   // Merge configuration
-  const finalConfig = { ...defaultWeekViewConfig, ...config };
+  const finalConfig = { ...defaultWeekViewConfig, ...config }
 
   // Create adapter component
-  const WeekViewAdapter = (props: WeekViewProps) =>
-    h(ViewAdapter, {
+  const WeekViewAdapter = ( props: WeekViewProps ) =>
+    h ( ViewAdapter, {
       viewType: ViewType.WEEK,
       originalComponent: WeekView,
       app: props.app,
       config: finalConfig,
-      className: 'week-view-factory',
+      className: "week-view-factory",
       customDetailPanelContent: props.customDetailPanelContent,
       customEventDetailDialog: props.customEventDetailDialog,
       calendarRef: props.calendarRef,
@@ -43,16 +43,16 @@ export const createWeekView: ViewFactory<WeekViewConfig> = (config = {}) => {
       detailPanelEventId: props.detailPanelEventId,
       onEventSelect: props.onEventSelect,
       onDetailPanelToggle: props.onDetailPanelToggle,
-    });
+    } )
 
   // Set display name for debugging
-  WeekViewAdapter.displayName = 'WeekViewAdapter';
+  WeekViewAdapter.displayName = "WeekViewAdapter"
 
   return {
     type: ViewType.WEEK,
     component: WeekViewAdapter,
     config: finalConfig,
-  };
-};
+  }
+}
 
-export default createWeekView;
+export default createWeekView

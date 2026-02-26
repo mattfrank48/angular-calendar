@@ -6,40 +6,40 @@
  * @param wait - The number of milliseconds to throttle invocations to
  * @returns The throttled function
  */
-export function throttle<T extends (...args: unknown[]) => unknown>(
+export function throttle<T extends ( ...args: unknown[] ) => unknown> (
   func: T,
-  wait: number
+  wait: number,
 ): T & { cancel: () => void } {
-  let timeout: ReturnType<typeof setTimeout> | null = null;
-  let previous = 0;
+  let timeout: ReturnType<typeof setTimeout> | null = null
+  let previous = 0
 
-  const throttled = function (this: unknown, ...args: Parameters<T>) {
-    const now = Date.now();
-    const remaining = wait - (now - previous);
+  const throttled = function ( this: unknown, ...args: Parameters<T> ) {
+    const now = Date.now ()
+    const remaining = wait - ( now - previous )
 
-    if (remaining <= 0 || remaining > wait) {
-      if (timeout) {
-        clearTimeout(timeout);
-        timeout = null;
+    if ( remaining <= 0 || remaining > wait ) {
+      if ( timeout ) {
+        clearTimeout ( timeout )
+        timeout = null
       }
-      previous = now;
-      func.apply(this, args);
-    } else if (!timeout) {
-      timeout = setTimeout(() => {
-        previous = Date.now();
-        timeout = null;
-        func.apply(this, args);
-      }, remaining);
+      previous = now
+      func.apply ( this, args )
+    } else if ( !timeout ) {
+      timeout = setTimeout ( () => {
+        previous = Date.now ()
+        timeout = null
+        func.apply ( this, args )
+      }, remaining )
     }
-  } as T & { cancel: () => void };
+  } as T & { cancel: () => void }
 
   throttled.cancel = () => {
-    if (timeout) {
-      clearTimeout(timeout);
-      timeout = null;
+    if ( timeout ) {
+      clearTimeout ( timeout )
+      timeout = null
     }
-    previous = 0;
-  };
+    previous = 0
+  }
 
-  return throttled;
+  return throttled
 }

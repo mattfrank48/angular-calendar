@@ -5,10 +5,10 @@
  * Handles 24-hour format, time rounding, and special cases like midnight crossings.
  */
 
-import { Event } from '@/types';
+import { Event } from "@/types"
 
-import { extractHourFromDate } from './dateTimeUtils';
-import { temporalToDate } from './temporal';
+import { extractHourFromDate } from "./dateTimeUtils"
+import { temporalToDate } from "./temporal"
 
 // ============================================================================
 // Time Tools
@@ -17,7 +17,7 @@ import { temporalToDate } from './temporal';
 /**
  * Time step for calendar grid (0.25 = 15 minutes)
  */
-export const TIME_STEP = 0.25;
+export const TIME_STEP = 0.25
 
 /**
  * Get event end hour (handles cross-day events less than 24 hours)
@@ -26,42 +26,42 @@ export const TIME_STEP = 0.25;
  * @param event Event object
  * @returns End hour (0-24)
  */
-export const getEventEndHour = (event: Event): number => {
-  if (!event.end) return 0;
+export const getEventEndHour = ( event: Event ): number => {
+  if ( !event.end ) return 0
 
-  const endHour = extractHourFromDate(event.end);
-  if (event.allDay || !event.start) {
-    return endHour;
+  const endHour = extractHourFromDate ( event.end )
+  if ( event.allDay || !event.start ) {
+    return endHour
   }
 
-  const startDate = temporalToDate(event.start);
-  const endDate = temporalToDate(event.end);
+  const startDate = temporalToDate ( event.start )
+  const endDate = temporalToDate ( event.end )
 
   const crossesDay =
-    startDate.getFullYear() !== endDate.getFullYear() ||
-    startDate.getMonth() !== endDate.getMonth() ||
-    startDate.getDate() !== endDate.getDate();
+    startDate.getFullYear () !== endDate.getFullYear () ||
+    startDate.getMonth () !== endDate.getMonth () ||
+    startDate.getDate () !== endDate.getDate ()
 
-  if (!crossesDay) {
-    return endHour;
+  if ( !crossesDay ) {
+    return endHour
   }
 
   const endsExactlyAtMidnight =
     endHour === 0 &&
-    endDate.getMinutes() === 0 &&
-    endDate.getSeconds() === 0 &&
-    endDate.getMilliseconds() === 0;
+    endDate.getMinutes () === 0 &&
+    endDate.getSeconds () === 0 &&
+    endDate.getMilliseconds () === 0
 
-  if (endsExactlyAtMidnight) {
-    const durationMs = endDate.getTime() - startDate.getTime();
-    const ONE_DAY_MS = 24 * 60 * 60 * 1000;
-    if (durationMs > 0 && durationMs < ONE_DAY_MS) {
-      return 24;
+  if ( endsExactlyAtMidnight ) {
+    const durationMs = endDate.getTime () - startDate.getTime ()
+    const ONE_DAY_MS = 24 * 60 * 60 * 1000
+    if ( durationMs > 0 && durationMs < ONE_DAY_MS ) {
+      return 24
     }
   }
 
-  return endHour;
-};
+  return endHour
+}
 
 /**
  * Format hours and minutes to HH:MM format
@@ -69,29 +69,29 @@ export const getEventEndHour = (event: Event): number => {
  * @param minutes Optional minutes (if not provided, extracted from decimal hours)
  * @returns Formatted time string (e.g., "14:30")
  */
-export const formatTime = (hours: number, minutes = 0) => {
-  const h = Math.floor(hours);
-  const m = minutes || Math.round((hours - h) * 60);
-  return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
-};
+export const formatTime = ( hours: number, minutes = 0 ) => {
+  const h = Math.floor ( hours )
+  const m = minutes || Math.round ( ( hours - h ) * 60 )
+  return `${h.toString ().padStart ( 2, "0" )}:${m.toString ().padStart ( 2, "0" )}`
+}
 
 /**
  * Format event time range as a string
  * @param event Event object
  * @returns Formatted time range (e.g., "14:00 - 16:00" or "All day")
  */
-export const formatEventTimeRange = (event: Event) => {
-  const startHour = extractHourFromDate(event.start);
-  const endHour = getEventEndHour(event);
-  return `${formatTime(startHour)} - ${formatTime(endHour)}`;
-};
+export const formatEventTimeRange = ( event: Event ) => {
+  const startHour = extractHourFromDate ( event.start )
+  const endHour = getEventEndHour ( event )
+  return `${formatTime ( startHour )} - ${formatTime ( endHour )}`
+}
 
 /**
  * Round hour to nearest time step
  * @param hour Hour number
  * @returns Rounded hour
  */
-export const roundToTimeStep = (hour: number) => {
-  const step = TIME_STEP;
-  return Math.round(hour / step) * step;
-};
+export const roundToTimeStep = ( hour: number ) => {
+  const step = TIME_STEP
+  return Math.round ( hour / step ) * step
+}

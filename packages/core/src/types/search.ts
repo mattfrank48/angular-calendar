@@ -1,41 +1,41 @@
-import { Event } from './event';
+import { Event } from "./event"
 
 export type CalendarSearchEvent = Event & {
-  color?: string; // For calendar color
-  [key: string]: unknown;
-};
+  color?: string // For calendar color
+  [key: string]: unknown
+}
 
 export interface CalendarSearchProps {
   /**
    * Debounce delay in ms
    * @default 300
    */
-  debounceDelay?: number;
+  debounceDelay?: number
 
   /**
    * Async search method
    */
-  onSearch?: (keyword: string) => Promise<CalendarSearchEvent[]>;
+  onSearch?: ( keyword: string ) => Promise<CalendarSearchEvent[]>
 
   /**
    * Custom search logic (takes over completely)
    */
-  customSearch?: (params: {
-    keyword: string;
-    events: CalendarSearchEvent[];
-  }) => CalendarSearchEvent[];
+  customSearch?: ( params: {
+    keyword: string
+    events: CalendarSearchEvent[]
+  } ) => CalendarSearchEvent[]
 
   /**
    * Search state callback
    */
-  onSearchStateChange?: (state: {
-    keyword: string;
-    loading: boolean;
-    results: CalendarSearchEvent[];
-  }) => void;
+  onSearchStateChange?: ( state: {
+    keyword: string
+    loading: boolean
+    results: CalendarSearchEvent[]
+  } ) => void
 
   /**
    * Empty result text
    */
-  emptyText?: string | Record<string, string>;
+  emptyText?: string | Record<string, string>
 }

@@ -1,15 +1,15 @@
-import MultiDayEvent from '@/components/monthView/MultiDayEvent';
-import { MultiDayEventSegment } from '@/components/monthView/WeekComponent';
-import { YearMultiDaySegment } from '@/components/yearView/utils';
-import { ContentSlot } from '@/renderer/ContentSlot';
-import { CustomRenderingStore } from '@/renderer/CustomRenderingStore';
-import { ViewType, Event, ICalendarApp, ViewMode, EventLayout } from '@/types';
+import MultiDayEvent from "@/components/monthView/MultiDayEvent";
+import { MultiDayEventSegment } from "@/components/monthView/WeekComponent";
+import { YearMultiDaySegment } from "@/components/yearView/utils";
+import { ContentSlot } from "@/renderer/ContentSlot";
+import { CustomRenderingStore } from "@/renderer/CustomRenderingStore";
+import { ViewType, Event, ICalendarApp, ViewMode, EventLayout } from "@/types";
 
-import AllDayContent from './AllDayContent';
-import MonthAllDayContent from './MonthAllDayContent';
-import MonthRegularContent from './MonthRegularContent';
-import RegularEventContent from './RegularEventContent';
-import YearEventContent from './YearEventContent';
+import AllDayContent from "./AllDayContent";
+import MonthAllDayContent from "./MonthAllDayContent";
+import MonthRegularContent from "./MonthRegularContent";
+import RegularEventContent from "./RegularEventContent";
+import YearEventContent from "./YearEventContent";
 
 interface EventContentProps {
   event: Event;
@@ -34,7 +34,7 @@ interface EventContentProps {
   onResizeStart?: (
     e: MouseEvent | TouchEvent,
     event: Event,
-    direction: string
+    direction: string,
   ) => void;
   multiDaySegmentInfo?: {
     startHour: number;
@@ -66,7 +66,7 @@ export const EventContent = ({
   isTouchEnabled,
   hideTime,
   isMobile,
-  mode = 'standard',
+  mode = "standard",
   isCompact,
   app,
   onResizeStart,
@@ -144,7 +144,7 @@ export const EventContent = ({
   return (
     <ContentSlot
       store={customRenderingStore}
-      generatorName='eventContent'
+      generatorName="eventContent"
       generatorArgs={eventContentSlotArgs}
       defaultContent={defaultContent}
     />

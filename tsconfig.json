@@ -23,12 +23,7 @@
     "paths": {
       "@dayflow/core": ["packages/core/src/index.ts"],
       "@dayflow/react": ["packages/react/src/index.ts"],
-      "@dayflow/vue": ["packages/vue/src/index.ts"],
       "@dayflow/angular": ["packages/angular/src/public-api.ts"],
-      "@dayflow/svelte": ["packages/svelte/src/index.ts"],
-      "@dayflow/plugin-localization": [
-        "packages/plugins/localization/src/index.ts"
-      ],
       "@dayflow/plugin-keyboard-shortcuts": [
         "packages/plugins/keyboard-shortcuts/src/index.ts"
       ],
@@ -37,7 +32,6 @@
       "@drag/*": ["packages/plugins/drag/src/*"],
       "@sidebar/*": ["packages/plugins/sidebar/src/*"],
       "@keyboard-shortcuts/*": ["packages/plugins/keyboard-shortcuts/src/*"],
-      "@localization/*": ["packages/plugins/localization/src/*"],
       "@examples/*": ["examples/*"],
       "@website/*": ["website/*"],
       "@/*": ["packages/core/src/*"]

@@ -1,14 +1,14 @@
-import type { ICalendarApp, DragHookOptions, DragHookReturn } from '@/types';
+import type { ICalendarApp, DragHookOptions, DragHookReturn } from "@/types"
 
 type DragForViewFn = (
   app: ICalendarApp,
-  options: DragHookOptions
-) => DragHookReturn;
+  options: DragHookOptions,
+) => DragHookReturn
 
-let impl: DragForViewFn | null = null;
+let impl: DragForViewFn | null = null
 
-export function registerDragImplementation(fn: DragForViewFn) {
-  impl = fn;
+export function registerDragImplementation ( fn: DragForViewFn ) {
+  impl = fn
 }
 
 const NO_OP: DragHookReturn = {
@@ -31,12 +31,12 @@ const NO_OP: DragHookReturn = {
     endDate: null,
   },
   isDragging: false,
-};
+}
 
-export function useDragForView(
+export function useDragForView (
   app: ICalendarApp,
-  options: DragHookOptions
+  options: DragHookOptions,
 ): DragHookReturn {
-  if (impl) return impl(app, options);
-  return NO_OP;
+  if ( impl ) return impl ( app, options )
+  return NO_OP
 }

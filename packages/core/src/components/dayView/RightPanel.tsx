@@ -1,6 +1,6 @@
-import { MiniCalendar } from '@/components/common/MiniCalendar';
-import TodayBox from '@/components/common/TodayBox';
-import { useLocale } from '@/locale';
+import { MiniCalendar } from "@/components/common/MiniCalendar";
+import TodayBox from "@/components/common/TodayBox";
+import { useLocale } from "@/locale";
 import {
   miniCalendarContainer,
   headerContainer,
@@ -14,14 +14,14 @@ import {
   textSm,
   textGray500,
   textGray600,
-} from '@/styles/classNames';
-import { ICalendarApp, Event } from '@/types';
+} from "@/styles/classNames";
+import { ICalendarApp, Event } from "@/types";
 import {
   formatTime,
   extractHourFromDate,
   getLineColor,
   getEventEndHour,
-} from '@/utils';
+} from "@/utils";
 
 interface RightPanelProps {
   app: ICalendarApp;
@@ -56,15 +56,15 @@ export const RightPanel = ({
 
   return (
     <div
-      className={`df-right-panel hidden flex-none md:block ${switcherMode === 'buttons' ? '' : ''} w-[30%] bg-white dark:bg-gray-900`}
-      onContextMenu={e => e.preventDefault()}
+      className={`df-right-panel hidden flex-none md:block ${switcherMode === "buttons" ? "" : ""} w-[30%] bg-white dark:bg-gray-900`}
+      onContextMenu={(e) => e.preventDefault()}
     >
       <div className={`${flexCol} h-full`}>
         {/* Mini calendar */}
         <div className={miniCalendarContainer}>
           <div>
-            <div className='flex items-center justify-end gap-2'>
-              <div className={headerContainer} style={{ position: 'relative' }}>
+            <div className="flex items-center justify-end gap-2">
+              <div className={headerContainer} style={{ position: "relative" }}>
                 <div>
                   <h1 className={headerTitle}>&nbsp;</h1>
                 </div>
@@ -92,22 +92,22 @@ export const RightPanel = ({
               className={`${textLg} font-semibold ${mb3} sticky top-0 z-10 bg-white py-2 dark:bg-gray-900`}
             >
               {currentDate.toLocaleDateString(locale, {
-                weekday: 'long',
-                month: 'long',
-                day: 'numeric',
+                weekday: "long",
+                month: "long",
+                day: "numeric",
               })}
             </h3>
 
             {sortedEvents.length === 0 ? (
-              <p className={`${textGray500} ${textSm}`}>{t('noEvents')}</p>
+              <p className={`${textGray500} ${textSm}`}>{t("noEvents")}</p>
             ) : (
-              <div className='space-y-2'>
+              <div className="space-y-2">
                 {sortedEvents.map((event: Event) => (
                   <div
                     key={event.id}
-                    className={` ${p2} cursor-pointer rounded border-l-4 transition-colors ${selectedEvent?.id === event.id ? 'border-primary bg-primary/10' : 'border-gray-300 bg-gray-50 dark:border-gray-600 dark:bg-gray-800'} hover:bg-gray-100 dark:hover:bg-gray-700`}
+                    className={` ${p2} cursor-pointer rounded border-l-4 transition-colors ${selectedEvent?.id === event.id ? "border-primary bg-primary/10" : "border-gray-300 bg-gray-50 dark:border-gray-600 dark:bg-gray-800"} hover:bg-gray-100 dark:hover:bg-gray-700`}
                     style={{
-                      borderLeftColor: getLineColor(event.calendarId || 'blue'),
+                      borderLeftColor: getLineColor(event.calendarId || "blue"),
                     }}
                     onClick={() => {
                       setSelectedEvent(event);
@@ -117,13 +117,13 @@ export const RightPanel = ({
                     <div className={`font-medium ${textSm}`}>{event.title}</div>
                     {!event.allDay && (
                       <div className={`${textXs} ${textGray600}`}>
-                        {formatTime(extractHourFromDate(event.start))} -{' '}
+                        {formatTime(extractHourFromDate(event.start))} -{" "}
                         {formatTime(getEventEndHour(event))}
                       </div>
                     )}
                     {event.allDay && (
                       <div className={`${textXs} ${textGray600}`}>
-                        {t('allDay')}
+                        {t("allDay")}
                       </div>
                     )}
                   </div>

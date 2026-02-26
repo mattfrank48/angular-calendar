@@ -5,30 +5,30 @@
  * Based on RFC 5545 iCalendar specification.
  */
 
-import { Event } from '@/types/event';
+import { Event } from "@/types/event"
 
 /**
  * ICS VEVENT raw data structure (intermediate format after parsing)
  */
 export interface ICSVEvent {
   /** Unique identifier */
-  uid: string;
+  uid: string
   /** Event summary/title */
-  summary: string;
+  summary: string
   /** Event description */
-  description?: string;
+  description?: string
   /** Start date/time in ICS format */
-  dtstart: string;
+  dtstart: string
   /** End date/time in ICS format */
-  dtend: string;
+  dtend: string
   /** DTSTART parameters */
-  dtstartParams?: ICSDateParams;
+  dtstartParams?: ICSDateParams
   /** DTEND parameters */
-  dtendParams?: ICSDateParams;
+  dtendParams?: ICSDateParams
   /** Event location */
-  location?: string;
+  location?: string
   /** Event categories */
-  categories?: string[];
+  categories?: string[]
 }
 
 /**
@@ -36,9 +36,9 @@ export interface ICSVEvent {
  */
 export interface ICSDateParams {
   /** Value type: DATE for all-day, DATE-TIME for timed events */
-  value?: 'DATE' | 'DATE-TIME';
+  value?: "DATE" | "DATE-TIME"
   /** Timezone identifier (e.g., "America/New_York") */
-  tzid?: string;
+  tzid?: string
 }
 
 /**
@@ -46,13 +46,13 @@ export interface ICSDateParams {
  */
 export interface ICSImportOptions {
   /** Default calendar ID for imported events */
-  calendarId?: string;
+  calendarId?: string
   /** Generate new IDs for imported events (default: true) */
-  generateNewIds?: boolean;
+  generateNewIds?: boolean
   /** ID prefix for generated IDs (default: "ics-") */
-  idPrefix?: string;
+  idPrefix?: string
   /** Default timezone when ICS has no timezone info */
-  defaultTimeZone?: string;
+  defaultTimeZone?: string
 }
 
 /**
@@ -60,13 +60,13 @@ export interface ICSImportOptions {
  */
 export interface ICSExportOptions {
   /** Calendar name in exported file */
-  calendarName?: string;
+  calendarName?: string
   /** Product identifier */
-  productId?: string;
+  productId?: string
   /** Include timezone information */
-  includeTimezone?: boolean;
+  includeTimezone?: boolean
   /** Export filename (without extension) */
-  filename?: string;
+  filename?: string
 }
 
 /**
@@ -74,15 +74,15 @@ export interface ICSExportOptions {
  */
 export interface ICSImportResult {
   /** Whether import completed without errors */
-  success: boolean;
+  success: boolean
   /** Successfully imported events */
-  events: Event[];
+  events: Event[]
   /** Parse errors encountered */
-  errors: ICSParseError[];
+  errors: ICSParseError[]
   /** Total VEVENTs found in file */
-  totalParsed: number;
+  totalParsed: number
   /** Successfully imported event count */
-  totalImported: number;
+  totalImported: number
 }
 
 /**
@@ -90,9 +90,9 @@ export interface ICSImportResult {
  */
 export interface ICSParseError {
   /** Line number where error occurred */
-  line?: number;
+  line?: number
   /** Error message */
-  message: string;
+  message: string
   /** UID of the event that failed (if available) */
-  eventUid?: string;
+  eventUid?: string
 }

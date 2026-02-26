@@ -5,13 +5,13 @@
  * Represents detailed information for a single date
  */
 export interface DayData {
-  date: Date;
-  day: number;
-  month: number;
-  year: number;
-  monthName: string;
-  shortMonthName: string;
-  isToday: boolean;
+  date: Date
+  day: number
+  month: number
+  year: number
+  monthName: string
+  shortMonthName: string
+  isToday: boolean
 }
 
 /**
@@ -19,11 +19,11 @@ export interface DayData {
  * Represents a week's data, containing date information for 7 days
  */
 export interface WeeksData {
-  days: DayData[];
-  startDate: Date;
+  days: DayData[]
+  startDate: Date
   monthYear: {
-    month: string;
-    monthIndex: number;
-    year: number;
-  };
+    month: string
+    monthIndex: number
+    year: number
+  }
 }

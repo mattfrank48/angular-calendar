@@ -1,36 +1,36 @@
-import type { CalendarAppConfig, UseCalendarAppReturn } from '@dayflow/core';
-import { CalendarApp } from '@dayflow/core';
-import { useState, useEffect, useMemo, useRef } from 'react';
+import type { CalendarAppConfig, UseCalendarAppReturn } from "@dayflow/core"
+import { CalendarApp } from "@dayflow/core"
+import { useState, useEffect, useMemo, useRef } from "react"
 
-export function useCalendarApp(
-  config: CalendarAppConfig
+export function useCalendarApp (
+  config: CalendarAppConfig,
 ): UseCalendarAppReturn {
   // Use useMemo to ensure app is only created once
-  const app = useMemo(() => new CalendarApp(config), []);
-  const [, setTick] = useState(0);
-  const configRef = useRef(config);
+  const app = useMemo ( () => new CalendarApp ( config ), [] )
+  const [ , setTick ] = useState ( 0 )
+  const configRef = useRef ( config )
 
-  useEffect(() => {
-    if (!app) {
-      return;
+  useEffect ( () => {
+    if ( !app ) {
+      return
     }
     // Subscribe to state changes to trigger React re-renders
-    const unsubscribe = app.subscribe(() => {
-      setTick((tick: number) => tick + 1);
-    });
+    const unsubscribe = app.subscribe ( () => {
+      setTick ( ( tick: number ) => tick + 1 )
+    } )
 
     return () => {
-      unsubscribe();
-    };
-  }, [app]);
+      unsubscribe ()
+    }
+  }, [ app ] )
 
   // Sync config changes to the app instance
-  useEffect(() => {
-    if (app && config !== configRef.current) {
-      app.updateConfig(config);
-      configRef.current = config;
+  useEffect ( () => {
+    if ( app && config !== configRef.current ) {
+      app.updateConfig ( config )
+      configRef.current = config
     }
-  }, [app, config]);
+  }, [ app, config ] )
 
   // Map app to the UseCalendarAppReturn interface
   // (In a real implementation, we might want a more comprehensive mapping)
@@ -38,7 +38,7 @@ export function useCalendarApp(
     app,
     currentView: app.state.currentView,
     currentDate: app.state.currentDate,
-    events: app.getEvents(),
+    events: app.getEvents (),
     applyEventsChanges: app.applyEventsChanges,
     changeView: app.changeView,
     setCurrentDate: app.setCurrentDate,
@@ -60,6 +60,6 @@ export function useCalendarApp(
     setVisibleMonth: app.setVisibleMonth,
     getVisibleMonth: app.getVisibleMonth,
     emitVisibleRange: app.emitVisibleRange,
-    readOnlyConfig: app.getReadOnlyConfig(),
-  };
+    readOnlyConfig: app.getReadOnlyConfig (),
+  }
 }

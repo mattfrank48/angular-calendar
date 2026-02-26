@@ -1,11 +1,11 @@
-import { RefObject } from 'preact';
-import { memo } from 'preact/compat';
-import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
-import { Temporal } from 'temporal-polyfill';
+import { RefObject } from "preact";
+import { memo } from "preact/compat";
+import { useEffect, useMemo, useRef, useState } from "preact/hooks";
+import { Temporal } from "temporal-polyfill";
 
-import CalendarEvent from '@/components/calendarEvent';
-import { GridContextMenu } from '@/components/contextMenu';
-import { useLocale } from '@/locale';
+import CalendarEvent from "@/components/calendarEvent";
+import { GridContextMenu } from "@/components/contextMenu";
+import { useLocale } from "@/locale";
 import {
   monthDayCell,
   monthDateNumberContainer,
@@ -13,7 +13,7 @@ import {
   monthMoreEvents,
   monthTitle,
   cn,
-} from '@/styles/classNames';
+} from "@/styles/classNames";
 import {
   MonthEventDragState,
   Event,
@@ -21,13 +21,13 @@ import {
   EventDetailContentRenderer,
   EventDetailDialogRenderer,
   ICalendarApp,
-} from '@/types';
-import { VirtualWeekItem } from '@/types/monthView';
-import { extractHourFromDate } from '@/utils/helpers';
-import { logger } from '@/utils/logger';
-import { temporalToDate } from '@/utils/temporal';
+} from "@/types";
+import { VirtualWeekItem } from "@/types/monthView";
+import { extractHourFromDate } from "@/utils/helpers";
+import { logger } from "@/utils/logger";
+import { temporalToDate } from "@/utils/temporal";
 
-import { analyzeMultiDayEventsForWeek } from './util';
+import { analyzeMultiDayEventsForWeek } from "./util";
 
 export interface MultiDayEventSegment {
   id: string;
@@ -36,12 +36,12 @@ export interface MultiDayEventSegment {
   startDayIndex: number;
   endDayIndex: number;
   segmentType:
-    | 'start'
-    | 'middle'
-    | 'end'
-    | 'single'
-    | 'start-week-end'
-    | 'end-week-start';
+    | "start"
+    | "middle"
+    | "end"
+    | "single"
+    | "start-week-end"
+    | "end-week-start";
   totalDays: number;
   segmentIndex: number;
   isFirstSegment: boolean;
@@ -53,7 +53,7 @@ interface WeekComponentProps {
   currentMonth: string;
   currentYear: number;
   newlyCreatedEventId: string | null;
-  screenSize: 'mobile' | 'tablet' | 'desktop';
+  screenSize: "mobile" | "tablet" | "desktop";
   isScrolling: boolean;
   isDragging: boolean;
   item: VirtualWeekItem;
@@ -68,7 +68,7 @@ interface WeekComponentProps {
   onResizeStart?: (
     e: MouseEvent | TouchEvent,
     event: Event,
-    direction: string
+    direction: string,
   ) => void;
   onDetailPanelOpen: () => void;
   onMoreEventsClick?: (date: Date) => void;
@@ -85,7 +85,7 @@ interface WeekComponentProps {
     e: DragEvent,
     dropDate: Date,
     dropHour?: number,
-    isAllDay?: boolean
+    isAllDay?: boolean,
   ) => Event | null;
   onCalendarDragOver?: (e: DragEvent) => void;
   calendarSignature?: string;
@@ -119,7 +119,7 @@ const organizeMultiDaySegments = (multiDaySegments: MultiDayEventSegment[]) => {
   // Assign Y positions to avoid conflicts
   const segmentsWithPosition: MultiDayEventSegment[] = [];
 
-  sortedSegments.forEach(segment => {
+  sortedSegments.forEach((segment) => {
     let yPosition = 0;
     let positionFound = false;
 
@@ -151,7 +151,7 @@ const organizeMultiDaySegments = (multiDaySegments: MultiDayEventSegment[]) => {
   // Convert to hierarchical structure
   const layers: MultiDayEventSegment[][] = [];
 
-  segmentsWithPosition.forEach(segment => {
+  segmentsWithPosition.forEach((segment) => {
     const layerIndex = Math.floor((segment.yPosition ?? 0) / ROW_HEIGHT);
 
     if (!layers[layerIndex]) {
@@ -162,7 +162,7 @@ const organizeMultiDaySegments = (multiDaySegments: MultiDayEventSegment[]) => {
   });
 
   // Sort each layer by start time
-  layers.forEach(layer => {
+  layers.forEach((layer) => {
     layer.sort((a, b) => a.startDayIndex - b.startDayIndex);
   });
 
@@ -178,10 +178,10 @@ const constructRenderEvents = (events: Event[], weekStart: Date): Event[] => {
   weekEnd.setDate(weekEnd.getDate() + 6);
   weekEnd.setHours(23, 59, 59, 999);
 
-  events.forEach(event => {
+  events.forEach((event) => {
     // Ensure events have start and end fields
     if (!event.start || !event.end) {
-      logger.warn('Event missing start or end date:', event);
+      logger.warn("Event missing start or end date:", event);
       return; // Skip invalid events
     }
 
@@ -286,8 +286,8 @@ const sortDayEvents = (events: Event[]): Event[] =>
 // Create date string
 const createDateString = (date: Date): string => {
   const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
   return `${year}-${month}-${day}`;
 };
 
@@ -328,11 +328,11 @@ const WeekComponent = memo(
     const { t, locale } = useLocale();
     const [shouldShowMonthTitle, setShouldShowMonthTitle] = useState(false);
     const hideTitleTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(
-      null
+      null,
     );
 
     const longPressTimerRef = useRef<ReturnType<typeof setTimeout> | null>(
-      null
+      null,
     );
     const touchStartPosRef = useRef<{ x: number; y: number } | null>(null);
     const [contextMenu, setContextMenu] = useState<{
@@ -343,7 +343,7 @@ const WeekComponent = memo(
 
     const handleContextMenu = (e: MouseEvent, date: Date) => {
       e.preventDefault();
-      if (screenSize === 'mobile') return;
+      if (screenSize === "mobile") return;
       setContextMenu({ x: e.clientX, y: e.clientY, date });
     };
 
@@ -355,13 +355,13 @@ const WeekComponent = memo(
       const hardCap = 4;
       const maxSlots = Math.min(
         hardCap,
-        Math.floor(availableHeight / ROW_SPACING)
+        Math.floor(availableHeight / ROW_SPACING),
       );
 
       const spaceForMore = availableHeight - MORE_TEXT_HEIGHT;
       const maxSlotsWithMore = Math.min(
         hardCap,
-        Math.max(0, Math.floor(spaceForMore / ROW_SPACING))
+        Math.max(0, Math.floor(spaceForMore / ROW_SPACING)),
       );
 
       return { maxSlots, maxSlotsWithMore };
@@ -402,7 +402,7 @@ const WeekComponent = memo(
     }, [isScrolling, shouldShowMonthTitle]);
 
     const { weekData } = item;
-    const firstDayOfMonth = weekData.days.find(day => day.day === 1);
+    const firstDayOfMonth = weekData.days.find((day) => day.day === 1);
 
     // Use the weekHeight prop instead of item.height to avoid jumps from virtual scroll sync delays
     const weekHeightPx = `${weekHeight}px`;
@@ -410,26 +410,26 @@ const WeekComponent = memo(
     // Analyze multi-day events for the current week
     const multiDaySegments = useMemo(
       () => analyzeMultiDayEventsForWeek(events, weekData.startDate),
-      [events, weekData.startDate]
+      [events, weekData.startDate],
     );
 
     // Build render events
     const constructedRenderEvents = useMemo(
       () => constructRenderEvents(events, weekData.startDate),
-      [events, weekData.startDate]
+      [events, weekData.startDate],
     );
 
     // Organize multi-day event segments
     const organizedMultiDaySegments = useMemo(
       () => organizeMultiDaySegments(multiDaySegments),
-      [multiDaySegments]
+      [multiDaySegments],
     );
 
     const dayLayerCounts = useMemo(() => {
       const counts: number[] = Array.from({ length: 7 }).fill(0) as number[];
 
       organizedMultiDaySegments.forEach((layer, layerIndex) => {
-        layer.forEach(segment => {
+        layer.forEach((segment) => {
           for (
             let dayIndex = segment.startDayIndex;
             dayIndex <= segment.endDayIndex;
@@ -437,7 +437,7 @@ const WeekComponent = memo(
           ) {
             counts[dayIndex] = Math.max(
               counts[dayIndex] as number,
-              layerIndex + 1
+              layerIndex + 1,
             );
           }
         });
@@ -451,11 +451,11 @@ const WeekComponent = memo(
     const dayOccupiedLayers = useMemo(() => {
       const occupied: Set<number>[] = Array.from(
         { length: 7 },
-        () => new Set()
+        () => new Set(),
       );
 
       organizedMultiDaySegments.forEach((layer, layerIndex) => {
-        layer.forEach(segment => {
+        layer.forEach((segment) => {
           for (
             let dayIndex = segment.startDayIndex;
             dayIndex <= segment.endDayIndex;
@@ -480,7 +480,7 @@ const WeekComponent = memo(
       for (let dayIndex = 0; dayIndex < weekData.days.length; dayIndex++) {
         const day = weekData.days[dayIndex];
         // Get events for this day from constructedRenderEvents
-        const dayEvents = constructedRenderEvents.filter(event => {
+        const dayEvents = constructedRenderEvents.filter((event) => {
           if (!event.start || !event.end) {
             return (
               temporalToDate(event.start).toDateString() ===
@@ -509,10 +509,10 @@ const WeekComponent = memo(
         });
 
         // Filter out all-day events that have segments (they're already counted in multi-day layers)
-        const timedEvents = dayEvents.filter(event => {
+        const timedEvents = dayEvents.filter((event) => {
           if (!event.allDay) return true;
           const hasSegment = allSegments.some(
-            seg => seg.originalEventId === event.id
+            (seg) => seg.originalEventId === event.id,
           );
           return !hasSegment;
         });
@@ -550,12 +550,12 @@ const WeekComponent = memo(
     // Calculate the height of the multi-day event area
     const multiDayAreaHeight = useMemo(
       () => Math.max(0, organizedMultiDaySegments.length * ROW_SPACING),
-      [organizedMultiDaySegments]
+      [organizedMultiDaySegments],
     );
 
     // Get events for a specific date
     const getEventsForDay = (dayDate: Date): Event[] =>
-      constructedRenderEvents.filter(event => {
+      constructedRenderEvents.filter((event) => {
         if (!event.start || !event.end) {
           return (
             temporalToDate(event.start).toDateString() ===
@@ -591,13 +591,13 @@ const WeekComponent = memo(
     // Render date cell
     const renderDayCell = (
       day: (typeof weekData.days)[0],
-      dayIndex: number
+      dayIndex: number,
     ) => {
       // We need to parse currentMonth (localized string) back to month index, OR compare strings
       // Comparing localized month strings is safer than trying to parse back
       const dayMonthName = day.date.toLocaleDateString(locale, {
         month:
-          locale.startsWith('zh') || locale.startsWith('ja') ? 'short' : 'long',
+          locale.startsWith("zh") || locale.startsWith("ja") ? "short" : "long",
       });
 
       const belongsToCurrentMonth =
@@ -608,11 +608,11 @@ const WeekComponent = memo(
       // Filter out all-day events that are rendered as multi-day segments (they occupy their own layer)
       // This prevents double-counting: they already take a layer via segment, shouldn't also count as single-day
       const allSegments = organizedMultiDaySegments.flat();
-      const timedEventsOnly = sortedEvents.filter(event => {
+      const timedEventsOnly = sortedEvents.filter((event) => {
         if (!event.allDay) return true; // Keep all timed events
         // Check if this all-day event has a segment (rendered separately in overlay)
         const hasSegment = allSegments.some(
-          seg => seg.originalEventId === event.id
+          (seg) => seg.originalEventId === event.id,
         );
         return !hasSegment; // Only keep all-day events WITHOUT segments
       });
@@ -636,7 +636,7 @@ const WeekComponent = memo(
       // const eventsInGaps = Math.min(totalTimedEvents, gapLayers.length);
       const eventsAfterMultiDay = Math.max(
         0,
-        totalTimedEvents - gapLayers.length
+        totalTimedEvents - gapLayers.length,
       );
       const totalSlotsNeeded =
         Math.max(maxOccupiedLayer + 1, 0) + eventsAfterMultiDay;
@@ -650,15 +650,15 @@ const WeekComponent = memo(
       // Calculate how many timed events can display
       // Available slots for timed events = gaps within limit + slots after maxOccupiedLayer within limit
       const gapsWithinLimit = gapLayers.filter(
-        l => l < displaySlotLimit
+        (l) => l < displaySlotLimit,
       ).length;
       const slotsAfterMultiDayWithinLimit = Math.max(
         0,
-        displaySlotLimit - Math.max(maxOccupiedLayer + 1, 0)
+        displaySlotLimit - Math.max(maxOccupiedLayer + 1, 0),
       );
       const displayCount = Math.min(
         totalTimedEvents,
-        gapsWithinLimit + slotsAfterMultiDayWithinLimit
+        gapsWithinLimit + slotsAfterMultiDayWithinLimit,
       );
 
       const displayEvents = timedEventsOnly.slice(0, displayCount);
@@ -677,12 +677,12 @@ const WeekComponent = memo(
           renderElements.push(
             <div
               key={`placeholder-layer-${slot}-${day.date.getTime()}`}
-              className='shrink-0'
+              className="shrink-0"
               style={{
                 height: `${ROW_SPACING}px`,
                 minHeight: `${ROW_SPACING}px`,
               }}
-            />
+            />,
           );
         } else if (timedEventIndex < displayEvents.length) {
           // This slot is a gap or after multi-day layers - fill with timed event
@@ -697,7 +697,7 @@ const WeekComponent = memo(
               isBeingDragged={
                 isDragging &&
                 dragState.eventId === event.id &&
-                dragState.mode === 'move'
+                dragState.mode === "move"
               }
               calendarRef={calendarRef}
               hourHeight={72}
@@ -716,9 +716,9 @@ const WeekComponent = memo(
               customDetailPanelContent={customDetailPanelContent}
               customEventDetailDialog={customEventDetailDialog}
               app={app}
-              isMobile={screenSize !== 'desktop'}
+              isMobile={screenSize !== "desktop"}
               enableTouch={enableTouch}
-            />
+            />,
           );
           timedEventIndex++;
         }
@@ -730,18 +730,18 @@ const WeekComponent = memo(
           className={cn(
             monthDayCell,
             belongsToCurrentMonth
-              ? 'text-gray-800 dark:text-gray-100'
-              : 'text-gray-400 dark:text-gray-600',
-            screenSize !== 'desktop' && dayIndex === 6
-              ? 'border-r-0'
-              : 'last:border-r'
+              ? "text-gray-800 dark:text-gray-100"
+              : "text-gray-400 dark:text-gray-600",
+            screenSize !== "desktop" && dayIndex === 6
+              ? "border-r-0"
+              : "last:border-r",
           )}
           style={{ height: weekHeightPx }}
           data-date={createDateString(day.date)}
           onClick={() => onSelectDate?.(day.date)}
-          onDblClick={e => onCreateStart?.(e, day.date)}
-          onTouchStart={e => {
-            if (screenSize !== 'mobile' && !enableTouch) return;
+          onDblClick={(e) => onCreateStart?.(e, day.date)}
+          onTouchStart={(e) => {
+            if (screenSize !== "mobile" && !enableTouch) return;
             const touch = e.touches[0];
             const clientX = touch.clientX;
             const clientY = touch.clientY;
@@ -753,13 +753,13 @@ const WeekComponent = memo(
               if (navigator.vibrate) navigator.vibrate(50);
             }, 500);
           }}
-          onTouchMove={e => {
+          onTouchMove={(e) => {
             if (longPressTimerRef.current && touchStartPosRef.current) {
               const dx = Math.abs(
-                e.touches[0].clientX - touchStartPosRef.current.x
+                e.touches[0].clientX - touchStartPosRef.current.x,
               );
               const dy = Math.abs(
-                e.touches[0].clientY - touchStartPosRef.current.y
+                e.touches[0].clientY - touchStartPosRef.current.y,
               );
               if (dx > 10 || dy > 10) {
                 clearTimeout(longPressTimerRef.current);
@@ -775,19 +775,19 @@ const WeekComponent = memo(
             touchStartPosRef.current = null;
           }}
           onDragOver={onCalendarDragOver}
-          onDrop={e => onCalendarDrop?.(e, day.date)}
-          onContextMenu={e => handleContextMenu(e, day.date)}
+          onDrop={(e) => onCalendarDrop?.(e, day.date)}
+          onContextMenu={(e) => handleContextMenu(e, day.date)}
         >
           {/* Date number area */}
           <div className={monthDateNumberContainer}>
             {
               <span
-                className={` ${monthDateNumber} ${day.isToday ? 'bg-primary text-primary-foreground' : belongsToCurrentMonth ? 'text-gray-900 dark:text-gray-100' : 'text-gray-400 dark:text-gray-600'} `}
+                className={` ${monthDateNumber} ${day.isToday ? "bg-primary text-primary-foreground" : belongsToCurrentMonth ? "text-gray-900 dark:text-gray-100" : "text-gray-400 dark:text-gray-600"} `}
               >
-                {day.day === 1 && screenSize === 'desktop'
+                {day.day === 1 && screenSize === "desktop"
                   ? day.date.toLocaleDateString(locale, {
-                      month: 'short',
-                      day: 'numeric',
+                      month: "short",
+                      day: "numeric",
                     })
                   : day.day}
               </span>
@@ -795,7 +795,7 @@ const WeekComponent = memo(
           </div>
 
           {/* Event display area */}
-          <div className='flex-1 overflow-hidden px-1'>
+          <div className="flex-1 overflow-hidden px-1">
             {renderElements}
 
             {/* More events indicator */}
@@ -803,11 +803,11 @@ const WeekComponent = memo(
               <div
                 className={cn(
                   monthMoreEvents,
-                  screenSize === 'desktop'
-                    ? 'text-left font-normal'
-                    : 'text-center font-medium'
+                  screenSize === "desktop"
+                    ? "text-left font-normal"
+                    : "text-center font-medium",
                 )}
-                onClick={e => {
+                onClick={(e) => {
                   e.stopPropagation();
                   if (onMoreEventsClick) {
                     onMoreEventsClick(day.date);
@@ -818,7 +818,7 @@ const WeekComponent = memo(
                 }}
               >
                 +{hiddenEventsCount}
-                {screenSize === 'desktop' ? ` ${t('more')}` : ''}
+                {screenSize === "desktop" ? ` ${t("more")}` : ""}
               </div>
             )}
           </div>
@@ -827,45 +827,45 @@ const WeekComponent = memo(
     };
 
     const localizedMonthYear = useMemo(() => {
-      if (!firstDayOfMonth) return '';
+      if (!firstDayOfMonth) return "";
       return firstDayOfMonth.date.toLocaleDateString(locale, {
-        month: 'long',
-        year: 'numeric',
+        month: "long",
+        year: "numeric",
       });
     }, [firstDayOfMonth, locale]);
 
     return (
       <div
-        className='relative border-b border-gray-200 select-none dark:border-gray-700'
+        className="relative border-b border-gray-200 select-none dark:border-gray-700"
         style={{ height: weekHeightPx }}
       >
         {/* Month title: displayed when scrolling, hidden after scrolling stops */}
         {firstDayOfMonth && (
           <div
-            className={` ${monthTitle} ${shouldShowMonthTitle ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'} `}
+            className={` ${monthTitle} ${shouldShowMonthTitle ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"} `}
             style={{
-              transition: 'opacity 0.5s ease',
-              maxWidth: 'fit-content',
+              transition: "opacity 0.5s ease",
+              maxWidth: "fit-content",
             }}
-            onContextMenu={e => e.preventDefault()}
+            onContextMenu={(e) => e.preventDefault()}
           >
-            <span className='text-2xl font-bold text-gray-900 dark:text-gray-100'>
+            <span className="text-2xl font-bold text-gray-900 dark:text-gray-100">
               {localizedMonthYear}
             </span>
           </div>
         )}
 
-        <div className='flex h-full flex-col'>
-          <div className='calendar-week relative h-full'>
+        <div className="flex h-full flex-col">
+          <div className="calendar-week relative h-full">
             {/* Date grid */}
-            <div className='grid h-full grid-cols-7'>
+            <div className="grid h-full grid-cols-7">
               {weekData.days.map((day, index) => renderDayCell(day, index))}
             </div>
 
             {/* Multi-day event overlay layer */}
             {organizedMultiDaySegments.length > 0 && (
               <div
-                className='pointer-events-none absolute right-0 left-0'
+                className="pointer-events-none absolute right-0 left-0"
                 style={{
                   top: `${MULTI_DAY_TOP_OFFSET}px`,
                   height: `${multiDayAreaHeight}px`,
@@ -877,9 +877,9 @@ const WeekComponent = memo(
                   .map((layer, layerIndex) => (
                     <div
                       key={`layer-${layerIndex}`}
-                      className='absolute inset-0'
+                      className="absolute inset-0"
                     >
-                      {layer.map(segment => (
+                      {layer.map((segment) => (
                         <CalendarEvent
                           key={segment.id}
                           event={segment.event}
@@ -898,12 +898,12 @@ const WeekComponent = memo(
                           isBeingDragged={
                             isDragging &&
                             dragState.eventId === segment.event.id &&
-                            dragState.mode === 'move'
+                            dragState.mode === "move"
                           }
                           isBeingResized={
                             isDragging &&
                             dragState.eventId === segment.event.id &&
-                            dragState.mode === 'resize'
+                            dragState.mode === "resize"
                           }
                           newlyCreatedEventId={newlyCreatedEventId}
                           onDetailPanelOpen={onDetailPanelOpen}
@@ -915,7 +915,7 @@ const WeekComponent = memo(
                           customDetailPanelContent={customDetailPanelContent}
                           customEventDetailDialog={customEventDetailDialog}
                           app={app}
-                          isMobile={screenSize !== 'desktop'}
+                          isMobile={screenSize !== "desktop"}
                           enableTouch={enableTouch}
                         />
                       ))}
@@ -952,9 +952,9 @@ const WeekComponent = memo(
         )}
       </div>
     );
-  }
+  },
 );
 
-(WeekComponent as { displayName?: string }).displayName = 'WeekComponent';
+(WeekComponent as { displayName?: string }).displayName = "WeekComponent";
 
 export default WeekComponent;

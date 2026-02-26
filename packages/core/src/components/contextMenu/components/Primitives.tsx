@@ -1,9 +1,9 @@
-import { cloneElement, isValidElement, ComponentChildren } from 'preact';
-import { createPortal, forwardRef } from 'preact/compat';
-import { useEffect, useRef, useState } from 'preact/hooks';
+import { cloneElement, isValidElement, ComponentChildren } from "preact";
+import { createPortal, forwardRef } from "preact/compat";
+import { useEffect, useRef, useState } from "preact/hooks";
 
-import { ChevronRight } from '@/components/common/Icons';
-import { useLocale } from '@/locale';
+import { ChevronRight } from "@/components/common/Icons";
+import { useLocale } from "@/locale";
 
 interface ContextMenuProps {
   x: number;
@@ -20,9 +20,9 @@ export const ContextMenu = forwardRef<HTMLDivElement, ContextMenuProps>(
     // Sync external ref with internal ref
     const setRefs = (node: HTMLDivElement | null) => {
       internalRef.current = node;
-      if (typeof ref === 'function') {
+      if (typeof ref === "function") {
         ref(node);
-      } else if (ref && 'current' in ref) {
+      } else if (ref && "current" in ref) {
         ref.current = node;
       }
     };
@@ -36,7 +36,7 @@ export const ContextMenu = forwardRef<HTMLDivElement, ContextMenuProps>(
         ) {
           // Check if the click is within a submenu
           const target = event.target as HTMLElement;
-          if (target.closest('[data-submenu-content]')) {
+          if (target.closest("[data-submenu-content]")) {
             return;
           }
           onClose();
@@ -44,42 +44,42 @@ export const ContextMenu = forwardRef<HTMLDivElement, ContextMenuProps>(
       };
 
       // Close other menus when this one mounts
-      window.dispatchEvent(new CustomEvent('dayflow-close-all-menus'));
+      window.dispatchEvent(new CustomEvent("dayflow-close-all-menus"));
 
       // Listen for close-all event from other menus
-      window.addEventListener('dayflow-close-all-menus', handleCloseAll);
+      window.addEventListener("dayflow-close-all-menus", handleCloseAll);
       // Use mousedown to capture clicks outside immediately
-      document.body.addEventListener('mousedown', handleClickOutside, {
+      document.body.addEventListener("mousedown", handleClickOutside, {
         capture: true,
       });
       // Also capture right-clicks outside
-      document.body.addEventListener('contextmenu', handleClickOutside, {
+      document.body.addEventListener("contextmenu", handleClickOutside, {
         capture: true,
       });
 
       const handleKeyDown = (event: KeyboardEvent) => {
-        if (event.key === 'Escape') {
+        if (event.key === "Escape") {
           onClose();
         }
       };
-      window.addEventListener('keydown', handleKeyDown);
+      window.addEventListener("keydown", handleKeyDown);
 
       // Also close on scroll or window resize
       const handleScrollOrResize = () => onClose();
-      window.addEventListener('scroll', handleScrollOrResize, true);
-      window.addEventListener('resize', handleScrollOrResize);
+      window.addEventListener("scroll", handleScrollOrResize, true);
+      window.addEventListener("resize", handleScrollOrResize);
 
       return () => {
-        window.removeEventListener('dayflow-close-all-menus', handleCloseAll);
-        document.body.removeEventListener('mousedown', handleClickOutside, {
+        window.removeEventListener("dayflow-close-all-menus", handleCloseAll);
+        document.body.removeEventListener("mousedown", handleClickOutside, {
           capture: true,
         });
-        document.body.removeEventListener('contextmenu', handleClickOutside, {
+        document.body.removeEventListener("contextmenu", handleClickOutside, {
           capture: true,
         });
-        window.removeEventListener('keydown', handleKeyDown);
-        window.removeEventListener('scroll', handleScrollOrResize, true);
-        window.removeEventListener('resize', handleScrollOrResize);
+        window.removeEventListener("keydown", handleKeyDown);
+        window.removeEventListener("scroll", handleScrollOrResize, true);
+        window.removeEventListener("resize", handleScrollOrResize);
       };
     }, [onClose]);
 
@@ -92,19 +92,19 @@ export const ContextMenu = forwardRef<HTMLDivElement, ContextMenuProps>(
     return createPortal(
       <div
         ref={setRefs}
-        className={`animate-in fade-in-0 zoom-in-95 fixed z-50 min-w-32 overflow-visible rounded-md border border-slate-200 bg-white p-1 text-slate-950 shadow-md duration-100 ease-out dark:border-slate-800 dark:bg-slate-950 dark:text-slate-50 ${className || ''}`}
+        className={`animate-in fade-in-0 zoom-in-95 fixed z-50 min-w-32 overflow-visible rounded-md border border-slate-200 bg-white p-1 text-slate-950 shadow-md duration-100 ease-out dark:border-slate-800 dark:bg-slate-950 dark:text-slate-50 ${className || ""}`}
         style={style}
-        onContextMenu={e => e.preventDefault()}
-        data-context-menu-root='true'
+        onContextMenu={(e) => e.preventDefault()}
+        data-context-menu-root="true"
       >
         {children}
       </div>,
-      document.body
+      document.body,
     );
-  }
+  },
 );
 
-ContextMenu.displayName = 'ContextMenu';
+ContextMenu.displayName = "ContextMenu";
 
 export const ContextMenuItem = ({
   onClick,
@@ -122,26 +122,26 @@ export const ContextMenuItem = ({
   <div
     className={`group relative flex cursor-default items-center rounded-sm px-3 py-0.5 text-[12px] transition-colors outline-none select-none ${
       disabled
-        ? 'pointer-events-none opacity-50'
-        : 'hover:bg-primary hover:text-white focus:bg-primary focus:text-white dark:hover:bg-primary dark:hover:text-white dark:focus:bg-primary dark:focus:text-white'
+        ? "pointer-events-none opacity-50"
+        : "hover:bg-primary hover:text-white focus:bg-primary focus:text-white dark:hover:bg-primary dark:hover:text-white dark:focus:bg-primary dark:focus:text-white"
     } ${
       danger
-        ? 'text-destructive hover:bg-destructive hover:text-destructive-foreground focus:bg-destructive focus:text-destructive-foreground'
-        : 'text-slate-900 dark:text-slate-50'
+        ? "text-destructive hover:bg-destructive hover:text-destructive-foreground focus:bg-destructive focus:text-destructive-foreground"
+        : "text-slate-900 dark:text-slate-50"
     }`}
-    onClick={e => {
+    onClick={(e) => {
       e.stopPropagation();
       if (!disabled) onClick();
     }}
     data-disabled={disabled}
   >
-    {icon && <span className='mr-2 h-4 w-4'>{icon}</span>}
+    {icon && <span className="mr-2 h-4 w-4">{icon}</span>}
     {children}
   </div>
 );
 
 export const ContextMenuSeparator = () => (
-  <div className='-mx-1 my-1 h-px bg-slate-200 dark:bg-slate-800' />
+  <div className="-mx-1 my-1 h-px bg-slate-200 dark:bg-slate-800" />
 );
 
 export const ContextMenuLabel = ({
@@ -149,7 +149,7 @@ export const ContextMenuLabel = ({
 }: {
   children: ComponentChildren;
 }) => (
-  <div className='px-3 py-0.5 text-[12px] font-semibold text-slate-950 dark:text-slate-50'>
+  <div className="px-3 py-0.5 text-[12px] font-semibold text-slate-950 dark:text-slate-50">
     {children}
   </div>
 );
@@ -183,16 +183,16 @@ export const ContextMenuSub = ({
         clearTimeout(timeoutRef.current);
       }
     },
-    []
+    [],
   );
 
   return (
     <div
-      className='relative'
+      className="relative"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      {(Array.isArray(children) ? children : [children]).map(child => {
+      {(Array.isArray(children) ? children : [children]).map((child) => {
         if (isValidElement(child)) {
           return cloneElement(child, { isOpen });
         }
@@ -212,12 +212,12 @@ export const ContextMenuSubTrigger = ({
   isOpen?: boolean;
 }) => (
   <div
-    className={`relative flex cursor-default items-center rounded-sm px-3 py-0.5 text-[12px] transition-colors outline-none select-none hover:bg-primary hover:text-white focus:bg-primary focus:text-white dark:hover:bg-primary dark:hover:text-white dark:focus:bg-primary dark:focus:text-white ${isOpen ? 'bg-primary text-white' : ''}`}
+    className={`relative flex cursor-default items-center rounded-sm px-3 py-0.5 text-[12px] transition-colors outline-none select-none hover:bg-primary hover:text-white focus:bg-primary focus:text-white dark:hover:bg-primary dark:hover:text-white dark:focus:bg-primary dark:focus:text-white ${isOpen ? "bg-primary text-white" : ""}`}
   >
-    {icon && <span className='mr-2 h-4 w-4'>{icon}</span>}
-    <span className='grow text-left'>{children}</span>
+    {icon && <span className="mr-2 h-4 w-4">{icon}</span>}
+    <span className="grow text-left">{children}</span>
     <ChevronRight
-      className={`ml-auto h-4 w-4 ${isOpen ? 'text-white opacity-100' : 'opacity-60'}`}
+      className={`ml-auto h-4 w-4 ${isOpen ? "text-white opacity-100" : "opacity-60"}`}
     />
   </div>
 );
@@ -230,7 +230,7 @@ export const ContextMenuSubContent = ({
   isOpen?: boolean;
 }) => {
   const ref = useRef<HTMLDivElement>(null);
-  const [position, setPosition] = useState<'right' | 'left'>('right');
+  const [position, setPosition] = useState<"right" | "left">("right");
 
   useEffect(() => {
     if (isOpen && ref.current) {
@@ -240,9 +240,9 @@ export const ContextMenuSubContent = ({
       if (parentRect) {
         // Check if there is space on the right
         if (parentRect.right + rect.width > window.innerWidth) {
-          setPosition('left');
+          setPosition("left");
         } else {
-          setPosition('right');
+          setPosition("right");
         }
       }
     }
@@ -255,12 +255,12 @@ export const ContextMenuSubContent = ({
       ref={ref}
       className={`animate-in fade-in-0 zoom-in-95 absolute top-0 z-50 min-w-32 overflow-hidden rounded-md border border-slate-200 bg-white p-1 whitespace-nowrap text-slate-950 shadow-md duration-100 ease-out dark:border-slate-800 dark:bg-slate-950 dark:text-slate-50`}
       style={{
-        left: position === 'right' ? '100%' : 'auto',
-        right: position === 'left' ? '100%' : 'auto',
-        marginLeft: position === 'right' ? '0.25rem' : 0,
-        marginRight: position === 'left' ? '0.25rem' : 0,
+        left: position === "right" ? "100%" : "auto",
+        right: position === "left" ? "100%" : "auto",
+        marginLeft: position === "right" ? "0.25rem" : 0,
+        marginRight: position === "left" ? "0.25rem" : 0,
       }}
-      data-submenu-content='true'
+      data-submenu-content="true"
     >
       {children}
     </div>
@@ -268,13 +268,13 @@ export const ContextMenuSubContent = ({
 };
 
 const COLORS = [
-  '#ea426b',
-  '#f19a38',
-  '#f7cf46',
-  '#83d754',
-  '#51aaf2',
-  '#b672d0',
-  '#957e5e',
+  "#ea426b",
+  "#f19a38",
+  "#f7cf46",
+  "#83d754",
+  "#51aaf2",
+  "#b672d0",
+  "#957e5e",
 ];
 
 export const ContextMenuColorPicker = ({
@@ -289,18 +289,18 @@ export const ContextMenuColorPicker = ({
   const { t } = useLocale();
   return (
     <div>
-      <div className='grid grid-cols-7 gap-2 p-1 px-3'>
-        {COLORS.map(color => (
+      <div className="grid grid-cols-7 gap-2 p-1 px-3">
+        {COLORS.map((color) => (
           <button
             key={color}
-            type='button'
+            type="button"
             className={`h-5 w-5 rounded-full border border-gray-200 transition-transform hover:scale-110 focus:ring-2 focus:ring-primary focus:ring-offset-1 focus:outline-none dark:border-gray-600 dark:focus:ring-offset-slate-800 ${
               selectedColor?.toLowerCase() === color.toLowerCase()
-                ? 'ring-2 ring-primary ring-offset-1 dark:ring-offset-slate-800'
-                : ''
+                ? "ring-2 ring-primary ring-offset-1 dark:ring-offset-slate-800"
+                : ""
             }`}
             style={{ backgroundColor: color }}
-            onClick={e => {
+            onClick={(e) => {
               e.stopPropagation();
               onSelect(color);
             }}
@@ -310,13 +310,13 @@ export const ContextMenuColorPicker = ({
       </div>
       {onCustomColor && (
         <div
-          className='mt-1 flex cursor-pointer items-center rounded-sm px-3 py-0.5 text-[12px] text-slate-700 transition-colors hover:bg-primary hover:text-white dark:text-slate-200 dark:hover:bg-primary dark:hover:text-white'
-          onClick={e => {
+          className="mt-1 flex cursor-pointer items-center rounded-sm px-3 py-0.5 text-[12px] text-slate-700 transition-colors hover:bg-primary hover:text-white dark:text-slate-200 dark:hover:bg-primary dark:hover:text-white"
+          onClick={(e) => {
             e.stopPropagation();
             onCustomColor();
           }}
         >
-          {t('customColor')}
+          {t("customColor")}
         </div>
       )}
     </div>

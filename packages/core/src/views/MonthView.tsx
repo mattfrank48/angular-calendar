@@ -1,33 +1,33 @@
-import { RefObject } from 'preact';
+import { RefObject } from "preact";
 import {
   useState,
   useMemo,
   useEffect,
   useRef,
   useCallback,
-} from 'preact/hooks';
+} from "preact/hooks";
 
-import ViewHeader from '@/components/common/ViewHeader';
-import { MobileEventDrawer } from '@/components/mobileEventDrawer';
-import WeekComponent from '@/components/monthView/WeekComponent';
-import { useCalendarDrop } from '@/hooks/useCalendarDrop';
-import { useDebouncedValue } from '@/hooks/useDebouncedValue';
+import ViewHeader from "@/components/common/ViewHeader";
+import { MobileEventDrawer } from "@/components/mobileEventDrawer";
+import WeekComponent from "@/components/monthView/WeekComponent";
+import { useCalendarDrop } from "@/hooks/useCalendarDrop";
+import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import {
   useVirtualMonthScroll,
   useResponsiveMonthConfig,
-} from '@/hooks/virtualScroll';
-import { useLocale } from '@/locale';
-import { useDragForView } from '@/plugins/dragBridge';
+} from "@/hooks/virtualScroll";
+import { useLocale } from "@/locale";
+import { useDragForView } from "@/plugins/dragBridge";
 import {
   monthViewContainer,
   weekHeaderRow,
   weekGrid,
   dayLabel,
   scrollContainer,
-} from '@/styles/classNames';
-import { Event, MonthEventDragState, ViewType, MonthViewProps } from '@/types';
-import { extractHourFromDate } from '@/utils';
-import { temporalToDate } from '@/utils/temporal';
+} from "@/styles/classNames";
+import { Event, MonthEventDragState, ViewType, MonthViewProps } from "@/types";
+import { extractHourFromDate } from "@/utils";
+import { temporalToDate } from "@/utils/temporal";
 
 const MonthView = ({
   app,
@@ -44,8 +44,8 @@ const MonthView = ({
   const rawEvents = app.getEvents();
   const calendarSignature = app
     .getCalendars()
-    .map(c => c.id + c.colors.lineColor)
-    .join('-');
+    .map((c) => c.id + c.colors.lineColor)
+    .join("-");
   const previousEventsRef = useRef<Event[] | null>(null);
   const DEFAULT_WEEK_HEIGHT = 119;
   // Stabilize events reference so week calculations do not rerun on every scroll frame
@@ -86,7 +86,7 @@ const MonthView = ({
       }
     };
 
-    events.forEach(event => {
+    events.forEach((event) => {
       if (!event.start) return;
 
       const startFull = temporalToDate(event.start);
@@ -141,7 +141,7 @@ const MonthView = ({
   const [isTouch, setIsTouch] = useState(false);
 
   useEffect(() => {
-    setIsTouch('ontouchstart' in window || navigator.maxTouchPoints > 0);
+    setIsTouch("ontouchstart" in window || navigator.maxTouchPoints > 0);
   }, []);
 
   const MobileEventDrawerComponent =
@@ -157,7 +157,7 @@ const MonthView = ({
 
   // ID of newly created event, used to automatically display detail panel
   const [newlyCreatedEventId, setNewlyCreatedEventId] = useState<string | null>(
-    null
+    null,
   );
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -165,7 +165,7 @@ const MonthView = ({
 
   // Selected event ID, used for cross-week MultiDayEvent selected state synchronization
   const [internalSelectedId, setInternalSelectedId] = useState<string | null>(
-    null
+    null,
   );
   const [internalDetailPanelEventId, setInternalDetailPanelEventId] = useState<
     string | null
@@ -188,7 +188,7 @@ const MonthView = ({
         setInternalSelectedId(id);
       }
     },
-    [propOnEventSelect]
+    [propOnEventSelect],
   );
 
   const setDetailPanelEventId = useCallback(
@@ -199,7 +199,7 @@ const MonthView = ({
         setInternalDetailPanelEventId(id);
       }
     },
-    [propOnDetailPanelToggle]
+    [propOnDetailPanelToggle],
   );
 
   // Sync highlighted event from app state
@@ -236,22 +236,22 @@ const MonthView = ({
     viewType: ViewType.MONTH,
     onEventsUpdate: (
       updateFunc: (events: Event[]) => Event[],
-      isResizing?: boolean
+      isResizing?: boolean,
     ) => {
       const newEvents = updateFunc(events);
 
       // Find events that need to be deleted (in old list but not in new list)
-      const newEventIds = new Set(newEvents.map(e => e.id));
-      const eventsToDelete = events.filter(e => !newEventIds.has(e.id));
+      const newEventIds = new Set(newEvents.map((e) => e.id));
+      const eventsToDelete = events.filter((e) => !newEventIds.has(e.id));
 
       // Find events that need to be added (in new list but not in old list)
-      const oldEventIds = new Set(events.map(e => e.id));
-      const eventsToAdd = newEvents.filter(e => !oldEventIds.has(e.id));
+      const oldEventIds = new Set(events.map((e) => e.id));
+      const eventsToAdd = newEvents.filter((e) => !oldEventIds.has(e.id));
 
       // Find events that need to be updated (exist in both lists but content may differ)
-      const eventsToUpdate = newEvents.filter(e => {
+      const eventsToUpdate = newEvents.filter((e) => {
         if (!oldEventIds.has(e.id)) return false;
-        const oldEvent = events.find(old => old.id === e.id);
+        const oldEvent = events.find((old) => old.id === e.id);
         // Check if there are real changes
         return (
           oldEvent &&
@@ -273,15 +273,15 @@ const MonthView = ({
       // Perform operations - updateEvent will automatically trigger onEventUpdate callback
       app.applyEventsChanges(
         {
-          delete: eventsToDelete.map(e => e.id),
+          delete: eventsToDelete.map((e) => e.id),
           add: eventsToAdd,
-          update: eventsToUpdate.map(e => ({ id: e.id, updates: e })),
+          update: eventsToUpdate.map((e) => ({ id: e.id, updates: e })),
         },
-        isResizing
+        isResizing,
       );
     },
     onEventCreate: (event: Event) => {
-      if (screenSize === 'desktop') {
+      if (screenSize === "desktop") {
         app.addEvent(event);
       } else {
         setDraftEvent(event);
@@ -305,8 +305,8 @@ const MonthView = ({
   });
 
   const weekDaysLabels = useMemo(
-    () => getWeekDaysLabels(locale, 'short'),
-    [locale, getWeekDaysLabels]
+    () => getWeekDaysLabels(locale, "short"),
+    [locale, getWeekDaysLabels],
   );
 
   const {
@@ -326,10 +326,10 @@ const MonthView = ({
     currentDate,
     weekHeight,
     onCurrentMonthChange: (monthName: string, year: number) => {
-      const isAsian = locale.startsWith('zh') || locale.startsWith('ja');
+      const isAsian = locale.startsWith("zh") || locale.startsWith("ja");
       const localizedMonths = getMonthLabels(
         locale,
-        isAsian ? 'short' : 'long'
+        isAsian ? "short" : "long",
       );
       const monthIndex = localizedMonths.indexOf(monthName);
 
@@ -348,14 +348,14 @@ const MonthView = ({
   const [actualContainerHeight, setActualContainerHeight] = useState(0);
   const remainingSpace = useMemo(
     () => actualContainerHeight - weekHeight * 6,
-    [actualContainerHeight, weekHeight]
+    [actualContainerHeight, weekHeight],
   );
 
   const { visibleWeeks, startIndex: effectiveStartIndex } = useMemo(() => {
     const { visibleItems, displayStartIndex } = virtualData;
 
     const startIdx = visibleItems.findIndex(
-      item => item.index === displayStartIndex
+      (item) => item.index === displayStartIndex,
     );
 
     if (startIdx === -1) {
@@ -381,14 +381,14 @@ const MonthView = ({
 
   const topSpacerHeight = useMemo(
     () => effectiveStartIndex * weekHeight,
-    [effectiveStartIndex, weekHeight]
+    [effectiveStartIndex, weekHeight],
   );
 
   const initialLoadRef = useRef(true);
   const pendingNavigation = useRef(false);
   const debouncedDisplayStartIndex = useDebouncedValue(
     virtualData.displayStartIndex,
-    250
+    250,
   );
 
   useEffect(() => {
@@ -415,7 +415,7 @@ const MonthView = ({
     app.emitVisibleRange(
       start,
       end,
-      pendingNavigation.current ? 'navigation' : 'scroll'
+      pendingNavigation.current ? "navigation" : "scroll",
     );
 
     pendingNavigation.current = false;
@@ -441,7 +441,7 @@ const MonthView = ({
     const element = scrollElementRef.current;
     if (!element) return;
 
-    const resizeObserver = new ResizeObserver(entries => {
+    const resizeObserver = new ResizeObserver((entries) => {
       for (const entry of entries) {
         const containerHeight = entry.contentRect.height;
         // Save actual container height for other calculations
@@ -451,7 +451,7 @@ const MonthView = ({
         if (!isWeekHeightInitialized && containerHeight > 0) {
           const calculatedWeekHeight = Math.max(
             80,
-            Math.floor(containerHeight / 6)
+            Math.floor(containerHeight / 6),
           );
 
           // If weekHeight changed from initial value, adjust scrollTop to maintain position
@@ -461,7 +461,7 @@ const MonthView = ({
             if (currentScrollTop > 0) {
               // Calculate which week currently showing
               const currentWeekIndex = Math.round(
-                currentScrollTop / previousWeekHeightRef.current
+                currentScrollTop / previousWeekHeightRef.current,
               );
               // Recalculate scrollTop with new weekHeight
               const newScrollTop = currentWeekIndex * calculatedWeekHeight;
@@ -501,14 +501,14 @@ const MonthView = ({
     (updatedEvent: Event) => {
       app.updateEvent(updatedEvent.id, updatedEvent);
     },
-    [app]
+    [app],
   );
 
   const handleEventDelete = useCallback(
     (eventId: string) => {
       app.deleteEvent(eventId);
     },
-    [app]
+    [app],
   );
 
   const handleChangeView = (view: ViewType) => {
@@ -518,14 +518,14 @@ const MonthView = ({
   // Stable callbacks for WeekComponent props so memo() can bail out during scroll
   const handleDetailPanelOpen = useCallback(
     () => setNewlyCreatedEventId(null),
-    []
+    [],
   );
 
   const handleWeekEventSelect = useCallback(
     (eventId: string | null) => {
       const isViewable = app.getReadOnlyConfig().viewable;
-      if ((screenSize !== 'desktop' || isTouch) && eventId && isViewable) {
-        const evt = events.find(e => e.id === eventId);
+      if ((screenSize !== "desktop" || isTouch) && eventId && isViewable) {
+        const evt = events.find((e) => e.id === eventId);
         if (evt) {
           setDraftEvent(evt);
           setIsDrawerOpen(true);
@@ -534,19 +534,19 @@ const MonthView = ({
       }
       setSelectedEventId(eventId);
     },
-    [screenSize, isTouch, events, setSelectedEventId, app]
+    [screenSize, isTouch, events, setSelectedEventId, app],
   );
 
   const handleWeekEventLongPress = useCallback(
     (eventId: string) => {
-      if (screenSize !== 'desktop' || isTouch) setSelectedEventId(eventId);
+      if (screenSize !== "desktop" || isTouch) setSelectedEventId(eventId);
     },
-    [screenSize, isTouch, setSelectedEventId]
+    [screenSize, isTouch, setSelectedEventId],
   );
 
   // Pending: remove getCustomTitle and using app.currentDate to fixed
   const getCustomTitle = () => {
-    const isAsianLocale = locale.startsWith('zh') || locale.startsWith('ja');
+    const isAsianLocale = locale.startsWith("zh") || locale.startsWith("ja");
     return isAsianLocale
       ? `${currentYear}年${currentMonth}`
       : `${currentMonth} ${currentYear}`;
@@ -573,7 +573,7 @@ const MonthView = ({
         }}
       />
 
-      <div className={weekHeaderRow} onContextMenu={e => e.preventDefault()}>
+      <div className={weekHeaderRow} onContextMenu={(e) => e.preventDefault()}>
         <div className={`${weekGrid} px-2`}>
           {weekDaysLabels.map((day, i) => (
             <div key={`${day}-${i}`} className={dayLabel}>
@@ -587,9 +587,9 @@ const MonthView = ({
         ref={scrollElementRef}
         className={scrollContainer}
         style={{
-          scrollSnapType: 'y mandatory',
-          overflow: 'hidden auto',
-          visibility: isWeekHeightInitialized ? 'visible' : 'hidden',
+          scrollSnapType: "y mandatory",
+          overflow: "hidden auto",
+          visibility: isWeekHeightInitialized ? "visible" : "hidden",
         }}
         onScroll={handleScroll}
       >
@@ -662,7 +662,7 @@ const MonthView = ({
           setDraftEvent(null);
         }}
         onSave={(updatedEvent: Event) => {
-          if (events.some(e => e.id === updatedEvent.id)) {
+          if (events.some((e) => e.id === updatedEvent.id)) {
             app.updateEvent(updatedEvent.id, updatedEvent);
           } else {
             app.addEvent(updatedEvent);

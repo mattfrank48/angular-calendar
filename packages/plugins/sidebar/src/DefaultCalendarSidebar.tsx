@@ -1,7 +1,7 @@
 import {
   hexToHsl,
   lightnessToSliderValue,
-} from '@dayflow/blossom-color-picker';
+} from "@dayflow/blossom-color-picker";
 import {
   createPortal,
   Event as CalendarEvent,
@@ -20,20 +20,20 @@ import {
   importICSFile,
   downloadICS,
   generateUniKey,
-} from '@dayflow/core';
-import { JSX } from 'preact';
-import { useCallback, useState, useRef } from 'preact/hooks';
+} from "@dayflow/core";
+import { JSX } from "preact";
+import { useCallback, useState, useRef } from "preact/hooks";
 
-import { CalendarList } from './components/CalendarList';
-import { DeleteCalendarDialog } from './components/DeleteCalendarDialog';
+import { CalendarList } from "./components/CalendarList";
+import { DeleteCalendarDialog } from "./components/DeleteCalendarDialog";
 import {
   ImportCalendarDialog,
   NEW_CALENDAR_ID,
-} from './components/ImportCalendarDialog';
-import { MergeCalendarDialog } from './components/MergeCalendarDialog';
-import { MergeMenuItem } from './components/MergeMenuItem';
-import { SidebarHeader } from './components/SidebarHeader';
-import type { CalendarSidebarRenderProps } from './plugin';
+} from "./components/ImportCalendarDialog";
+import { MergeCalendarDialog } from "./components/MergeCalendarDialog";
+import { MergeMenuItem } from "./components/MergeMenuItem";
+import { SidebarHeader } from "./components/SidebarHeader";
+import type { CalendarSidebarRenderProps } from "./plugin";
 
 const DefaultCalendarSidebar = ({
   app,
@@ -45,7 +45,7 @@ const DefaultCalendarSidebar = ({
   editingCalendarId: propEditingCalendarId,
   setEditingCalendarId: propSetEditingCalendarId,
   onCreateCalendar,
-  colorPickerMode = 'default',
+  colorPickerMode = "default",
 }: CalendarSidebarRenderProps) => {
   const { t } = useLocale();
 
@@ -68,11 +68,11 @@ const DefaultCalendarSidebar = ({
       const next = new Date(
         current.getFullYear(),
         current.getMonth() + offset,
-        1
+        1,
       );
       app.setVisibleMonth(next);
     },
-    [app]
+    [app],
   );
 
   // Context Menu State
@@ -98,7 +98,7 @@ const DefaultCalendarSidebar = ({
       saturation: number;
       lightness: number;
       alpha: number;
-      layer: 'inner' | 'outer';
+      layer: "inner" | "outer";
     };
     currentColor: string; // For react-color mode
   } | null>(null);
@@ -112,7 +112,7 @@ const DefaultCalendarSidebar = ({
   // Delete Calendar State
   const [deleteState, setDeleteState] = useState<{
     calendarId: string;
-    step: 'initial' | 'confirm_delete';
+    step: "initial" | "confirm_delete";
   } | null>(null);
 
   // Import Calendar State
@@ -133,7 +133,7 @@ const DefaultCalendarSidebar = ({
       });
       setSidebarContextMenu(null);
     },
-    []
+    [],
   );
 
   const handleSidebarContextMenu = useCallback(
@@ -145,7 +145,7 @@ const DefaultCalendarSidebar = ({
       });
       setContextMenu(null);
     },
-    []
+    [],
   );
 
   const handleCloseContextMenu = useCallback(() => {
@@ -158,7 +158,7 @@ const DefaultCalendarSidebar = ({
 
   const handleDeleteCalendar = useCallback(() => {
     if (contextMenu) {
-      setDeleteState({ calendarId: contextMenu.calendarId, step: 'initial' });
+      setDeleteState({ calendarId: contextMenu.calendarId, step: "initial" });
       handleCloseContextMenu();
     }
   }, [contextMenu, handleCloseContextMenu]);
@@ -174,12 +174,12 @@ const DefaultCalendarSidebar = ({
         handleCloseContextMenu();
       }
     },
-    [app, contextMenu, handleCloseContextMenu]
+    [app, contextMenu, handleCloseContextMenu],
   );
 
   const handleCustomColor = useCallback(() => {
     if (contextMenu) {
-      const calendar = calendars.find(c => c.id === contextMenu.calendarId);
+      const calendar = calendars.find((c) => c.id === contextMenu.calendarId);
       if (calendar) {
         const { l, h } = hexToHsl(calendar.colors.lineColor);
         // Calculate slider position from lightness
@@ -207,7 +207,7 @@ const DefaultCalendarSidebar = ({
             saturation: sliderValue,
             lightness: l,
             alpha: 100,
-            layer: 'outer',
+            layer: "outer",
           },
           currentColor: calendar.colors.lineColor,
         });
@@ -226,7 +226,7 @@ const DefaultCalendarSidebar = ({
         handleCloseContextMenu();
       }
     },
-    [contextMenu, handleCloseContextMenu]
+    [contextMenu, handleCloseContextMenu],
   );
 
   const handleMergeConfirm = useCallback(() => {
@@ -254,7 +254,7 @@ const DefaultCalendarSidebar = ({
         setDeleteState(null);
       }
     },
-    [deleteState]
+    [deleteState],
   );
 
   // Import Calendar handler
@@ -274,16 +274,16 @@ const DefaultCalendarSidebar = ({
       if (result.events.length > 0) {
         setImportState({
           events: result.events,
-          filename: file.name.replace(/\.[^/.]+$/, ''), // Remove extension
+          filename: file.name.replace(/\.[^/.]+$/, ""), // Remove extension
         });
       }
 
       // Reset file input
       if (fileInputRef.current) {
-        fileInputRef.current.value = '';
+        fileInputRef.current.value = "";
       }
     },
-    []
+    [],
   );
 
   const handleImportConfirm = useCallback(
@@ -294,16 +294,16 @@ const DefaultCalendarSidebar = ({
         if (targetCalendarId === NEW_CALENDAR_ID) {
           // Create new calendar
           const colors = [
-            '#3b82f6',
-            '#10b981',
-            '#8b5cf6',
-            '#f59e0b',
-            '#ef4444',
-            '#f97316',
-            '#ec4899',
-            '#14b8a6',
-            '#6366f1',
-            '#6b7280',
+            "#3b82f6",
+            "#10b981",
+            "#8b5cf6",
+            "#f59e0b",
+            "#ef4444",
+            "#f97316",
+            "#ec4899",
+            "#14b8a6",
+            "#6366f1",
+            "#6b7280",
           ];
           const randomColor = colors[Math.floor(Math.random() * colors.length)];
           const { colors: calendarColors, darkColors } =
@@ -320,26 +320,26 @@ const DefaultCalendarSidebar = ({
           });
         }
 
-        importState.events.forEach(event => {
+        importState.events.forEach((event) => {
           app.addEvent({ ...event, calendarId: finalCalendarId });
         });
         setImportState(null);
       }
     },
-    [app, importState]
+    [app, importState],
   );
 
   // Export Calendar handler
   const handleExportCalendar = useCallback(() => {
     if (contextMenu) {
-      const calendar = calendars.find(c => c.id === contextMenu.calendarId);
+      const calendar = calendars.find((c) => c.id === contextMenu.calendarId);
       if (calendar) {
         const events = app
           .getEvents()
-          .filter(e => e.calendarId === calendar.id);
+          .filter((e) => e.calendarId === calendar.id);
         downloadICS(events, {
           calendarName: calendar.name,
-          filename: calendar.name || 'calendar',
+          filename: calendar.name || "calendar",
         });
       }
       handleCloseContextMenu();
@@ -347,14 +347,14 @@ const DefaultCalendarSidebar = ({
   }, [contextMenu, calendars, app, handleCloseContextMenu]);
 
   const sourceCalendarName = mergeState
-    ? calendars.find(c => c.id === mergeState.sourceId)?.name || 'Unknown'
-    : '';
+    ? calendars.find((c) => c.id === mergeState.sourceId)?.name || "Unknown"
+    : "";
   const targetCalendarName = mergeState
-    ? calendars.find(c => c.id === mergeState.targetId)?.name || 'Unknown'
-    : '';
+    ? calendars.find((c) => c.id === mergeState.targetId)?.name || "Unknown"
+    : "";
   const deleteCalendarName = deleteState
-    ? calendars.find(c => c.id === deleteState.calendarId)?.name || 'Unknown'
-    : '';
+    ? calendars.find((c) => c.id === deleteState.calendarId)?.name || "Unknown"
+    : "";
 
   const readOnlyConfig = app.getReadOnlyConfig();
   const isEditable = !app.state.readOnly;
@@ -434,13 +434,13 @@ const DefaultCalendarSidebar = ({
             isEditable={isEditable}
           />
 
-          <div className='border-t border-gray-200 dark:border-slate-800'>
+          <div className="border-t border-gray-200 dark:border-slate-800">
             <MiniCalendar
               visibleMonth={app.getVisibleMonth()}
               currentDate={app.getCurrentDate()}
               showHeader={true}
               onMonthChange={handleMonthChange}
-              onDateSelect={date => app.setCurrentDate(date)}
+              onDateSelect={(date) => app.setCurrentDate(date)}
             />
           </div>
         </>
@@ -452,38 +452,38 @@ const DefaultCalendarSidebar = ({
           x={contextMenu.x}
           y={contextMenu.y}
           onClose={handleCloseContextMenu}
-          className='w-64 p-2'
+          className="w-64 p-2"
         >
           <ContentSlot
-            generatorName='calendarContextMenu'
+            generatorName="calendarContextMenu"
             generatorArgs={{
-              calendar: calendars.find(c => c.id === contextMenu.calendarId)!,
+              calendar: calendars.find((c) => c.id === contextMenu.calendarId)!,
               onClose: handleCloseContextMenu,
             }}
             defaultContent={
               renderCalendarContextMenu ? (
                 renderCalendarContextMenu(
-                  calendars.find(c => c.id === contextMenu.calendarId)!,
-                  handleCloseContextMenu
+                  calendars.find((c) => c.id === contextMenu.calendarId)!,
+                  handleCloseContextMenu,
                 )
               ) : (
                 <>
-                  <ContextMenuLabel>{t('calendarOptions')}</ContextMenuLabel>
+                  <ContextMenuLabel>{t("calendarOptions")}</ContextMenuLabel>
                   <MergeMenuItem
                     calendars={calendars}
                     currentCalendarId={contextMenu.calendarId}
                     onMergeSelect={handleMergeSelect}
                   />
                   <ContextMenuItem onClick={handleDeleteCalendar}>
-                    {t('delete')}
+                    {t("delete")}
                   </ContextMenuItem>
                   <ContextMenuItem onClick={handleExportCalendar}>
-                    {t('exportCalendar') || 'Export Calendar'}
+                    {t("exportCalendar") || "Export Calendar"}
                   </ContextMenuItem>
                   <ContextMenuSeparator />
                   <ContextMenuColorPicker
                     selectedColor={
-                      calendars.find(c => c.id === contextMenu.calendarId)
+                      calendars.find((c) => c.id === contextMenu.calendarId)
                         ?.colors.lineColor
                     }
                     onSelect={handleColorSelect}
@@ -502,7 +502,7 @@ const DefaultCalendarSidebar = ({
             x={sidebarContextMenu.x}
             y={sidebarContextMenu.y}
             onClose={handleCloseSidebarContextMenu}
-            className='w-max p-2'
+            className="w-max p-2"
           >
             <ContextMenuItem
               onClick={() => {
@@ -510,10 +510,10 @@ const DefaultCalendarSidebar = ({
                 handleCloseSidebarContextMenu();
               }}
             >
-              {t('newCalendar') || 'New Calendar'}
+              {t("newCalendar") || "New Calendar"}
             </ContextMenuItem>
             <ContextMenuItem onClick={handleImportClick}>
-              {t('importCalendar') || 'Import Calendar'}
+              {t("importCalendar") || "Import Calendar"}
             </ContextMenuItem>
             <ContextMenuItem
               onClick={() => {
@@ -521,18 +521,18 @@ const DefaultCalendarSidebar = ({
                 handleCloseSidebarContextMenu();
               }}
             >
-              {t('refreshAll') || 'Refresh All'}
+              {t("refreshAll") || "Refresh All"}
             </ContextMenuItem>
           </ContextMenu>,
-          document.body
+          document.body,
         )}
 
       {/* Hidden file input for ICS import */}
       <input
         ref={fileInputRef}
-        type='file'
-        accept='.ics'
-        style={{ display: 'none' }}
+        type="file"
+        accept=".ics"
+        style={{ display: "none" }}
         onChange={handleFileChange}
       />
 
@@ -544,7 +544,7 @@ const DefaultCalendarSidebar = ({
             onConfirm={handleImportConfirm}
             onCancel={() => setImportState(null)}
           />,
-          document.body
+          document.body,
         )}
 
       {mergeState &&
@@ -555,7 +555,7 @@ const DefaultCalendarSidebar = ({
             onConfirm={handleMergeConfirm}
             onCancel={() => setMergeState(null)}
           />,
-          document.body
+          document.body,
         )}
 
       {deleteState &&
@@ -565,35 +565,35 @@ const DefaultCalendarSidebar = ({
             calendarName={deleteCalendarName}
             calendars={calendars}
             step={deleteState.step}
-            onStepChange={step =>
-              setDeleteState(prev => (prev ? { ...prev, step } : null))
+            onStepChange={(step) =>
+              setDeleteState((prev) => (prev ? { ...prev, step } : null))
             }
             onConfirmDelete={handleConfirmDelete}
             onCancel={() => setDeleteState(null)}
             onMergeSelect={handleDeleteMergeSelect}
           />,
-          document.body
+          document.body,
         )}
 
       {customColorPicker &&
         createPortal(
           <div
-            className='fixed inset-0 z-50'
+            className="fixed inset-0 z-50"
             onMouseDown={() => {
               app.updateCalendar(customColorPicker.calendarId, {});
               setCustomColorPicker(null);
             }}
           >
             <div
-              className='absolute flex items-center justify-center'
+              className="absolute flex items-center justify-center"
               style={{
                 top: customColorPicker.y,
                 left: customColorPicker.x,
-                transform: 'translate(280%, -50%)',
+                transform: "translate(280%, -50%)",
               }}
-              onMouseDown={e => e.stopPropagation()}
+              onMouseDown={(e) => e.stopPropagation()}
             >
-              {colorPickerMode === 'custom' ? (
+              {colorPickerMode === "custom" ? (
                 <BlossomColorPicker
                   defaultValue={customColorPicker.initialColor}
                   coreSize={28}
@@ -601,9 +601,9 @@ const DefaultCalendarSidebar = ({
                   initialExpanded={true}
                   adaptivePositioning={true}
                   openOnHover={false}
-                  onChange={color => {
+                  onChange={(color) => {
                     const { colors, darkColors } = getCalendarColorsForHex(
-                      color.hex
+                      color.hex,
                     );
                     app.updateCalendar(
                       customColorPicker.calendarId,
@@ -611,7 +611,7 @@ const DefaultCalendarSidebar = ({
                         colors,
                         darkColors,
                       },
-                      true
+                      true,
                     );
                   }}
                   onCollapse={() => {
@@ -621,16 +621,16 @@ const DefaultCalendarSidebar = ({
                 />
               ) : (
                 <ContentSlot
-                  generatorName='colorPicker'
+                  generatorName="colorPicker"
                   generatorArgs={{
-                    variant: 'sketch', // Pending: change name
+                    variant: "sketch", // Pending: change name
                     color: customColorPicker.currentColor,
                     onChange: (color: { hex: string }) => {
-                      setCustomColorPicker(prev =>
-                        prev ? { ...prev, currentColor: color.hex } : null
+                      setCustomColorPicker((prev) =>
+                        prev ? { ...prev, currentColor: color.hex } : null,
                       );
                       const { colors, darkColors } = getCalendarColorsForHex(
-                        color.hex
+                        color.hex,
                       );
                       app.updateCalendar(
                         customColorPicker.calendarId,
@@ -638,12 +638,12 @@ const DefaultCalendarSidebar = ({
                           colors,
                           darkColors,
                         },
-                        true
+                        true,
                       );
                     },
                     onChangeComplete: (color: { hex: string }) => {
                       const { colors, darkColors } = getCalendarColorsForHex(
-                        color.hex
+                        color.hex,
                       );
                       app.updateCalendar(customColorPicker.calendarId, {
                         colors,
@@ -655,11 +655,11 @@ const DefaultCalendarSidebar = ({
                     <DefaultColorPicker
                       color={customColorPicker.currentColor}
                       onChange={(color, isPending) => {
-                        setCustomColorPicker(prev =>
-                          prev ? { ...prev, currentColor: color.hex } : null
+                        setCustomColorPicker((prev) =>
+                          prev ? { ...prev, currentColor: color.hex } : null,
                         );
                         const { colors, darkColors } = getCalendarColorsForHex(
-                          color.hex
+                          color.hex,
                         );
                         app.updateCalendar(
                           customColorPicker.calendarId,
@@ -667,7 +667,7 @@ const DefaultCalendarSidebar = ({
                             colors,
                             darkColors,
                           },
-                          isPending
+                          isPending,
                         );
                       }}
                       onClose={() => {
@@ -680,7 +680,7 @@ const DefaultCalendarSidebar = ({
               )}
             </div>
           </div>,
-          document.body
+          document.body,
         )}
     </div>
   );

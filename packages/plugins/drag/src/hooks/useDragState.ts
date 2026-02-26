@@ -7,17 +7,17 @@ import {
   WeekDayDragState,
   UseDragStateReturn,
   Event as CalendarEvent,
-} from '@dayflow/core';
-import { throttle } from '@drag/utils/throttle';
-import { useRef, useCallback, useState, useMemo } from 'preact/hooks';
+} from "@dayflow/core"
+import { throttle } from "@drag/utils/throttle"
+import { useRef, useCallback, useState, useMemo } from "preact/hooks"
 
-export const useDragState = (options: useDragProps): UseDragStateReturn => {
-  const { viewType, onEventsUpdate } = options;
+export const useDragState = ( options: useDragProps ): UseDragStateReturn => {
+  const { viewType, onEventsUpdate } = options
 
-  const isMonthView = viewType === ViewType.MONTH;
+  const isMonthView = viewType === ViewType.MONTH
 
   // Drag reference
-  const dragRef = useRef<UnifiedDragRef>({
+  const dragRef = useRef<UnifiedDragRef> ( {
     active: false,
     mode: null,
     eventId: null,
@@ -49,63 +49,63 @@ export const useDragState = (options: useDragProps): UseDragStateReturn => {
     originalEndTime: null,
     sourceElement: null,
     indicatorVisible: false,
-  });
+  } )
 
-  const currentDragRef = useRef({ x: 0, y: 0 });
+  const currentDragRef = useRef ( { x: 0, y: 0 } )
 
   // Initial drag state
-  const initialDragState = useMemo(
+  const initialDragState = useMemo (
     () =>
       isMonthView
-        ? ({
-            active: false,
-            mode: null,
-            eventId: null,
-            targetDate: null,
-            startDate: null,
-            endDate: null,
-          } as MonthDragState)
-        : ({
-            active: false,
-            mode: null,
-            eventId: null,
-            dayIndex: 0,
-            startHour: 0,
-            endHour: 0,
-            allDay: false,
-          } as WeekDayDragState),
-    [isMonthView]
-  );
+        ? ( {
+          active: false,
+          mode: null,
+          eventId: null,
+          targetDate: null,
+          startDate: null,
+          endDate: null,
+        } as MonthDragState )
+        : ( {
+          active: false,
+          mode: null,
+          eventId: null,
+          dayIndex: 0,
+          startHour: 0,
+          endHour: 0,
+          allDay: false,
+        } as WeekDayDragState ),
+    [ isMonthView ],
+  )
 
-  const [dragState, setDragState] = useState<MonthDragState | WeekDayDragState>(
-    initialDragState
-  );
+  const [ dragState, setDragState ] = useState<MonthDragState | WeekDayDragState> (
+    initialDragState,
+  )
 
-  const throttledSetEvents = useMemo(
+  const throttledSetEvents = useMemo (
     () =>
-      throttle(
-        ((
-          updateFunc: (events: CalendarEvent[]) => CalendarEvent[],
-          interactionType?: string
-        ) => onEventsUpdate(updateFunc, interactionType === 'resize')) as any,
-        isMonthView ? 16 : 8
+      throttle (
+        ( (
+          updateFunc: ( events: CalendarEvent[] ) => CalendarEvent[],
+          interactionType?: string,
+        ) => onEventsUpdate ( updateFunc, interactionType === "resize" ) ) as any,
+        isMonthView ? 16 : 8,
       ),
-    [isMonthView, onEventsUpdate]
-  );
+    [ isMonthView, onEventsUpdate ],
+  )
 
   // Reset state
-  const resetDragState = useCallback(() => {
-    if (isMonthView) {
-      setDragState({
+  const resetDragState = useCallback ( () => {
+    if ( isMonthView ) {
+      setDragState ( {
         active: false,
         mode: null,
         eventId: null,
         targetDate: null,
         startDate: null,
         endDate: null,
-      });
+      } )
     } else {
-      setDragState({
+      setDragState ( {
         active: false,
         mode: null,
         eventId: null,
@@ -113,7 +113,7 @@ export const useDragState = (options: useDragProps): UseDragStateReturn => {
         startHour: 0,
         endHour: 0,
         allDay: false,
-      });
+      } )
     }
 
     dragRef.current = {
@@ -147,8 +147,8 @@ export const useDragState = (options: useDragProps): UseDragStateReturn => {
       originalEndTime: null,
       sourceElement: null,
       indicatorVisible: false,
-    };
-  }, [isMonthView]);
+    }
+  }, [ isMonthView ] )
 
   return {
     dragRef,
@@ -157,5 +157,5 @@ export const useDragState = (options: useDragProps): UseDragStateReturn => {
     setDragState,
     resetDragState,
     throttledSetEvents,
-  };
-};
+  }
+}

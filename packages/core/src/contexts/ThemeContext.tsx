@@ -1,14 +1,14 @@
-import { h, createContext, ComponentChildren } from 'preact';
+import { h, createContext, ComponentChildren } from "preact";
 import {
   useContext,
   useEffect,
   useState,
   useCallback,
   useMemo,
-} from 'preact/hooks';
+} from "preact/hooks";
 
-import { ThemeMode } from '@/types/calendarTypes';
-import { resolveAppliedTheme } from '@/utils/themeUtils';
+import { ThemeMode } from "@/types/calendarTypes";
+import { resolveAppliedTheme } from "@/utils/themeUtils";
 
 /**
  * Theme Context Type
@@ -17,7 +17,7 @@ export interface ThemeContextType {
   /** Current theme mode (can be 'auto') */
   theme: ThemeMode;
   /** Effective theme (resolved, never 'auto') */
-  effectiveTheme: 'light' | 'dark';
+  effectiveTheme: "light" | "dark";
   /** Set theme mode */
   setTheme: (mode: ThemeMode) => void;
 }
@@ -35,7 +35,7 @@ export interface ThemeProviderProps {
   /** Initial theme mode */
   initialTheme?: ThemeMode;
   /** Callback when theme changes */
-  onThemeChange?: (theme: ThemeMode, effectiveTheme: 'light' | 'dark') => void;
+  onThemeChange?: (theme: ThemeMode, effectiveTheme: "light" | "dark") => void;
 }
 
 /**
@@ -53,15 +53,15 @@ export interface ThemeProviderProps {
  */
 export const ThemeProvider = ({
   children,
-  initialTheme = 'light',
+  initialTheme = "light",
   onThemeChange,
 }: ThemeProviderProps) => {
   const [theme, setThemeState] = useState<ThemeMode>(initialTheme as ThemeMode);
-  const [systemTheme, setSystemTheme] = useState<'light' | 'dark'>('light');
+  const [systemTheme, setSystemTheme] = useState<"light" | "dark">("light");
 
   // Compute effective theme (resolve 'auto' to actual theme)
-  const effectiveTheme: 'light' | 'dark' =
-    theme === 'auto' ? systemTheme : theme;
+  const effectiveTheme: "light" | "dark" =
+    theme === "auto" ? systemTheme : theme;
 
   /**
    * Sync initialTheme prop changes to internal state
@@ -81,32 +81,32 @@ export const ThemeProvider = ({
    * Listen to system theme changes (for 'auto' mode)
    */
   useEffect(() => {
-    if (typeof window === 'undefined' || !window.matchMedia) {
+    if (typeof window === "undefined" || !window.matchMedia) {
       return;
     }
 
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
 
     const handleChange = (e: MediaQueryListEvent | MediaQueryList) => {
-      const newSystemTheme = e.matches ? 'dark' : 'light';
+      const newSystemTheme = e.matches ? "dark" : "light";
       setSystemTheme(newSystemTheme);
     };
 
     // Initial check on mount
-    const initialSystemTheme = mediaQuery.matches ? 'dark' : 'light';
+    const initialSystemTheme = mediaQuery.matches ? "dark" : "light";
     setSystemTheme(initialSystemTheme);
 
     // Listen for changes
     // Use addEventListener if available (modern browsers), fallback to addListener
     if (mediaQuery.addEventListener) {
-      mediaQuery.addEventListener('change', handleChange);
+      mediaQuery.addEventListener("change", handleChange);
     } else if (mediaQuery.addListener) {
       mediaQuery.addListener(handleChange);
     }
 
     return () => {
       if (mediaQuery.removeEventListener) {
-        mediaQuery.removeEventListener('change', handleChange);
+        mediaQuery.removeEventListener("change", handleChange);
       } else if (mediaQuery.removeListener) {
         mediaQuery.removeListener(handleChange);
       }
@@ -117,7 +117,7 @@ export const ThemeProvider = ({
    * Apply theme to document root
    */
   useEffect(() => {
-    if (typeof document === 'undefined') {
+    if (typeof document === "undefined") {
       return;
     }
 
@@ -125,14 +125,14 @@ export const ThemeProvider = ({
 
     // When in auto mode, respect any existing host overrides (like global dark mode toggles)
     const appliedTheme = resolveAppliedTheme(effectiveTheme);
-    const targetTheme = theme === 'auto' ? appliedTheme : effectiveTheme;
+    const targetTheme = theme === "auto" ? appliedTheme : effectiveTheme;
 
     // Remove both classes first to avoid duplicates
-    root.classList.remove('light', 'dark');
+    root.classList.remove("light", "dark");
     root.classList.add(targetTheme);
 
     // Track which theme DayFlow applied for other consumers if needed
-    if (theme === 'auto') {
+    if (theme === "auto") {
       delete root.dataset.dayflowThemeOverride;
     } else {
       root.dataset.dayflowThemeOverride = targetTheme;
@@ -157,7 +157,7 @@ export const ThemeProvider = ({
       effectiveTheme,
       setTheme,
     }),
-    [theme, effectiveTheme, setTheme]
+    [theme, effectiveTheme, setTheme],
   );
 
   return (
@@ -169,7 +169,7 @@ export const useTheme = (): ThemeContextType => {
   const context = useContext(ThemeContext);
 
   if (context === undefined) {
-    throw new Error('useTheme must be used within a ThemeProvider');
+    throw new Error("useTheme must be used within a ThemeProvider");
   }
 
   return context;

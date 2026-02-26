@@ -1,8 +1,8 @@
 import {
   BlossomColorPicker as VanillaBlossomColorPicker,
   BlossomColorPickerOptions,
-} from '@dayflow/blossom-color-picker';
-import { useEffect, useRef } from 'preact/hooks';
+} from "@dayflow/blossom-color-picker";
+import { useEffect, useRef } from "preact/hooks";
 
 interface BlossomColorPickerProps extends Partial<BlossomColorPickerOptions> {
   className?: string;
@@ -17,7 +17,7 @@ export const BlossomColorPicker = (props: BlossomColorPickerProps) => {
       const { ...options } = props;
       pickerRef.current = new VanillaBlossomColorPicker(
         containerRef.current,
-        options
+        options,
       );
 
       if (options.initialExpanded) {

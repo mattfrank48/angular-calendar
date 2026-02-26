@@ -1,18 +1,18 @@
-import { JSX } from 'preact';
-import { createPortal } from 'preact/compat';
-import { useMemo, useState, useEffect } from 'preact/hooks';
-import { Temporal } from 'temporal-polyfill';
+import { JSX } from "preact";
+import { createPortal } from "preact/compat";
+import { useMemo, useState, useEffect } from "preact/hooks";
+import { Temporal } from "temporal-polyfill";
 
-import RangePicker from '@/components/rangePicker';
-import { useTheme } from '@/contexts/ThemeContext';
-import { getDefaultCalendarRegistry } from '@/core/calendarRegistry';
-import { useLocale } from '@/locale';
-import { eventDetailPanel } from '@/styles/classNames';
-import { EventDetailPanelProps, CalendarType, ICalendarApp } from '@/types';
-import { isPlainDate } from '@/utils/temporal';
-import { resolveAppliedTheme } from '@/utils/themeUtils';
+import RangePicker from "@/components/rangePicker";
+import { useTheme } from "@/contexts/ThemeContext";
+import { getDefaultCalendarRegistry } from "@/core/calendarRegistry";
+import { useLocale } from "@/locale";
+import { eventDetailPanel } from "@/styles/classNames";
+import { EventDetailPanelProps, CalendarType, ICalendarApp } from "@/types";
+import { isPlainDate } from "@/utils/temporal";
+import { resolveAppliedTheme } from "@/utils/themeUtils";
 
-import { CalendarOption, CalendarPicker } from './CalendarPicker';
+import { CalendarOption, CalendarPicker } from "./CalendarPicker";
 
 interface DefaultEventDetailPanelProps extends EventDetailPanelProps {
   app?: ICalendarApp;
@@ -39,7 +39,7 @@ const DefaultEventDetailPanel = ({
 
   // Local state for debounced inputs
   const [title, setTitle] = useState(event.title);
-  const [description, setDescription] = useState(event.description ?? '');
+  const [description, setDescription] = useState(event.description ?? "");
 
   // Sync local state when event prop changes (external updates or navigation)
   useEffect(() => {
@@ -47,7 +47,7 @@ const DefaultEventDetailPanel = ({
   }, [event.title]);
 
   useEffect(() => {
-    setDescription(event.description ?? '');
+    setDescription(event.description ?? "");
   }, [event.description]);
 
   // Debounce logic for Title
@@ -67,7 +67,7 @@ const DefaultEventDetailPanel = ({
   // Debounce logic for Description
   useEffect(() => {
     const timer = setTimeout(() => {
-      const currentDesc = event.description ?? '';
+      const currentDesc = event.description ?? "";
       if (description !== currentDesc) {
         onEventUpdate({
           ...event,
@@ -110,16 +110,16 @@ const DefaultEventDetailPanel = ({
 
   // Check if dark mode is active (either via theme context or DOM class)
   const isDark =
-    appliedTheme === 'dark' ||
-    (typeof document !== 'undefined' &&
-      document.documentElement.classList.contains('dark'));
+    appliedTheme === "dark" ||
+    (typeof document !== "undefined" &&
+      document.documentElement.classList.contains("dark"));
   const isEditable = !app?.state.readOnly;
   const isViewable = app?.getReadOnlyConfig().viewable !== false;
 
   if (!isViewable) return null;
 
-  const arrowBgColor = isDark ? '#1f2937' : 'white';
-  const arrowBorderColor = isDark ? 'rgb(55, 65, 81)' : 'rgb(229, 231, 235)';
+  const arrowBgColor = isDark ? "#1f2937" : "white";
+  const arrowBorderColor = isDark ? "rgb(55, 65, 81)" : "rgb(229, 231, 235)";
 
   const convertToAllDay = () => {
     const plainDate = isPlainDate(event.start)
@@ -162,7 +162,7 @@ const DefaultEventDetailPanel = ({
   };
 
   const handleAllDayRangeChange = (
-    nextRange: [Temporal.ZonedDateTime, Temporal.ZonedDateTime]
+    nextRange: [Temporal.ZonedDateTime, Temporal.ZonedDateTime],
   ) => {
     const [start, end] = nextRange;
     onEventUpdate({
@@ -176,30 +176,30 @@ const DefaultEventDetailPanel = ({
   const calculateArrowStyle = (): JSX.CSSProperties => {
     let arrowStyle: JSX.CSSProperties = {};
 
-    if (eventVisibility === 'sticky-top') {
+    if (eventVisibility === "sticky-top") {
       const calendarContent =
-        calendarRef.current?.querySelector('.calendar-content');
+        calendarRef.current?.querySelector(".calendar-content");
       if (calendarContent) {
         const contentRect = calendarContent.getBoundingClientRect();
         const stickyEventCenterY = contentRect.top + 3;
         const arrowRelativeY = stickyEventCenterY - position.top;
 
         arrowStyle = {
-          position: 'absolute',
-          width: '12px',
-          height: '12px',
+          position: "absolute",
+          width: "12px",
+          height: "12px",
           backgroundColor: arrowBgColor,
-          transform: 'rotate(45deg)',
-          transformOrigin: 'center',
+          transform: "rotate(45deg)",
+          transformOrigin: "center",
           top: `${arrowRelativeY - 6}px`,
-          borderRight: `${position.isSunday ? `1px solid ${arrowBorderColor}` : 'none'}`,
-          borderTop: `${position.isSunday ? `1px solid ${arrowBorderColor}` : 'none'}`,
-          borderLeft: `${position.isSunday ? 'none' : `1px solid ${arrowBorderColor}`}`,
-          borderBottom: `${position.isSunday ? 'none' : `1px solid ${arrowBorderColor}`}`,
-          ...(position.isSunday ? { right: '-6px' } : { left: '-6px' }),
+          borderRight: `${position.isSunday ? `1px solid ${arrowBorderColor}` : "none"}`,
+          borderTop: `${position.isSunday ? `1px solid ${arrowBorderColor}` : "none"}`,
+          borderLeft: `${position.isSunday ? "none" : `1px solid ${arrowBorderColor}`}`,
+          borderBottom: `${position.isSunday ? "none" : `1px solid ${arrowBorderColor}`}`,
+          ...(position.isSunday ? { right: "-6px" } : { left: "-6px" }),
         };
       }
-    } else if (eventVisibility === 'sticky-bottom') {
+    } else if (eventVisibility === "sticky-bottom") {
       const panelElement = panelRef.current;
       let arrowTop = 200;
 
@@ -215,26 +215,26 @@ const DefaultEventDetailPanel = ({
       }
 
       arrowStyle = {
-        position: 'absolute',
-        width: '12px',
-        height: '12px',
+        position: "absolute",
+        width: "12px",
+        height: "12px",
         backgroundColor: arrowBgColor,
-        transform: 'rotate(45deg)',
-        transformOrigin: 'center',
+        transform: "rotate(45deg)",
+        transformOrigin: "center",
         top: `${arrowTop}px`,
-        left: position.isSunday ? undefined : '-6px',
-        right: position.isSunday ? '-6px' : undefined,
-        borderRight: `${position.isSunday ? `1px solid ${arrowBorderColor}` : 'none'}`,
-        borderTop: `${position.isSunday ? `1px solid ${arrowBorderColor}` : 'none'}`,
-        borderLeft: `${position.isSunday ? 'none' : `1px solid ${arrowBorderColor}`}`,
-        borderBottom: `${position.isSunday ? 'none' : `1px solid ${arrowBorderColor}`}`,
+        left: position.isSunday ? undefined : "-6px",
+        right: position.isSunday ? "-6px" : undefined,
+        borderRight: `${position.isSunday ? `1px solid ${arrowBorderColor}` : "none"}`,
+        borderTop: `${position.isSunday ? `1px solid ${arrowBorderColor}` : "none"}`,
+        borderLeft: `${position.isSunday ? "none" : `1px solid ${arrowBorderColor}`}`,
+        borderBottom: `${position.isSunday ? "none" : `1px solid ${arrowBorderColor}`}`,
       };
     } else {
       if (position && selectedEventElementRef.current && calendarRef.current) {
         const eventRect =
           selectedEventElementRef.current.getBoundingClientRect();
         const calendarContent =
-          calendarRef.current.querySelector('.calendar-content');
+          calendarRef.current.querySelector(".calendar-content");
 
         if (calendarContent) {
           const viewportRect = calendarContent.getBoundingClientRect();
@@ -271,22 +271,22 @@ const DefaultEventDetailPanel = ({
           const minArrowY = 12;
           const finalArrowY = Math.max(
             minArrowY,
-            Math.min(maxArrowY, arrowRelativeY)
+            Math.min(maxArrowY, arrowRelativeY),
           );
 
           arrowStyle = {
-            position: 'absolute',
-            width: '12px',
-            height: '12px',
+            position: "absolute",
+            width: "12px",
+            height: "12px",
             backgroundColor: arrowBgColor,
-            transform: 'rotate(45deg)',
-            transformOrigin: 'center',
+            transform: "rotate(45deg)",
+            transformOrigin: "center",
             top: `${finalArrowY - 6}px`,
-            borderRight: `${position.isSunday ? `1px solid ${arrowBorderColor}` : 'none'}`,
-            borderTop: `${position.isSunday ? `1px solid ${arrowBorderColor}` : 'none'}`,
-            borderLeft: `${position.isSunday ? 'none' : `1px solid ${arrowBorderColor}`}`,
-            borderBottom: `${position.isSunday ? 'none' : `1px solid ${arrowBorderColor}`}`,
-            ...(position.isSunday ? { right: '-6px' } : { left: '-6px' }),
+            borderRight: `${position.isSunday ? `1px solid ${arrowBorderColor}` : "none"}`,
+            borderTop: `${position.isSunday ? `1px solid ${arrowBorderColor}` : "none"}`,
+            borderLeft: `${position.isSunday ? "none" : `1px solid ${arrowBorderColor}`}`,
+            borderBottom: `${position.isSunday ? "none" : `1px solid ${arrowBorderColor}`}`,
+            ...(position.isSunday ? { right: "-6px" } : { left: "-6px" }),
           };
         }
       }
@@ -301,25 +301,25 @@ const DefaultEventDetailPanel = ({
     <div
       ref={panelRef}
       className={`${eventDetailPanel} p-4`}
-      data-event-detail-panel='true'
+      data-event-detail-panel="true"
       data-event-id={event.id}
       style={{
         top: `${position.top}px`,
         left: `${position.left}px`,
         zIndex: 9999,
-        pointerEvents: 'auto',
+        pointerEvents: "auto",
       }}
     >
       <div style={arrowStyle}></div>
-      <span className='mb-1 block text-xs text-gray-600 dark:text-gray-300'>
-        {t('eventTitle')}
+      <span className="mb-1 block text-xs text-gray-600 dark:text-gray-300">
+        {t("eventTitle")}
       </span>
-      <div className='mb-3 flex items-center justify-between gap-3'>
-        <div className='flex-1'>
+      <div className="mb-3 flex items-center justify-between gap-3">
+        <div className="flex-1">
           <input
             id={`event-title-${event.id}`}
-            name='title'
-            type='text'
+            name="title"
+            type="text"
             value={title}
             readOnly={!isEditable}
             disabled={!isEditable}
@@ -329,14 +329,14 @@ const DefaultEventDetailPanel = ({
             onInput={(e: React.FormEvent<HTMLInputElement>) =>
               setTitle((e.target as HTMLInputElement).value)
             }
-            className='w-full rounded-lg border border-slate-200 px-3 py-1.5 text-sm text-gray-900 shadow-sm transition focus:border-primary focus:ring-2 focus:ring-primary focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100'
+            className="w-full rounded-lg border border-slate-200 px-3 py-1.5 text-sm text-gray-900 shadow-sm transition focus:border-primary focus:ring-2 focus:ring-primary focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
           />
         </div>
         {isEditable && (
           <CalendarPicker
             options={colorOptions}
-            value={event.calendarId || 'blue'}
-            onChange={value => {
+            value={event.calendarId || "blue"}
+            onChange={(value) => {
               onEventUpdate({
                 ...event,
                 calendarId: value,
@@ -348,13 +348,13 @@ const DefaultEventDetailPanel = ({
       </div>
 
       {isAllDay ? (
-        <div className='mb-3'>
-          <div className='mb-1 text-xs text-gray-600 dark:text-gray-300'>
-            {t('dateRange')}
+        <div className="mb-3">
+          <div className="mb-1 text-xs text-gray-600 dark:text-gray-300">
+            {t("dateRange")}
           </div>
           <RangePicker
             value={[event.start, event.end]}
-            format='YYYY-MM-DD'
+            format="YYYY-MM-DD"
             showTime={false}
             timeZone={eventTimeZone}
             matchTriggerWidth
@@ -364,16 +364,16 @@ const DefaultEventDetailPanel = ({
           />
         </div>
       ) : (
-        <div className='mb-3'>
-          <div className='mb-1 text-xs text-gray-600 dark:text-gray-300'>
-            {t('timeRange')}
+        <div className="mb-3">
+          <div className="mb-1 text-xs text-gray-600 dark:text-gray-300">
+            {t("timeRange")}
           </div>
           <RangePicker
             value={[event.start, event.end]}
             timeZone={eventTimeZone}
             disabled={!isEditable}
             onChange={(
-              nextRange: [Temporal.ZonedDateTime, Temporal.ZonedDateTime]
+              nextRange: [Temporal.ZonedDateTime, Temporal.ZonedDateTime],
             ) => {
               const [start, end] = nextRange;
               onEventUpdate({
@@ -387,59 +387,61 @@ const DefaultEventDetailPanel = ({
         </div>
       )}
 
-      <div className='mb-3'>
-        <span className='mb-1 block text-xs text-gray-600 dark:text-gray-300'>
-          {t('note')}
+      <div className="mb-3">
+        <span className="mb-1 block text-xs text-gray-600 dark:text-gray-300">
+          {t("note")}
         </span>
         <textarea
           id={`event-note-${event.id}`}
-          name='note'
+          name="note"
           value={description}
           readOnly={!isEditable}
           disabled={!isEditable}
-          onChange={e =>
+          onChange={(e) =>
             setDescription((e.target as HTMLTextAreaElement).value)
           }
-          onInput={e => setDescription((e.target as HTMLTextAreaElement).value)}
+          onInput={(e) =>
+            setDescription((e.target as HTMLTextAreaElement).value)
+          }
           rows={3}
-          className='w-full resize-none rounded-lg border border-slate-200 px-3 py-2 text-sm text-gray-900 shadow-sm transition focus:border-primary focus:ring-2 focus:ring-primary focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100'
-          placeholder={t('addNotePlaceholder')}
+          className="w-full resize-none rounded-lg border border-slate-200 px-3 py-2 text-sm text-gray-900 shadow-sm transition focus:border-primary focus:ring-2 focus:ring-primary focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+          placeholder={t("addNotePlaceholder")}
         />
       </div>
 
       {isEditable && (
-        <div className='flex space-x-2'>
+        <div className="flex space-x-2">
           {isAllDay ? (
             <button
-              type='button'
-              className='rounded bg-primary px-2 py-1 text-xs font-medium text-primary-foreground transition hover:bg-primary'
+              type="button"
+              className="rounded bg-primary px-2 py-1 text-xs font-medium text-primary-foreground transition hover:bg-primary"
               onClick={convertToRegular}
             >
-              {t('setAsTimed')}
+              {t("setAsTimed")}
             </button>
           ) : (
             <button
-              type='button'
-              className='rounded bg-primary px-2 py-1 text-xs font-medium text-primary-foreground transition hover:bg-primary'
+              type="button"
+              className="rounded bg-primary px-2 py-1 text-xs font-medium text-primary-foreground transition hover:bg-primary"
               onClick={convertToAllDay}
             >
-              {t('setAsAllDay')}
+              {t("setAsAllDay")}
             </button>
           )}
 
           <button
-            type='button'
-            className='rounded bg-destructive px-2 py-1 text-xs font-medium text-destructive-foreground transition hover:bg-destructive/90'
+            type="button"
+            className="rounded bg-destructive px-2 py-1 text-xs font-medium text-destructive-foreground transition hover:bg-destructive/90"
             onClick={() => onEventDelete(event.id)}
           >
-            {t('delete')}
+            {t("delete")}
           </button>
         </div>
       )}
     </div>
   );
 
-  if (typeof window === 'undefined' || typeof document === 'undefined') {
+  if (typeof window === "undefined" || typeof document === "undefined") {
     return null;
   }
 

@@ -5,4 +5,4 @@ export const LAYOUT_CONFIG = {
   MIN_WIDTH: 25, // Minimum width percentage
   MARGIN_BETWEEN: 1, // Margin between parallel events percentage
   EDGE_MARGIN_PERCENT: 0.9, // Edge margin percentage (replaces pixel value calculation)
-} as const;
+} as const

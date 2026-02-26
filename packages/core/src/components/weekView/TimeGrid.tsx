@@ -1,9 +1,9 @@
-import { RefObject, JSX } from 'preact';
-import { useState, useRef } from 'preact/hooks';
+import { RefObject, JSX } from "preact";
+import { useState, useRef } from "preact/hooks";
 
-import CalendarEventComponent from '@/components/calendarEvent';
-import { GridContextMenu } from '@/components/contextMenu';
-import { analyzeMultiDayRegularEvent } from '@/components/monthView/util';
+import CalendarEventComponent from "@/components/calendarEvent";
+import { GridContextMenu } from "@/components/contextMenu";
+import { analyzeMultiDayRegularEvent } from "@/components/monthView/util";
 import {
   timeSlot,
   timeLabel,
@@ -12,7 +12,7 @@ import {
   currentTimeLine,
   currentTimeLabel,
   timeGridBoundary,
-} from '@/styles/classNames';
+} from "@/styles/classNames";
 import {
   EventLayout,
   Event as CalendarEvent,
@@ -22,8 +22,8 @@ import {
   ViewType,
   ViewMode,
   ICalendarApp,
-} from '@/types';
-import { formatTime, getEventsForDay, scrollbarTakesSpace } from '@/utils';
+} from "@/types";
+import { formatTime, getEventsForDay, scrollbarTakesSpace } from "@/utils";
 
 interface TimeGridProps {
   app: ICalendarApp;
@@ -40,12 +40,12 @@ interface TimeGridProps {
   leftFrozenContentRef: RefObject<HTMLDivElement>;
   calendarRef: RefObject<HTMLDivElement>;
   handleScroll: (
-    e: JSX.TargetedEvent<HTMLDivElement, globalThis.Event>
+    e: JSX.TargetedEvent<HTMLDivElement, globalThis.Event>,
   ) => void;
   handleCreateStart?: (
     e: MouseEvent | TouchEvent,
     dayIndex: number,
-    hour: number
+    hour: number,
   ) => void;
   handleTouchStart: (e: TouchEvent, dayIndex: number, hour: number) => void;
   handleTouchEnd: () => void;
@@ -55,7 +55,7 @@ interface TimeGridProps {
     e: DragEvent,
     date: Date,
     hour?: number,
-    allDay?: boolean
+    allDay?: boolean,
   ) => void;
   dragState: WeekDayDragState | null;
   isDragging: boolean;
@@ -63,7 +63,7 @@ interface TimeGridProps {
   handleResizeStart: (
     e: MouseEvent | TouchEvent,
     event: CalendarEvent,
-    direction: string
+    direction: string,
   ) => void;
   handleEventUpdate: (event: CalendarEvent) => void;
   handleEventDelete: (id: string) => void;
@@ -123,7 +123,7 @@ export const TimeGrid = ({
   setDetailPanelEventId,
   customDetailPanelContent,
   customEventDetailDialog,
-  mode = 'standard',
+  mode = "standard",
   isCompact,
   isCurrentWeek,
   currentTime,
@@ -170,27 +170,27 @@ export const TimeGrid = ({
   };
 
   return (
-    <div className='relative flex flex-1 overflow-hidden'>
+    <div className="relative flex flex-1 overflow-hidden">
       {/* Left Frozen Column */}
       <div
-        className='relative z-10 w-12 shrink-0 overflow-hidden bg-white md:w-20 dark:bg-gray-900'
-        onContextMenu={e => e.preventDefault()}
+        className="relative z-10 w-12 shrink-0 overflow-hidden bg-white md:w-20 dark:bg-gray-900"
+        onContextMenu={(e) => e.preventDefault()}
       >
         <div ref={leftFrozenContentRef}>
           {/* Top boundary spacer with start-of-day label */}
-          <div className='relative h-3'>
-            <div className='absolute right-2 -bottom-1 text-[10px] text-gray-500 select-none md:text-[12px] dark:text-gray-400'>
-              {showStartOfDayLabel ? formatTime(FIRST_HOUR) : ''}
+          <div className="relative h-3">
+            <div className="absolute right-2 -bottom-1 text-[10px] text-gray-500 select-none md:text-[12px] dark:text-gray-400">
+              {showStartOfDayLabel ? formatTime(FIRST_HOUR) : ""}
             </div>
           </div>
           {timeSlots.map((slot, slotIndex) => (
             <div key={slotIndex} className={timeSlot}>
               <div className={`${timeLabel} text-[10px] md:text-[12px]`}>
-                {showStartOfDayLabel && slotIndex === 0 ? '' : slot.label}
+                {showStartOfDayLabel && slotIndex === 0 ? "" : slot.label}
               </div>
             </div>
           ))}
-          <div className='relative'>
+          <div className="relative">
             <div className={`${timeLabel} text-[10px] md:text-[12px]`}>
               00:00
             </div>
@@ -207,11 +207,11 @@ export const TimeGrid = ({
 
               return (
                 <div
-                  className='pointer-events-none absolute left-0 z-20 flex w-full items-center justify-end'
+                  className="pointer-events-none absolute left-0 z-20 flex w-full items-center justify-end"
                   style={{
                     top: `${topPx}px`,
-                    transform: 'translateY(-50%)',
-                    marginTop: '0.75rem',
+                    transform: "translateY(-50%)",
+                    marginTop: "0.75rem",
                   }}
                 >
                   <div className={currentTimeLabel}>{formatTime(hours)}</div>
@@ -224,23 +224,23 @@ export const TimeGrid = ({
       {/* Scroller */}
       <div
         ref={scrollerRef}
-        className={`calendar-content relative flex-1 overflow-auto ${gridWidth === '300%' ? 'overflow-x-hidden' : 'snap-x snap-mandatory'}`}
+        className={`calendar-content relative flex-1 overflow-auto ${gridWidth === "300%" ? "overflow-x-hidden" : "snap-x snap-mandatory"}`}
         onScroll={handleScroll}
       >
-        <div className='flex' style={{ width: gridWidth, minWidth: '100%' }}>
+        <div className="flex" style={{ width: gridWidth, minWidth: "100%" }}>
           {/* Time Grid */}
-          <div className='grow'>
+          <div className="grow">
             {/* Top boundary */}
             <div className={`${timeGridBoundary} flex border-t-0`}>
               {weekDaysLabels.map((_, dayIndex) => (
                 <div
                   key={`top-${dayIndex}`}
-                  className={`relative flex-1 ${dayIndex === weekDaysLabels.length - 1 && (isMobile || !hasScrollbarSpace) ? '' : 'border-r'} border-gray-200 dark:border-gray-700`}
+                  className={`relative flex-1 ${dayIndex === weekDaysLabels.length - 1 && (isMobile || !hasScrollbarSpace) ? "" : "border-r"} border-gray-200 dark:border-gray-700`}
                   style={columnStyle}
                 />
               ))}
             </div>
-            <div ref={timeGridRef} className='relative'>
+            <div ref={timeGridRef} className="relative">
               {/* Current time line */}
               {isCurrentWeek &&
                 currentTime &&
@@ -255,7 +255,7 @@ export const TimeGrid = ({
                   start.setHours(0, 0, 0, 0);
                   const diffTime = today.getTime() - start.getTime();
                   const todayIndex = Math.round(
-                    diffTime / (1000 * 60 * 60 * 24)
+                    diffTime / (1000 * 60 * 60 * 24),
                   );
                   const topPx = (hours - FIRST_HOUR) * HOUR_HEIGHT;
 
@@ -264,23 +264,23 @@ export const TimeGrid = ({
                       className={currentTimeLine}
                       style={{
                         top: `${topPx}px`,
-                        width: '100%',
+                        width: "100%",
                         height: 0,
                         zIndex: 20,
                       }}
                     >
-                      <div className='flex w-0 items-center'>
+                      <div className="flex w-0 items-center">
                         {/* Empty left part since it is in frozen column now */}
                       </div>
 
-                      <div className='flex flex-1'>
+                      <div className="flex flex-1">
                         {weekDaysLabels.map((_, idx) => (
-                          <div key={idx} className='flex flex-1 items-center'>
+                          <div key={idx} className="flex flex-1 items-center">
                             <div
                               className={`relative h-0.5 w-full ${
                                 idx === todayIndex
-                                  ? 'bg-primary'
-                                  : 'bg-primary/30'
+                                  ? "bg-primary"
+                                  : "bg-primary/30"
                               }`}
                               style={{
                                 zIndex: 9999,
@@ -288,8 +288,8 @@ export const TimeGrid = ({
                             >
                               {idx === todayIndex && todayIndex !== 0 && (
                                 <div
-                                  className='absolute h-2 w-2 rounded-full bg-primary'
-                                  style={{ top: '-3px', left: '-4px' }}
+                                  className="absolute h-2 w-2 rounded-full bg-primary"
+                                  style={{ top: "-3px", left: "-4px" }}
                                 />
                               )}
                             </div>
@@ -308,28 +308,28 @@ export const TimeGrid = ({
                     return (
                       <div
                         key={`${slotIndex}-${dayIndex}`}
-                        className={`${timeGridCell} snap-start ${dayIndex === weekDaysLabels.length - 1 && (isMobile || !hasScrollbarSpace) ? 'border-r-0' : ''}`}
+                        className={`${timeGridCell} snap-start ${dayIndex === weekDaysLabels.length - 1 && (isMobile || !hasScrollbarSpace) ? "border-r-0" : ""}`}
                         style={columnStyle}
                         onClick={() => {
                           const clickedDate = new Date(currentWeekStart);
                           clickedDate.setDate(
-                            currentWeekStart.getDate() + dayIndex
+                            currentWeekStart.getDate() + dayIndex,
                           );
                           onDateChange?.(clickedDate);
                         }}
-                        onDblClick={e => {
+                        onDblClick={(e) => {
                           handleCreateStart?.(e, dayIndex, slot.hour);
                         }}
-                        onTouchStart={e =>
+                        onTouchStart={(e) =>
                           handleTouchStart(e, dayIndex, slot.hour)
                         }
                         onTouchEnd={handleTouchEnd}
                         onTouchMove={handleTouchMove}
                         onDragOver={handleDragOver}
-                        onDrop={e => {
+                        onDrop={(e) => {
                           handleDrop(e, dropDate, slot.hour);
                         }}
-                        onContextMenu={e =>
+                        onContextMenu={(e) =>
                           handleContextMenu(e, dayIndex, slot.hour)
                         }
                       />
@@ -343,7 +343,7 @@ export const TimeGrid = ({
                 {weekDaysLabels.map((_, dayIndex) => (
                   <div
                     key={`24-${dayIndex}`}
-                    className={`relative flex-1 ${dayIndex === weekDaysLabels.length - 1 && (isMobile || !hasScrollbarSpace) ? '' : 'border-r'} border-gray-200 dark:border-gray-700`}
+                    className={`relative flex-1 ${dayIndex === weekDaysLabels.length - 1 && (isMobile || !hasScrollbarSpace) ? "" : "border-r"} border-gray-200 dark:border-gray-700`}
                     style={columnStyle}
                   />
                 ))}
@@ -365,13 +365,15 @@ export const TimeGrid = ({
                   };
                 }> = [];
 
-                dayEvents.forEach(event => {
+                dayEvents.forEach((event) => {
                   const segments = analyzeMultiDayRegularEvent(
                     event,
-                    currentWeekStart
+                    currentWeekStart,
                   );
                   if (segments.length > 0) {
-                    const segment = segments.find(s => s.dayIndex === dayIndex);
+                    const segment = segments.find(
+                      (s) => s.dayIndex === dayIndex,
+                    );
                     if (segment) {
                       allEventSegments.push({
                         event,
@@ -383,13 +385,13 @@ export const TimeGrid = ({
                   }
                 });
 
-                currentWeekEvents.forEach(event => {
+                currentWeekEvents.forEach((event) => {
                   if (event.allDay || event.day === dayIndex) return;
                   const segments = analyzeMultiDayRegularEvent(
                     event,
-                    currentWeekStart
+                    currentWeekStart,
                   );
-                  const segment = segments.find(s => s.dayIndex === dayIndex);
+                  const segment = segments.find((s) => s.dayIndex === dayIndex);
                   if (segment) {
                     allEventSegments.push({
                       event,
@@ -401,11 +403,11 @@ export const TimeGrid = ({
                 return (
                   <div
                     key={`events-day-${dayIndex}`}
-                    className='pointer-events-none absolute top-0'
+                    className="pointer-events-none absolute top-0"
                     style={{
                       left: `calc(${(100 / daysToShow) * dayIndex}%)`,
                       width: `${100 / daysToShow}%`,
-                      height: '100%',
+                      height: "100%",
                     }}
                   >
                     {allEventSegments.map(({ event, segmentInfo }) => {
@@ -428,7 +430,7 @@ export const TimeGrid = ({
                             isDragging &&
                             (dragState as WeekDayDragState)?.eventId ===
                               event.id &&
-                            (dragState as WeekDayDragState)?.mode === 'move'
+                            (dragState as WeekDayDragState)?.mode === "move"
                           }
                           hourHeight={HOUR_HEIGHT}
                           firstHour={FIRST_HOUR}

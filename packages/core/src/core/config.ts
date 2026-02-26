@@ -1,5 +1,5 @@
-import { CalendarConfig } from '@/types';
-import { getLineColor as resolveLineColor } from '@/utils/colorUtils';
+import { CalendarConfig } from "@/types"
+import { getLineColor as resolveLineColor } from "@/utils/colorUtils"
 
 export const defaultDragConfig = {
   HOUR_HEIGHT: 72,
@@ -10,13 +10,13 @@ export const defaultDragConfig = {
   ALL_DAY_HEIGHT: 28,
 
   // line color via Calendar Registry
-  getLineColor: (color: string) => resolveLineColor(color),
+  getLineColor: ( color: string ) => resolveLineColor ( color ),
 
-  getDynamicPadding: (drag: { endHour: number; startHour: number }) => {
-    const duration = drag.endHour - drag.startHour;
-    return duration <= 0.25 ? 'px-1 py-0' : 'p-1';
+  getDynamicPadding: ( drag: { endHour: number; startHour: number } ) => {
+    const duration = drag.endHour - drag.startHour
+    return duration <= 0.25 ? "px-1 py-0" : "p-1"
   },
-};
+}
 
 export const defaultViewConfigs = {
   day: {
@@ -36,140 +36,140 @@ export const defaultViewConfigs = {
     showOtherMonth: true,
     weekHeight: 120,
   },
-};
+}
 
 export const defaultCalendarConfig: CalendarConfig = {
   drag: defaultDragConfig,
   views: defaultViewConfigs,
-};
-
-// Utility function to check if value is an object
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function isObject(item: any): item is Record<string, any> {
-  return item && typeof item === 'object' && !Array.isArray(item);
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function deepMerge<T extends Record<string, any>>(
+// Utility function to check if value is an object
+ 
+function isObject ( item: any ): item is Record<string, any> {
+  return item && typeof item === "object" && !Array.isArray ( item )
+}
+
+ 
+export function deepMerge<T extends Record<string, any>> (
   target: T,
   ...sources: Partial<T>[]
 ): T {
-  if (!sources.length) return target;
+  if ( !sources.length ) return target
 
-  const source = sources.shift();
-  if (!source) return target;
+  const source = sources.shift ()
+  if ( !source ) return target
 
-  for (const key in source) {
-    if (source[key] !== undefined) {
-      if (isObject(target[key]) && isObject(source[key])) {
-        target[key] = deepMerge(target[key], source[key]);
+  for ( const key in source ) {
+    if ( source[key] !== undefined ) {
+      if ( isObject ( target[key] ) && isObject ( source[key] ) ) {
+        target[key] = deepMerge ( target[key], source[key] )
       } else {
-        target[key] = source[key] as T[Extract<keyof T, string>];
+        target[key] = source[key] as T[Extract<keyof T, string>]
       }
     }
   }
 
-  return deepMerge(target, ...sources);
+  return deepMerge ( target, ...sources )
 }
 
-export function createCalendarConfig(
-  overrides?: Partial<CalendarConfig>
+export function createCalendarConfig (
+  overrides?: Partial<CalendarConfig>,
 ): CalendarConfig {
-  return deepMerge(
-    JSON.parse(JSON.stringify(defaultCalendarConfig)), // Deep copy default configuration
-    overrides || {}
-  );
+  return deepMerge (
+    JSON.parse ( JSON.stringify ( defaultCalendarConfig ) ), // Deep copy default configuration
+    overrides || {},
+  )
 }
 
-export function createDragConfig(
-  overrides?: Partial<typeof defaultDragConfig>
+export function createDragConfig (
+  overrides?: Partial<typeof defaultDragConfig>,
 ) {
-  return deepMerge(
-    JSON.parse(JSON.stringify(defaultDragConfig)),
-    overrides || {}
-  );
+  return deepMerge (
+    JSON.parse ( JSON.stringify ( defaultDragConfig ) ),
+    overrides || {},
+  )
 }
 
-export function createViewConfig(
-  viewType: 'day' | 'week' | 'month',
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  overrides?: Record<string, any>
+export function createViewConfig (
+  viewType: "day" | "week" | "month",
+   
+  overrides?: Record<string, any>,
 ) {
-  const defaultConfig = defaultViewConfigs[viewType];
-  return deepMerge(JSON.parse(JSON.stringify(defaultConfig)), overrides || {});
+  const defaultConfig = defaultViewConfigs[viewType]
+  return deepMerge ( JSON.parse ( JSON.stringify ( defaultConfig ) ), overrides || {} )
 }
 
 // Configuration validation function
-export function validateCalendarConfig(
-  config: Partial<CalendarConfig>
+export function validateCalendarConfig (
+  config: Partial<CalendarConfig>,
 ): string[] {
-  const errors: string[] = [];
+  const errors: string[] = []
 
   // Validate drag configuration
-  if (config.drag) {
-    const { drag } = config;
+  if ( config.drag ) {
+    const { drag } = config
     if (
       drag.HOUR_HEIGHT &&
-      (typeof drag.HOUR_HEIGHT !== 'number' || drag.HOUR_HEIGHT <= 0)
+      ( typeof drag.HOUR_HEIGHT !== "number" || drag.HOUR_HEIGHT <= 0 )
     ) {
-      errors.push('HOUR_HEIGHT must be a positive number');
+      errors.push ( "HOUR_HEIGHT must be a positive number" )
     }
     if (
       drag.FIRST_HOUR &&
-      (typeof drag.FIRST_HOUR !== 'number' ||
+      ( typeof drag.FIRST_HOUR !== "number" ||
         drag.FIRST_HOUR < 0 ||
-        drag.FIRST_HOUR >= 24)
+        drag.FIRST_HOUR >= 24 )
     ) {
-      errors.push('FIRST_HOUR must be a number between 0 and 23');
+      errors.push ( "FIRST_HOUR must be a number between 0 and 23" )
     }
     if (
       drag.LAST_HOUR &&
-      (typeof drag.LAST_HOUR !== 'number' ||
+      ( typeof drag.LAST_HOUR !== "number" ||
         drag.LAST_HOUR <= 0 ||
-        drag.LAST_HOUR > 24)
+        drag.LAST_HOUR > 24 )
     ) {
-      errors.push('LAST_HOUR must be a number between 1 and 24');
+      errors.push ( "LAST_HOUR must be a number between 1 and 24" )
     }
     if (
       drag.FIRST_HOUR &&
       drag.LAST_HOUR &&
       drag.FIRST_HOUR >= drag.LAST_HOUR
     ) {
-      errors.push('FIRST_HOUR must be less than LAST_HOUR');
+      errors.push ( "FIRST_HOUR must be less than LAST_HOUR" )
     }
   }
 
-  return errors;
+  return errors
 }
 
 export class ConfigManager {
-  private config: CalendarConfig;
+  private config: CalendarConfig
 
-  constructor(initialConfig?: Partial<CalendarConfig>) {
-    this.config = createCalendarConfig(initialConfig);
+  constructor ( initialConfig?: Partial<CalendarConfig> ) {
+    this.config = createCalendarConfig ( initialConfig )
   }
 
-  getConfig(): CalendarConfig {
-    return JSON.parse(JSON.stringify(this.config));
+  getConfig (): CalendarConfig {
+    return JSON.parse ( JSON.stringify ( this.config ) )
   }
 
-  getDragConfig() {
-    return this.config.drag;
+  getDragConfig () {
+    return this.config.drag
   }
 
-  getViewConfig(viewType: 'day' | 'week' | 'month') {
-    return this.config.views[viewType];
+  getViewConfig ( viewType: "day" | "week" | "month" ) {
+    return this.config.views[viewType]
   }
 
-  updateConfig(updates: Partial<CalendarConfig>): void {
-    const errors = validateCalendarConfig(updates);
-    if (errors.length > 0) {
-      throw new Error(`Configuration validation failed: ${errors.join(', ')}`);
+  updateConfig ( updates: Partial<CalendarConfig> ): void {
+    const errors = validateCalendarConfig ( updates )
+    if ( errors.length > 0 ) {
+      throw new Error ( `Configuration validation failed: ${errors.join ( ", " )}` )
     }
-    this.config = deepMerge(this.config, updates);
+    this.config = deepMerge ( this.config, updates )
   }
 
-  resetConfig(newConfig?: Partial<CalendarConfig>): void {
-    this.config = createCalendarConfig(newConfig);
+  resetConfig ( newConfig?: Partial<CalendarConfig> ): void {
+    this.config = createCalendarConfig ( newConfig )
   }
 }

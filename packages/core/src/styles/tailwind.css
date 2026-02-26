@@ -1,7 +1,7 @@
-@import 'tailwindcss/preflight' layer(base);
-@import 'tailwindcss/theme' layer(theme);
-@import 'tailwindcss/utilities';
-@import '@dayflow/blossom-color-picker/styles.css';
+@import "tailwindcss/preflight" layer(base);
+@import "tailwindcss/theme" layer(theme);
+@import "tailwindcss/utilities";
+@import "@dayflow/blossom-color-picker/styles.css";
 
 /* Force scanning of all relevant source code files to extract utility classes */
 @source "../**/*.{ts,tsx}";
@@ -156,7 +156,7 @@
   }
 
   .calendar-checkbox:checked::after {
-    content: '';
+    content: "";
     display: block;
     width: 0.25rem;
     height: 0.5rem;

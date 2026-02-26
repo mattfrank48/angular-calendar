@@ -1,6 +1,6 @@
-import { CalendarSearchEvent } from '@/types/search';
+import { CalendarSearchEvent } from "@/types/search";
 
-import SearchResultsList from './SearchResultsList';
+import SearchResultsList from "./SearchResultsList";
 
 interface SearchDrawerProps {
   isOpen: boolean;
@@ -22,11 +22,11 @@ const SearchDrawer = ({
 }: SearchDrawerProps) => (
   <div
     className={`relative hidden h-full flex-col overflow-hidden border-l border-gray-200 bg-white transition-all duration-300 ease-in-out select-none md:flex dark:border-gray-700 dark:bg-gray-900 ${
-      isOpen ? 'w-64' : 'w-0 border-l-0'
+      isOpen ? "w-64" : "w-0 border-l-0"
     }`}
   >
     {/* Content */}
-    <div className='min-w-64 flex-1 overflow-y-auto'>
+    <div className="min-w-64 flex-1 overflow-y-auto">
       <SearchResultsList
         loading={loading}
         results={results}

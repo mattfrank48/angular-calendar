@@ -1,11 +1,11 @@
-import { RefObject, JSX } from 'preact';
-import { Temporal } from 'temporal-polyfill';
+import { RefObject, JSX } from "preact";
+import { Temporal } from "temporal-polyfill";
 
-import { ZonedRange } from '@/components/rangePicker/types';
+import { ZonedRange } from "@/components/rangePicker/types";
 
-import CalendarGrid from './CalendarGrid';
-import CalendarHeader from './CalendarHeader';
-import TimeSelector from './TimeSelector';
+import CalendarGrid from "./CalendarGrid";
+import CalendarHeader from "./CalendarHeader";
+import TimeSelector from "./TimeSelector";
 
 interface RangePickerPanelProps {
   visibleMonth: Temporal.PlainDate;
@@ -13,7 +13,7 @@ interface RangePickerPanelProps {
   weekDayLabels: string[];
   calendarDays: Temporal.PlainDate[];
   draftRange: ZonedRange;
-  focusedField: 'start' | 'end';
+  focusedField: "start" | "end";
   isTimeEnabled: boolean;
   disabled?: boolean;
   matchTriggerWidth?: boolean;
@@ -26,8 +26,8 @@ interface RangePickerPanelProps {
   onMonthChange: (months: number) => void;
   onYearChange: (years: number) => void;
   onDaySelect: (day: Temporal.PlainDate) => void;
-  onHourSelect: (field: 'start' | 'end', hour: number) => void;
-  onMinuteSelect: (field: 'start' | 'end', minute: number) => void;
+  onHourSelect: (field: "start" | "end", hour: number) => void;
+  onMinuteSelect: (field: "start" | "end", minute: number) => void;
   onOk: () => void;
   getPopupStyle: () => JSX.CSSProperties;
 }
@@ -56,16 +56,16 @@ const RangePickerPanel = ({
   const endDate = draftRange[1].toPlainDate();
 
   return (
-    <div ref={popupRef} style={getPopupStyle()} data-range-picker-popup='true'>
+    <div ref={popupRef} style={getPopupStyle()} data-range-picker-popup="true">
       <div
-        className='space-y-3 rounded-xl border border-slate-200 bg-white p-3 dark:border-gray-600 dark:bg-gray-800'
+        className="space-y-3 rounded-xl border border-slate-200 bg-white p-3 dark:border-gray-600 dark:bg-gray-800"
         style={{
-          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
-          width: matchTriggerWidth ? '100%' : undefined,
+          boxShadow: "0 2px 8px rgba(0, 0, 0, 0.15)",
+          width: matchTriggerWidth ? "100%" : undefined,
         }}
       >
-        <div className='flex gap-1'>
-          <div className='w-full flex-3 rounded-xl border border-slate-200 bg-white shadow-sm dark:border-gray-600 dark:bg-gray-800'>
+        <div className="flex gap-1">
+          <div className="w-full flex-3 rounded-xl border border-slate-200 bg-white shadow-sm dark:border-gray-600 dark:bg-gray-800">
             <CalendarHeader
               visibleMonth={visibleMonth}
               monthLabels={monthLabels}
@@ -85,7 +85,7 @@ const RangePickerPanel = ({
           </div>
 
           {isTimeEnabled && (
-            <div className='flex flex-1 justify-end sm:w-32'>
+            <div className="flex flex-1 justify-end sm:w-32">
               <TimeSelector
                 focusedField={focusedField}
                 draftRange={draftRange}
@@ -98,12 +98,12 @@ const RangePickerPanel = ({
           )}
         </div>
 
-        <div className='flex justify-end'>
+        <div className="flex justify-end">
           <button
-            type='button'
+            type="button"
             onClick={onOk}
             disabled={disabled}
-            className='inline-flex items-center rounded-full bg-primary px-4 py-1.5 text-sm font-semibold text-primary-foreground shadow-sm transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50'
+            className="inline-flex items-center rounded-full bg-primary px-4 py-1.5 text-sm font-semibold text-primary-foreground shadow-sm transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50"
           >
             OK
           </button>

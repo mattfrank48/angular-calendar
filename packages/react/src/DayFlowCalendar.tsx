@@ -1,4 +1,4 @@
-import { CalendarRenderer } from '@dayflow/core';
+import { CalendarRenderer } from "@dayflow/core";
 import type {
   ICalendarApp,
   CustomRendering,
@@ -7,10 +7,10 @@ import type {
   EventDetailPosition,
   CalendarHeaderProps,
   CalendarType,
-} from '@dayflow/core';
-import { useRef, useEffect, useState, useMemo } from 'react';
-import type { ReactNode, FC } from 'react';
-import { createPortal } from 'react-dom';
+} from "@dayflow/core";
+import { useRef, useEffect, useState, useMemo } from "react";
+import type { ReactNode, FC } from "react";
+import { createPortal } from "react-dom";
 
 export interface DayFlowCalendarProps {
   calendar: ICalendarApp | UseCalendarAppReturn;
@@ -42,7 +42,7 @@ export interface DayFlowCalendarProps {
   createCalendarDialog?: (args: {
     onClose: () => void;
     onCreate: (calendar: CalendarType) => void;
-    colorPickerMode?: 'default' | 'custom';
+    colorPickerMode?: "default" | "custom";
   }) => ReactNode;
   collapsedSafeAreaLeft?: number;
   /** Title bar slot (React) */
@@ -61,25 +61,25 @@ export interface DayFlowCalendarProps {
 /** Compute active override names from props and installed plugins. */
 function computeActiveOverrides(
   app: ICalendarApp,
-  renderProps: Omit<DayFlowCalendarProps, 'calendar'>
+  renderProps: Omit<DayFlowCalendarProps, "calendar">,
 ): string[] {
   const fromProps = Object.keys(renderProps).filter(
-    key => (renderProps as Record<string, unknown>)[key] !== undefined
+    (key) => (renderProps as Record<string, unknown>)[key] !== undefined,
   );
 
   const fromPlugins: string[] = [];
   if (app?.state?.plugins) {
-    app.state.plugins.forEach(plugin => {
-      if (plugin.name === 'sidebar' && plugin.config) {
+    app.state.plugins.forEach((plugin) => {
+      if (plugin.name === "sidebar" && plugin.config) {
         const config = plugin.config as Record<string, unknown>;
-        if (config['render']) {
-          fromPlugins.push('sidebar');
+        if (config["render"]) {
+          fromPlugins.push("sidebar");
         }
-        if (config['renderCreateCalendarDialog']) {
-          fromPlugins.push('createCalendarDialog');
+        if (config["renderCreateCalendarDialog"]) {
+          fromPlugins.push("createCalendarDialog");
         }
-        if (config['renderCalendarContextMenu']) {
-          fromPlugins.push('calendarContextMenu');
+        if (config["renderCalendarContextMenu"]) {
+          fromPlugins.push("calendarContextMenu");
         }
       }
     });
@@ -106,7 +106,7 @@ export const DayFlowCalendar: FC<DayFlowCalendarProps> = ({
 
   // Extract the underlying app instance
   const app =
-    'app' in calendar && calendar.app
+    "app" in calendar && calendar.app
       ? calendar.app
       : (calendar as ICalendarApp);
   const renderPropsKeysRef = useRef<string[]>([]);
@@ -134,10 +134,10 @@ export const DayFlowCalendar: FC<DayFlowCalendarProps> = ({
         renderings:
           | Iterable<readonly [string, CustomRendering]>
           | null
-          | undefined
+          | undefined,
       ) => {
         setCustomRenderings(new Map(renderings));
-      }
+      },
     );
 
     return () => {
@@ -178,17 +178,17 @@ export const DayFlowCalendar: FC<DayFlowCalendarProps> = ({
 
       // 2. If not in props, look up in plugins
       if (!generator && app && app.state && app.state.plugins) {
-        app.state.plugins.forEach(plugin => {
-          if (plugin.name === 'sidebar' && plugin.config) {
+        app.state.plugins.forEach((plugin) => {
+          if (plugin.name === "sidebar" && plugin.config) {
             const config = plugin.config as Record<string, unknown>;
-            if (generatorName === 'sidebar') {
-              generator = config['render'];
+            if (generatorName === "sidebar") {
+              generator = config["render"];
             }
-            if (generatorName === 'createCalendarDialog') {
-              generator = config['renderCreateCalendarDialog'];
+            if (generatorName === "createCalendarDialog") {
+              generator = config["renderCreateCalendarDialog"];
             }
-            if (generatorName === 'calendarContextMenu') {
-              generator = config['renderCalendarContextMenu'];
+            if (generatorName === "calendarContextMenu") {
+              generator = config["renderCalendarContextMenu"];
             }
           }
         });
@@ -199,7 +199,7 @@ export const DayFlowCalendar: FC<DayFlowCalendarProps> = ({
       }
 
       const content =
-        typeof generator === 'function' ? generator(generatorArgs) : generator;
+        typeof generator === "function" ? generator(generatorArgs) : generator;
 
       return createPortal(content, containerEl, id);
     });
@@ -207,7 +207,7 @@ export const DayFlowCalendar: FC<DayFlowCalendarProps> = ({
 
   return (
     <>
-      <div ref={containerRef} className='df-calendar-wrapper' />
+      <div ref={containerRef} className="df-calendar-wrapper" />
       {isMounted && portals}
     </>
   );

@@ -8,15 +8,15 @@
  * - Direct API: Users can still use Temporal API directly for full control
  */
 
-import { Temporal } from 'temporal-polyfill';
+import { Temporal } from "temporal-polyfill"
 
-import { Event } from '@/types';
+import { Event } from "@/types"
 
 import {
   dateToPlainDate,
   dateToPlainDateTime,
   dateToZonedDateTime,
-} from './temporalTypeGuards';
+} from "./temporalTypeGuards"
 
 // ============================================================================
 // Type Definitions
@@ -27,21 +27,21 @@ import {
  * For local events (no timezone)
  */
 export interface CreateEventParams {
-  id: string;
-  title: string;
-  description?: string;
+  id: string
+  title: string
+  description?: string
 
   // Flexible time input - accepts Date or Temporal types
   // - Date: Will be converted to PlainDateTime (for timed events) or PlainDate (for allDay events)
   // - Temporal.PlainDate: All-day events (date only)
   // - Temporal.PlainDateTime: Local events with time (date+time, no timezone) ✨ Recommended default
-  start: Date | Temporal.PlainDate | Temporal.PlainDateTime;
-  end: Date | Temporal.PlainDate | Temporal.PlainDateTime;
+  start: Date | Temporal.PlainDate | Temporal.PlainDateTime
+  end: Date | Temporal.PlainDate | Temporal.PlainDateTime
 
   // Event properties
-  allDay?: boolean;
-  calendarId?: string;
-  meta?: Record<string, unknown>;
+  allDay?: boolean
+  calendarId?: string
+  meta?: Record<string, unknown>
 }
 
 /**
@@ -49,23 +49,23 @@ export interface CreateEventParams {
  * For events that need explicit timezone handling
  */
 export interface CreateTimezoneEventParams {
-  id: string;
-  title: string;
-  description?: string;
+  id: string
+  title: string
+  description?: string
 
   // Flexible time input - accepts Date or ZonedDateTime
   // - Date: Will be converted to ZonedDateTime using the specified timezone
   // - Temporal.ZonedDateTime: Timezone-aware events (date+time+timezone)
-  start: Date | Temporal.ZonedDateTime;
-  end: Date | Temporal.ZonedDateTime;
+  start: Date | Temporal.ZonedDateTime
+  end: Date | Temporal.ZonedDateTime
 
   // Required timezone for Date conversion
   // Only used when start/end are Date objects
-  timeZone: string; // e.g., 'America/New_York', 'Asia/Shanghai'
+  timeZone: string // e.g., 'America/New_York', 'Asia/Shanghai'
 
   // Event properties
-  calendarId?: string;
-  meta?: Record<string, unknown>;
+  calendarId?: string
+  meta?: Record<string, unknown>
 }
 
 // ============================================================================
@@ -75,44 +75,44 @@ export interface CreateTimezoneEventParams {
 /**
  * Convert input to Temporal type for local events
  */
-function normalizeLocalTime(
+function normalizeLocalTime (
   time: Date | Temporal.PlainDate | Temporal.PlainDateTime,
-  allDay: boolean = false
+  allDay: boolean = false,
 ): Temporal.PlainDate | Temporal.PlainDateTime {
   // Already Temporal type - return as is
   if (
     time instanceof Temporal.PlainDate ||
     time instanceof Temporal.PlainDateTime
   ) {
-    return time;
+    return time
   }
 
   // Date object - convert based on allDay flag
-  if (time instanceof Date) {
-    return allDay ? dateToPlainDate(time) : dateToPlainDateTime(time);
+  if ( time instanceof Date ) {
+    return allDay ? dateToPlainDate ( time ) : dateToPlainDateTime ( time )
   }
 
-  throw new Error(`Invalid time type: ${typeof time}`);
+  throw new Error ( `Invalid time type: ${typeof time}` )
 }
 
 /**
  * Convert input to ZonedDateTime
  */
-function normalizeZonedTime(
+function normalizeZonedTime (
   time: Date | Temporal.ZonedDateTime,
-  timeZone: string
+  timeZone: string,
 ): Temporal.ZonedDateTime {
   // Already ZonedDateTime - return as is
-  if (time instanceof Temporal.ZonedDateTime) {
-    return time;
+  if ( time instanceof Temporal.ZonedDateTime ) {
+    return time
   }
 
   // Date object - convert to ZonedDateTime
-  if (time instanceof Date) {
-    return dateToZonedDateTime(time, timeZone);
+  if ( time instanceof Date ) {
+    return dateToZonedDateTime ( time, timeZone )
   }
 
-  throw new Error(`Invalid time type: ${typeof time}`);
+  throw new Error ( `Invalid time type: ${typeof time}` )
 }
 
 // ============================================================================
@@ -155,9 +155,9 @@ function normalizeZonedTime(
  *   allDay: true,
  * });
  */
-export function createEvent(params: CreateEventParams): Event {
-  const start = normalizeLocalTime(params.start, params.allDay);
-  const end = normalizeLocalTime(params.end, params.allDay);
+export function createEvent ( params: CreateEventParams ): Event {
+  const start = normalizeLocalTime ( params.start, params.allDay )
+  const end = normalizeLocalTime ( params.end, params.allDay )
 
   return {
     id: params.id,
@@ -168,7 +168,7 @@ export function createEvent(params: CreateEventParams): Event {
     allDay: params.allDay ?? false,
     calendarId: params.calendarId,
     meta: params.meta,
-  };
+  }
 }
 
 // ============================================================================
@@ -207,9 +207,9 @@ export function createEvent(params: CreateEventParams): Event {
  *   timeZone: 'Asia/Shanghai', // Only used if start/end are Date objects
  * });
  */
-export function createTimezoneEvent(params: CreateTimezoneEventParams): Event {
-  const start = normalizeZonedTime(params.start, params.timeZone);
-  const end = normalizeZonedTime(params.end, params.timeZone);
+export function createTimezoneEvent ( params: CreateTimezoneEventParams ): Event {
+  const start = normalizeZonedTime ( params.start, params.timeZone )
+  const end = normalizeZonedTime ( params.end, params.timeZone )
 
   return {
     id: params.id,
@@ -220,7 +220,7 @@ export function createTimezoneEvent(params: CreateTimezoneEventParams): Event {
     allDay: false, // Timezone events are always timed events
     calendarId: params.calendarId,
     meta: params.meta,
-  };
+  }
 }
 
 // ============================================================================
@@ -230,17 +230,17 @@ export function createTimezoneEvent(params: CreateTimezoneEventParams): Event {
 /**
  * Create multiple local events at once
  */
-export function createEvents(paramsArray: CreateEventParams[]): Event[] {
-  return paramsArray.map(params => createEvent(params));
+export function createEvents ( paramsArray: CreateEventParams[] ): Event[] {
+  return paramsArray.map ( params => createEvent ( params ) )
 }
 
 /**
  * Create multiple timezone-aware events at once
  */
-export function createTimezoneEvents(
-  paramsArray: CreateTimezoneEventParams[]
+export function createTimezoneEvents (
+  paramsArray: CreateTimezoneEventParams[],
 ): Event[] {
-  return paramsArray.map(params => createTimezoneEvent(params));
+  return paramsArray.map ( params => createTimezoneEvent ( params ) )
 }
 
 // ============================================================================
@@ -250,39 +250,42 @@ export function createTimezoneEvents(
 /**
  * Quick create all-day event
  */
-export function createAllDayEvent(
+export function createAllDayEvent (
   id: string,
   title: string,
   date: Date,
-  options?: Omit<CreateEventParams, 'id' | 'title' | 'start' | 'end' | 'allDay'>
+  options?: Omit<
+    CreateEventParams,
+    "id" | "title" | "start" | "end" | "allDay"
+  >,
 ): Event {
-  return createEvent({
+  return createEvent ( {
     id,
     title,
     start: date,
     end: date,
     allDay: true,
     ...options,
-  });
+  } )
 }
 
 /**
  * Quick create timed event
  */
-export function createTimedEvent(
+export function createTimedEvent (
   id: string,
   title: string,
   start: Date,
   end: Date,
-  options?: Omit<CreateEventParams, 'id' | 'title' | 'start' | 'end'>
+  options?: Omit<CreateEventParams, "id" | "title" | "start" | "end">,
 ): Event {
-  return createEvent({
+  return createEvent ( {
     id,
     title,
     start,
     end,
     ...options,
-  });
+  } )
 }
 
 // ============================================================================
@@ -293,50 +296,50 @@ export function createTimedEvent(
  * Convert legacy Date-based event to Temporal-based event
  * @deprecated Use createEvent() directly with Date objects instead
  */
-export function convertDateEvent(
+export function convertDateEvent (
   id: string,
   title: string,
   startDate: Date,
   endDate: Date,
   allDay: boolean = false,
   options?: {
-    description?: string;
-    calendarId?: string;
-    meta?: Record<string, unknown>;
-  }
+    description?: string
+    calendarId?: string
+    meta?: Record<string, unknown>
+  },
 ): Event {
-  return createEvent({
+  return createEvent ( {
     id,
     title,
     start: startDate,
     end: endDate,
     allDay,
     ...options,
-  });
+  } )
 }
 
 /**
  * Convert legacy Date-based event to timezone-aware event
  * @deprecated Use createTimezoneEvent() directly with Date objects instead
  */
-export function convertDateEventWithTimeZone(
+export function convertDateEventWithTimeZone (
   id: string,
   title: string,
   startDate: Date,
   endDate: Date,
   timeZone: string,
   options?: {
-    description?: string;
-    calendarId?: string;
-    meta?: Record<string, unknown>;
-  }
+    description?: string
+    calendarId?: string
+    meta?: Record<string, unknown>
+  },
 ): Event {
-  return createTimezoneEvent({
+  return createTimezoneEvent ( {
     id,
     title,
     start: startDate,
     end: endDate,
     timeZone,
     ...options,
-  });
+  } )
 }

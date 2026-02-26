@@ -1,62 +1,57 @@
-import { dirname, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 
-import preactPlugin from '@preact/preset-vite';
-import { defineConfig } from 'vite';
+import preactPlugin from "@preact/preset-vite";
+import { defineConfig } from "vite";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const workspaceRoot = resolve(__dirname, '../../');
+const workspaceRoot = resolve(__dirname, "../../");
 
 export default defineConfig({
   plugins: [preactPlugin({ reactAliasesEnabled: false })],
   root: workspaceRoot,
-  publicDir: resolve(__dirname, 'public'),
+  publicDir: resolve(__dirname, "public"),
   resolve: {
     alias: {
-      '@': resolve(__dirname, 'src'),
-      '@drag': resolve(__dirname, '../plugins/drag/src'),
-      '@sidebar': resolve(__dirname, '../plugins/sidebar/src'),
-      '@keyboard-shortcuts': resolve(
+      "@": resolve(__dirname, "src"),
+      "@drag": resolve(__dirname, "../plugins/drag/src"),
+      "@sidebar": resolve(__dirname, "../plugins/sidebar/src"),
+      "@keyboard-shortcuts": resolve(
         __dirname,
-        '../plugins/keyboard-shortcuts/src'
+        "../plugins/keyboard-shortcuts/src",
       ),
-      '@localization': resolve(__dirname, '../plugins/localization/src'),
-      '@dayflow/core': resolve(__dirname, 'src/index.ts'),
-      '@dayflow/react': resolve(__dirname, '../react/src/index.ts'),
-      '@examples': resolve(__dirname, '../../examples'),
-      '@dayflow/plugin-sidebar': resolve(
+      "@dayflow/core": resolve(__dirname, "src/index.ts"),
+      "@dayflow/react": resolve(__dirname, "../react/src/index.ts"),
+      "@examples": resolve(__dirname, "../../examples"),
+      "@dayflow/plugin-sidebar": resolve(
         __dirname,
-        '../plugins/sidebar/src/index.ts'
+        "../plugins/sidebar/src/index.ts",
       ),
-      '@dayflow/plugin-keyboard-shortcuts': resolve(
+      "@dayflow/plugin-keyboard-shortcuts": resolve(
         __dirname,
-        '../plugins/keyboard-shortcuts/src/index.ts'
+        "../plugins/keyboard-shortcuts/src/index.ts",
       ),
-      '@dayflow/plugin-drag': resolve(
+      "@dayflow/plugin-drag": resolve(
         __dirname,
-        '../plugins/drag/src/index.ts'
+        "../plugins/drag/src/index.ts",
       ),
-      '@dayflow/plugin-localization': resolve(
-        __dirname,
-        '../plugins/localization/src/index.ts'
-      ),
-      'preact/hooks': resolve(workspaceRoot, 'node_modules/preact/hooks'),
-      'preact/compat': resolve(workspaceRoot, 'node_modules/preact/compat'),
-      'preact/jsx-runtime': resolve(
+      "preact/hooks": resolve(workspaceRoot, "node_modules/preact/hooks"),
+      "preact/compat": resolve(workspaceRoot, "node_modules/preact/compat"),
+      "preact/jsx-runtime": resolve(
         workspaceRoot,
-        'node_modules/preact/jsx-runtime'
+        "node_modules/preact/jsx-runtime",
       ),
-      'preact/jsx-dev-runtime': resolve(
+      "preact/jsx-dev-runtime": resolve(
         workspaceRoot,
-        'node_modules/preact/jsx-runtime'
+        "node_modules/preact/jsx-runtime",
       ), // Preact usually uses same for dev
-      'preact/debug': resolve(workspaceRoot, 'node_modules/preact/debug'),
-      preact: resolve(workspaceRoot, 'node_modules/preact'),
-      react: resolve(workspaceRoot, 'node_modules/preact/compat'),
-      'react-dom': resolve(workspaceRoot, 'node_modules/preact/compat'),
-      'react/jsx-runtime': resolve(
+      "preact/debug": resolve(workspaceRoot, "node_modules/preact/debug"),
+      preact: resolve(workspaceRoot, "node_modules/preact"),
+      react: resolve(workspaceRoot, "node_modules/preact/compat"),
+      "react-dom": resolve(workspaceRoot, "node_modules/preact/compat"),
+      "react/jsx-runtime": resolve(
         workspaceRoot,
-        'node_modules/preact/compat/jsx-runtime'
+        "node_modules/preact/compat/jsx-runtime",
       ),
     },
   },

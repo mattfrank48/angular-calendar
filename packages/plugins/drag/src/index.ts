@@ -1,1 +1,1 @@
-export { createDragPlugin, isDragService, createDragConfig } from './plugin';
+export { createDragPlugin, isDragService, createDragConfig } from "./plugin"

@@ -1,10 +1,10 @@
-import { RefObject } from 'preact';
-import { useRef, useState } from 'preact/hooks';
+import { RefObject } from "preact";
+import { useRef, useState } from "preact/hooks";
 
-import CalendarEventComponent from '@/components/calendarEvent';
-import ViewHeader from '@/components/common/ViewHeader';
-import { GridContextMenu } from '@/components/contextMenu';
-import { useLocale } from '@/locale';
+import CalendarEventComponent from "@/components/calendarEvent";
+import ViewHeader from "@/components/common/ViewHeader";
+import { GridContextMenu } from "@/components/contextMenu";
+import { useLocale } from "@/locale";
 import {
   allDayRow,
   allDayLabel,
@@ -20,7 +20,7 @@ import {
   timeGridBoundary,
   midnightLabel,
   cn,
-} from '@/styles/classNames';
+} from "@/styles/classNames";
 import {
   Event,
   EventLayout,
@@ -29,8 +29,8 @@ import {
   WeekDayDragState,
   ViewType,
   ICalendarApp,
-} from '@/types';
-import { formatTime, scrollbarTakesSpace } from '@/utils';
+} from "@/types";
+import { formatTime, scrollbarTakesSpace } from "@/utils";
 
 interface DayContentProps {
   app: ICalendarApp;
@@ -56,16 +56,16 @@ interface DayContentProps {
   handleResizeStart: (
     e: MouseEvent | TouchEvent,
     event: Event,
-    direction: string
+    direction: string,
   ) => void;
   handleCreateStart: (
     e: MouseEvent | TouchEvent,
     dayIndex: number,
-    hour: number
+    hour: number,
   ) => void;
   handleCreateAllDayEvent: (
     e: MouseEvent | TouchEvent,
-    dayIndex: number
+    dayIndex: number,
   ) => void;
   handleTouchStart: (e: TouchEvent, dayIndex: number) => void;
   handleTouchEnd: (e: TouchEvent) => void;
@@ -75,7 +75,7 @@ interface DayContentProps {
     e: DragEvent,
     date: Date,
     hour?: number,
-    allDay?: boolean
+    allDay?: boolean,
   ) => void;
   handleEventUpdate: (event: Event) => void;
   handleEventDelete: (id: string) => void;
@@ -157,9 +157,9 @@ export const DayContent = ({
   // Measure offset from .calendar-content top to the first time grid row,
   // accounting for boundary elements above the grid
   const getGridOffset = () => {
-    const content = calendarRef.current?.querySelector('.calendar-content');
+    const content = calendarRef.current?.querySelector(".calendar-content");
     if (!content) return 0;
-    const firstRow = content.querySelector('.df-time-grid-row');
+    const firstRow = content.querySelector(".df-time-grid-row");
     if (!firstRow) return 0;
     return (
       firstRow.getBoundingClientRect().top -
@@ -178,13 +178,13 @@ export const DayContent = ({
       date.setHours(0, 0, 0, 0);
     } else {
       const rect = calendarRef.current
-        ?.querySelector('.calendar-content')
+        ?.querySelector(".calendar-content")
         ?.getBoundingClientRect();
       if (rect) {
         const scrollTop =
           (
             calendarRef.current?.querySelector(
-              '.calendar-content'
+              ".calendar-content",
             ) as HTMLElement
           )?.scrollTop || 0;
         const gridOffset = getGridOffset();
@@ -206,15 +206,15 @@ export const DayContent = ({
 
   return (
     <div
-      className={`flex-none ${switcherMode === 'buttons' ? '' : 'md:w-[60%]'} w-full border-r border-gray-200 bg-white md:w-[70%] dark:border-gray-700 dark:bg-gray-900`}
-      onContextMenu={e => e.preventDefault()}
+      className={`flex-none ${switcherMode === "buttons" ? "" : "md:w-[60%]"} w-full border-r border-gray-200 bg-white md:w-[70%] dark:border-gray-700 dark:bg-gray-900`}
+      onContextMenu={(e) => e.preventDefault()}
     >
       <div className={`relative ${flexCol} h-full`}>
         {/* Fixed navigation bar */}
         <div
-          onContextMenu={e => e.preventDefault()}
+          onContextMenu={(e) => e.preventDefault()}
           style={{
-            paddingRight: isMobile || !hasScrollbarSpace ? '0px' : '15px',
+            paddingRight: isMobile || !hasScrollbarSpace ? "0px" : "15px",
           }}
         >
           <ViewHeader
@@ -222,7 +222,7 @@ export const DayContent = ({
             viewType={ViewType.DAY}
             currentDate={currentDate}
             customSubtitle={currentDate.toLocaleDateString(locale, {
-              weekday: 'long',
+              weekday: "long",
             })}
           />
         </div>
@@ -231,53 +231,53 @@ export const DayContent = ({
           <div
             className={cn(
               allDayRow,
-              'items-stretch border-t border-gray-200 dark:border-gray-700'
+              "items-stretch border-t border-gray-200 dark:border-gray-700",
             )}
             ref={allDayRowRef}
             style={{
               paddingRight:
-                isMobile || !hasScrollbarSpace ? '0px' : '0.6875rem',
+                isMobile || !hasScrollbarSpace ? "0px" : "0.6875rem",
             }}
-            onContextMenu={e => handleContextMenu(e, true)}
+            onContextMenu={(e) => handleContextMenu(e, true)}
           >
             <div
               className={`${allDayLabel} flex w-12 items-center text-[10px] md:w-20 md:text-xs`}
-              onContextMenu={e => e.preventDefault()}
+              onContextMenu={(e) => e.preventDefault()}
             >
-              {t('allDay')}
+              {t("allDay")}
             </div>
             <div
               className={cn(
-                'relative flex flex-1 self-stretch',
+                "relative flex flex-1 self-stretch",
                 !isMobile && hasScrollbarSpace
-                  ? 'border-r border-gray-200 dark:border-gray-700'
-                  : ''
+                  ? "border-r border-gray-200 dark:border-gray-700"
+                  : "",
               )}
             >
               <div
-                className='relative w-full'
+                className="relative w-full"
                 style={{ minHeight: `${allDayAreaHeight}px` }}
                 onClick={() => onDateChange?.(currentDate)}
-                onMouseDown={e => {
+                onMouseDown={(e) => {
                   const currentDayIndex = Math.floor(
                     (currentDate.getTime() - currentWeekStart.getTime()) /
-                      (24 * 60 * 60 * 1000)
+                      (24 * 60 * 60 * 1000),
                   );
                   handleCreateAllDayEvent?.(e, currentDayIndex);
                 }}
-                onDblClick={e => {
+                onDblClick={(e) => {
                   const currentDayIndex = Math.floor(
                     (currentDate.getTime() - currentWeekStart.getTime()) /
-                      (24 * 60 * 60 * 1000)
+                      (24 * 60 * 60 * 1000),
                   );
                   handleCreateAllDayEvent?.(e, currentDayIndex);
                 }}
                 onDragOver={handleDragOver}
-                onDrop={e => {
+                onDrop={(e) => {
                   handleDrop(e, currentDate, undefined, true);
                 }}
               >
-                {organizedAllDayEvents.map(event => (
+                {organizedAllDayEvents.map((event) => (
                   <CalendarEventComponent
                     key={event.id}
                     event={event}
@@ -289,7 +289,7 @@ export const DayContent = ({
                     isBeingDragged={
                       isDragging &&
                       (dragState as WeekDayDragState)?.eventId === event.id &&
-                      (dragState as WeekDayDragState)?.mode === 'move'
+                      (dragState as WeekDayDragState)?.mode === "move"
                     }
                     hourHeight={HOUR_HEIGHT}
                     firstHour={FIRST_HOUR}
@@ -307,7 +307,7 @@ export const DayContent = ({
                       const isViewable =
                         app.getReadOnlyConfig().viewable !== false;
                       const isReadOnly = app.state.readOnly;
-                      const evt = events.find(e => e.id === eventId);
+                      const evt = events.find((e) => e.id === eventId);
                       if (
                         (isMobile || isTouch) &&
                         evt &&
@@ -342,8 +342,8 @@ export const DayContent = ({
         ) : (
           <div
             className={cn(
-              'border-b border-gray-200 dark:border-gray-700',
-              !isMobile && hasScrollbarSpace ? 'pr-2.75' : ''
+              "border-b border-gray-200 dark:border-gray-700",
+              !isMobile && hasScrollbarSpace ? "pr-2.75" : "",
             )}
           />
         )}
@@ -351,9 +351,9 @@ export const DayContent = ({
         {/* Time grid and event area */}
         <div
           className={`${calendarContent} df-day-time-grid`}
-          style={{ position: 'relative', scrollbarGutter: 'stable' }}
+          style={{ position: "relative", scrollbarGutter: "stable" }}
         >
-          <div className='relative flex'>
+          <div className="relative flex">
             {/* Current time line */}
             {isToday &&
               currentTime &&
@@ -369,20 +369,20 @@ export const DayContent = ({
                     className={currentTimeLine}
                     style={{
                       top: `${topPx}px`,
-                      width: '100%',
+                      width: "100%",
                       height: 0,
                       zIndex: 20,
-                      marginTop: '0.75rem',
+                      marginTop: "0.75rem",
                     }}
                   >
-                    <div className='flex w-12 items-center md:w-20'>
-                      <div className='relative flex w-full items-center'></div>
+                    <div className="flex w-12 items-center md:w-20">
+                      <div className="relative flex w-full items-center"></div>
                       <div className={currentTimeLabel}>
                         {formatTime(hours)}
                       </div>
                     </div>
 
-                    <div className='flex flex-1 items-center'>
+                    <div className="flex flex-1 items-center">
                       <div className={currentTimeLineBar} />
                     </div>
                   </div>
@@ -392,58 +392,58 @@ export const DayContent = ({
             {/* Time column */}
             <div
               className={`${timeColumn} w-12 md:w-20`}
-              onContextMenu={e => e.preventDefault()}
+              onContextMenu={(e) => e.preventDefault()}
             >
               {/* Top boundary spacer */}
-              <div className='h-3' />
+              <div className="h-3" />
               {timeSlots.map((slot, slotIndex) => (
                 <div key={slotIndex} className={timeSlot}>
                   <div className={`${timeLabel} text-[10px] md:text-[12px]`}>
-                    {showStartOfDayLabel && slotIndex === 0 ? '' : slot.label}
+                    {showStartOfDayLabel && slotIndex === 0 ? "" : slot.label}
                   </div>
                 </div>
               ))}
             </div>
 
             {/* Time grid */}
-            <div className='grow select-none'>
+            <div className="grow select-none">
               {/* Top boundary */}
               <div
                 className={cn(
                   timeGridBoundary,
-                  !isMobile && hasScrollbarSpace ? 'border-r' : '',
-                  'border-t-0'
+                  !isMobile && hasScrollbarSpace ? "border-r" : "",
+                  "border-t-0",
                 )}
               >
                 <div
                   className={`${midnightLabel} -left-9.5`}
-                  style={{ top: 'auto', bottom: '-0.625rem' }}
+                  style={{ top: "auto", bottom: "-0.625rem" }}
                 >
-                  {showStartOfDayLabel ? formatTime(FIRST_HOUR) : ''}
+                  {showStartOfDayLabel ? formatTime(FIRST_HOUR) : ""}
                 </div>
               </div>
-              <div className='relative' style={{ WebkitTouchCallout: 'none' }}>
+              <div className="relative" style={{ WebkitTouchCallout: "none" }}>
                 {timeSlots.map((_slot, slotIndex) => (
                   <div
                     key={slotIndex}
                     className={cn(
                       timeGridRow,
-                      !isMobile && hasScrollbarSpace ? 'border-r' : ''
+                      !isMobile && hasScrollbarSpace ? "border-r" : "",
                     )}
                     onClick={() => onDateChange?.(currentDate)}
-                    onDblClick={e => {
+                    onDblClick={(e) => {
                       const currentDayIndex = Math.floor(
                         (currentDate.getTime() - currentWeekStart.getTime()) /
-                          (24 * 60 * 60 * 1000)
+                          (24 * 60 * 60 * 1000),
                       );
                       const rect = calendarRef.current
-                        ?.querySelector('.calendar-content')
+                        ?.querySelector(".calendar-content")
                         ?.getBoundingClientRect();
                       if (!rect) return;
                       const scrollTop =
                         (
                           calendarRef.current?.querySelector(
-                            '.calendar-content'
+                            ".calendar-content",
                           ) as HTMLElement
                         )?.scrollTop || 0;
                       const gridOffset = getGridOffset();
@@ -452,36 +452,36 @@ export const DayContent = ({
                       const clickedHour = FIRST_HOUR + relativeY / HOUR_HEIGHT;
                       handleCreateStart?.(e, currentDayIndex, clickedHour);
                     }}
-                    onTouchStart={e => {
+                    onTouchStart={(e) => {
                       const currentDayIndex = Math.floor(
                         (currentDate.getTime() - currentWeekStart.getTime()) /
-                          (24 * 60 * 60 * 1000)
+                          (24 * 60 * 60 * 1000),
                       );
                       handleTouchStart(e, currentDayIndex);
                     }}
                     onTouchEnd={handleTouchEnd}
                     onTouchMove={handleTouchMove}
                     onDragOver={handleDragOver}
-                    onDrop={e => {
+                    onDrop={(e) => {
                       const rect = calendarRef.current
-                        ?.querySelector('.calendar-content')
+                        ?.querySelector(".calendar-content")
                         ?.getBoundingClientRect();
                       if (!rect) return;
                       const scrollTop =
                         (
                           calendarRef.current?.querySelector(
-                            '.calendar-content'
+                            ".calendar-content",
                           ) as HTMLElement
                         )?.scrollTop || 0;
                       const gridOffset = getGridOffset();
                       const relativeY =
                         e.clientY - rect.top + scrollTop - gridOffset;
                       const dropHour = Math.floor(
-                        FIRST_HOUR + relativeY / HOUR_HEIGHT
+                        FIRST_HOUR + relativeY / HOUR_HEIGHT,
                       );
                       handleDrop(e, currentDate, dropHour);
                     }}
-                    onContextMenu={e => handleContextMenu(e, false)}
+                    onContextMenu={(e) => handleContextMenu(e, false)}
                   />
                 ))}
 
@@ -489,17 +489,17 @@ export const DayContent = ({
                 <div
                   className={cn(
                     timeGridBoundary,
-                    !isMobile && hasScrollbarSpace ? 'border-r' : ''
+                    !isMobile && hasScrollbarSpace ? "border-r" : "",
                   )}
                 >
                   <div className={`${midnightLabel} -left-9.5`}>00:00</div>
                 </div>
 
                 {/* Event layer */}
-                <div className='pointer-events-none absolute top-0 right-0 bottom-0 left-0'>
+                <div className="pointer-events-none absolute top-0 right-0 bottom-0 left-0">
                   {currentDayEvents
-                    .filter(event => !event.allDay)
-                    .map(event => {
+                    .filter((event) => !event.allDay)
+                    .map((event) => {
                       const eventLayout = eventLayouts.get(event.id);
                       return (
                         <CalendarEventComponent
@@ -512,7 +512,7 @@ export const DayContent = ({
                             isDragging &&
                             (dragState as WeekDayDragState)?.eventId ===
                               event.id &&
-                            (dragState as WeekDayDragState)?.mode === 'move'
+                            (dragState as WeekDayDragState)?.mode === "move"
                           }
                           hourHeight={HOUR_HEIGHT}
                           firstHour={FIRST_HOUR}
@@ -530,7 +530,7 @@ export const DayContent = ({
                           onEventSelect={(eventId: string | null) => {
                             const isViewable =
                               app.getReadOnlyConfig().viewable !== false;
-                            const evt = events.find(e => e.id === eventId);
+                            const evt = events.find((e) => e.id === eventId);
                             if ((isMobile || isTouch) && evt && isViewable) {
                               setDraftEvent(evt);
                               setIsDrawerOpen(true);
@@ -573,7 +573,7 @@ export const DayContent = ({
             if (handleCreateStart) {
               const currentDayIndex = Math.floor(
                 (currentDate.getTime() - currentWeekStart.getTime()) /
-                  (24 * 60 * 60 * 1000)
+                  (24 * 60 * 60 * 1000),
               );
               const isAllDay =
                 contextMenu.date.getHours() === 0 &&
@@ -585,7 +585,7 @@ export const DayContent = ({
                     clientX: contextMenu.x,
                     clientY: contextMenu.y,
                   } as MouseEvent,
-                  currentDayIndex
+                  currentDayIndex,
                 );
               } else {
                 const preciseHour =

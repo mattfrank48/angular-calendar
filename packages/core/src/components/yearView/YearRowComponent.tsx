@@ -1,8 +1,8 @@
-import { RefObject } from 'preact';
-import { memo } from 'preact/compat';
-import { useMemo } from 'preact/hooks';
+import { RefObject } from "preact";
+import { memo } from "preact/compat";
+import { useMemo } from "preact/hooks";
 
-import { CalendarEvent } from '@/components/calendarEvent';
+import { CalendarEvent } from "@/components/calendarEvent";
 import {
   Event,
   MonthEventDragState,
@@ -10,10 +10,10 @@ import {
   EventDetailDialogRenderer,
   ICalendarApp,
   ViewType,
-} from '@/types';
+} from "@/types";
 
-import { analyzeMultiDayEventsForRow } from './utils';
-import { YearDayCell } from './YearDayCell';
+import { analyzeMultiDayEventsForRow } from "./utils";
+import { YearDayCell } from "./YearDayCell";
 
 interface YearRowComponentProps {
   rowDays: Date[];
@@ -28,7 +28,7 @@ interface YearRowComponentProps {
   onResizeStart?: (
     e: MouseEvent | TouchEvent,
     event: Event,
-    direction: string
+    direction: string,
   ) => void;
   onCreateStart?: (e: MouseEvent | TouchEvent, targetDate: Date) => void;
   selectedEventId: string | null;
@@ -80,15 +80,15 @@ export const YearRowComponent = memo(
 
     const segments = useMemo(
       () => analyzeMultiDayEventsForRow(events, rowDays, columnsPerRow),
-      [events, rowDays, columnsPerRow]
+      [events, rowDays, columnsPerRow],
     );
 
     const { visibleSegments, moreCounts } = useMemo(() => {
       // 1. Calculate how many events are in each column
       const colCounts = Array.from({ length: rowDays.length }).fill(
-        0
+        0,
       ) as number[];
-      segments.forEach(segment => {
+      segments.forEach((segment) => {
         // Be careful with boundaries
         const start = Math.max(0, segment.startCellIndex);
         const end = Math.min(rowDays.length - 1, segment.endCellIndex);
@@ -102,7 +102,7 @@ export const YearRowComponent = memo(
       const counts = Array.from({ length: rowDays.length }).fill(0) as number[];
 
       // 2. Determine visibility for each segment
-      segments.forEach(segment => {
+      segments.forEach((segment) => {
         let isVisible = true;
         const start = Math.max(0, segment.startCellIndex);
         const end = Math.min(rowDays.length - 1, segment.endCellIndex);
@@ -139,12 +139,12 @@ export const YearRowComponent = memo(
 
     return (
       <div
-        className='relative w-full'
+        className="relative w-full"
         style={{
-          display: 'grid',
+          display: "grid",
           gridTemplateColumns: `repeat(${columnsPerRow}, 1fr)`,
         }}
-        onContextMenu={e => e.preventDefault()}
+        onContextMenu={(e) => e.preventDefault()}
       >
         {/* Background Cells */}
         {rowDays.map((date, index) => {
@@ -166,18 +166,18 @@ export const YearRowComponent = memo(
           );
         })}
         <div
-          className='pointer-events-none absolute inset-0'
+          className="pointer-events-none absolute inset-0"
           style={{
             top: HEADER_HEIGHT,
             bottom: 0,
             left: 0,
             right: 0,
           }}
-          onContextMenu={e => e.preventDefault()}
+          onContextMenu={(e) => e.preventDefault()}
         >
-          <div className='relative h-full w-full'>
-            {visibleSegments.map(segment => (
-              <div key={segment.id} className='pointer-events-auto'>
+          <div className="relative h-full w-full">
+            {visibleSegments.map((segment) => (
+              <div key={segment.id} className="pointer-events-auto">
                 <CalendarEvent
                   event={segment.event}
                   viewType={ViewType.YEAR}
@@ -201,10 +201,10 @@ export const YearRowComponent = memo(
                   // Required props for CalendarEvent
                   firstHour={0}
                   hourHeight={0}
-                  onEventUpdate={updated =>
+                  onEventUpdate={(updated) =>
                     app.updateEvent(updated.id, updated)
                   }
-                  onEventDelete={id => app.deleteEvent(id)}
+                  onEventDelete={(id) => app.deleteEvent(id)}
                 />
               </div>
             ))}
@@ -212,7 +212,7 @@ export const YearRowComponent = memo(
         </div>
       </div>
     );
-  }
+  },
 );
 
-(YearRowComponent as { displayName?: string }).displayName = 'YearRowComponent';
+(YearRowComponent as { displayName?: string }).displayName = "YearRowComponent";

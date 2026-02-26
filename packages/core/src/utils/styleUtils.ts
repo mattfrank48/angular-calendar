@@ -4,7 +4,7 @@
  * This module provides utility functions for working with CSS styles.
  */
 
-const DEFAULT_WIDTH = '240px';
+const DEFAULT_WIDTH = "240px"
 
 /**
  * Normalize a width value to a CSS string
@@ -24,17 +24,17 @@ const DEFAULT_WIDTH = '240px';
  * normalizeCssWidth(undefined) // '240px'
  * ```
  */
-export function normalizeCssWidth(
+export function normalizeCssWidth (
   width?: number | string,
-  defaultWidth: string = DEFAULT_WIDTH
+  defaultWidth: string = DEFAULT_WIDTH,
 ): string {
-  if (typeof width === 'number') {
-    return `${width}px`;
+  if ( typeof width === "number" ) {
+    return `${width}px`
   }
-  if (typeof width === 'string' && width.trim().length > 0) {
-    return width;
+  if ( typeof width === "string" && width.trim ().length > 0 ) {
+    return width
   }
-  return defaultWidth;
+  return defaultWidth
 }
 
 /**
@@ -47,32 +47,32 @@ export function normalizeCssWidth(
  *
  * @returns true if the calendar scrollbar takes space, false otherwise
  */
-export function scrollbarTakesSpace(): boolean {
-  if (typeof document === 'undefined') return false;
+export function scrollbarTakesSpace (): boolean {
+  if ( typeof document === "undefined" ) return false
 
   // Override host-app ::-webkit-scrollbar { display: none } so measurement is accurate
-  const styleEl = document.createElement('style');
+  const styleEl = document.createElement ( "style" )
   styleEl.textContent =
-    '.df-calendar-container .__df_measure__::-webkit-scrollbar { display: block !important; }';
-  document.head.append(styleEl);
+    ".df-calendar-container .__df_measure__::-webkit-scrollbar { display: block !important; }"
+  document.head.append ( styleEl )
 
   // Test inside .df-calendar-container so scoped scrollbar CSS applies
-  const container = document.createElement('div');
-  container.className = 'df-calendar-container';
+  const container = document.createElement ( "div" )
+  container.className = "df-calendar-container"
   container.style.cssText =
-    'position:absolute;top:-9999px;width:100px;height:100px;overflow:hidden';
+    "position:absolute;top:-9999px;width:100px;height:100px;overflow:hidden"
 
-  const div = document.createElement('div');
-  div.className = '__df_measure__';
-  div.style.cssText = 'width:100px;height:100px;overflow:scroll';
+  const div = document.createElement ( "div" )
+  div.className = "__df_measure__"
+  div.style.cssText = "width:100px;height:100px;overflow:scroll"
 
-  container.append(div);
-  document.body.append(container);
+  container.append ( div )
+  document.body.append ( container )
 
-  const takesSpace = div.offsetWidth - div.clientWidth > 0;
+  const takesSpace = div.offsetWidth - div.clientWidth > 0
 
-  container.remove();
-  styleEl.remove();
+  container.remove ()
+  styleEl.remove ()
 
-  return takesSpace;
+  return takesSpace
 }

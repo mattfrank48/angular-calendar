@@ -1,5 +1,5 @@
-import { EventChange } from '@/types/core';
-import { Event } from '@/types/event';
+import { EventChange } from "@/types/core"
+import { Event } from "@/types/event"
 
 /**
  * CalendarStore
@@ -14,104 +14,104 @@ import { Event } from '@/types/event';
  */
 export class CalendarStore {
   // In-memory storage
-  private events = new Map<string, Event>();
+  private events = new Map<string, Event> ()
 
   // Transaction state
-  private isInTransaction = false;
-  private pendingChanges: EventChange[] = [];
+  private isInTransaction = false
+  private pendingChanges: EventChange[] = []
 
   // Callbacks
-  public onEventChange?: (change: EventChange) => void | Promise<void>;
-  public onEventBatchChange?: (changes: EventChange[]) => void | Promise<void>;
+  public onEventChange?: ( change: EventChange ) => void | Promise<void>
+  public onEventBatchChange?: ( changes: EventChange[] ) => void | Promise<void>
 
-  constructor(initialEvents: Event[] = []) {
-    initialEvents.forEach(e => this.events.set(e.id, e));
+  constructor ( initialEvents: Event[] = [] ) {
+    initialEvents.forEach ( e => this.events.set ( e.id, e ) )
   }
 
   // Transaction Management
 
-  public beginTransaction(): void {
-    if (this.isInTransaction) {
-      console.warn(
-        'Transaction already in progress. Nested transactions are not supported.'
-      );
-      return;
+  public beginTransaction (): void {
+    if ( this.isInTransaction ) {
+      console.warn (
+        "Transaction already in progress. Nested transactions are not supported.",
+      )
+      return
     }
-    this.isInTransaction = true;
-    this.pendingChanges = [];
+    this.isInTransaction = true
+    this.pendingChanges = []
   }
 
-  public endTransaction(): void {
-    if (!this.isInTransaction) return;
+  public endTransaction (): void {
+    if ( !this.isInTransaction ) return
 
     // Normalize changes: merge updates, handle create+delete pairs, etc.
-    const normalizedChanges = CalendarStore.normalizeChanges(
-      this.pendingChanges
-    );
+    const normalizedChanges = CalendarStore.normalizeChanges (
+      this.pendingChanges,
+    )
 
     // Reset transaction state
-    this.isInTransaction = false;
-    this.pendingChanges = [];
+    this.isInTransaction = false
+    this.pendingChanges = []
 
     // Dispatch batch update if there are effective changes
-    if (normalizedChanges.length > 0) {
-      this.onEventBatchChange?.(normalizedChanges);
+    if ( normalizedChanges.length > 0 ) {
+      this.onEventBatchChange ?. ( normalizedChanges )
     }
   }
 
   // CRUD Operations
 
-  public createEvent(event: Event): void {
-    if (this.events.has(event.id)) {
-      throw new Error(`Event with ID ${event.id} already exists.`);
+  public createEvent ( event: Event ): void {
+    if ( this.events.has ( event.id ) ) {
+      throw new Error ( `Event with ID ${event.id} already exists.` )
     }
 
-    this.events.set(event.id, event);
-    this.emitChange({ type: 'create', event });
+    this.events.set ( event.id, event )
+    this.emitChange ( { type: "create", event } )
   }
 
-  public updateEvent(id: string, updates: Partial<Event>): void {
-    const existingEvent = this.events.get(id);
-    if (!existingEvent) {
-      throw new Error(`Event with id ${id} not found`);
+  public updateEvent ( id: string, updates: Partial<Event> ): void {
+    const existingEvent = this.events.get ( id )
+    if ( !existingEvent ) {
+      throw new Error ( `Event with id ${id} not found` )
     }
 
-    const updatedEvent = { ...existingEvent, ...updates };
-    this.events.set(id, updatedEvent);
-    this.emitChange({
-      type: 'update',
+    const updatedEvent = { ...existingEvent, ...updates }
+    this.events.set ( id, updatedEvent )
+    this.emitChange ( {
+      type: "update",
       before: existingEvent,
       after: updatedEvent,
-    });
+    } )
   }
 
-  public deleteEvent(id: string): void {
-    const event = this.events.get(id);
-    if (!event) {
-      return;
+  public deleteEvent ( id: string ): void {
+    const event = this.events.get ( id )
+    if ( !event ) {
+      return
     }
 
-    this.events.delete(id);
-    this.emitChange({ type: 'delete', event });
+    this.events.delete ( id )
+    this.emitChange ( { type: "delete", event } )
   }
 
   // Read Operations
 
-  public getEvent(id: string): Event | undefined {
-    return this.events.get(id);
+  public getEvent ( id: string ): Event | undefined {
+    return this.events.get ( id )
   }
 
-  public getAllEvents(): Event[] {
-    return Array.from(this.events.values());
+  public getAllEvents (): Event[] {
+    return Array.from ( this.events.values () )
   }
 
   // Internal Logic
 
-  private emitChange(change: EventChange): void {
-    if (this.isInTransaction) {
-      this.pendingChanges.push(change);
+  private emitChange ( change: EventChange ): void {
+    if ( this.isInTransaction ) {
+      this.pendingChanges.push ( change )
     } else {
-      this.onEventChange?.(change);
+      this.onEventChange ?. ( change )
     }
   }
 
@@ -119,64 +119,64 @@ export class CalendarStore {
    * Pure function to normalize a list of changes.
    * Merges multiple changes for the same ID into a single effective change.
    */
-  private static normalizeChanges(changes: EventChange[]): EventChange[] {
+  private static normalizeChanges ( changes: EventChange[] ): EventChange[] {
     // Map to track the net effect for each event ID
-    const changeMap = new Map<string, EventChange>();
+    const changeMap = new Map<string, EventChange> ()
 
-    for (const change of changes) {
+    for ( const change of changes ) {
       const id =
-        change.type === 'delete'
+        change.type === "delete"
           ? change.event.id
-          : change.type === 'update'
+          : change.type === "update"
             ? change.after.id
-            : change.event.id;
+            : change.event.id
 
-      const prev = changeMap.get(id);
+      const prev = changeMap.get ( id )
 
-      if (!prev) {
-        changeMap.set(id, change);
-        continue;
+      if ( !prev ) {
+        changeMap.set ( id, change )
+        continue
       }
 
       // Merge logic based on the type of the previous change
-      if (prev.type === 'create') {
+      if ( prev.type === "create" ) {
         // PREV: Create(A)
-        if (change.type === 'update') {
+        if ( change.type === "update" ) {
           // + CURR: Update(A->B)
           // = Create(B)
-          changeMap.set(id, { type: 'create', event: change.after });
-        } else if (change.type === 'delete') {
+          changeMap.set ( id, { type: "create", event: change.after } )
+        } else if ( change.type === "delete" ) {
           // + CURR: Delete(A)
           // = Cancel out
-          changeMap.delete(id);
+          changeMap.delete ( id )
         }
-      } else if (prev.type === 'update') {
+      } else if ( prev.type === "update" ) {
         // PREV: Update(A->B)
-        if (change.type === 'update') {
+        if ( change.type === "update" ) {
           // + CURR: Update(B->C)
           // = Update(A->C)
-          changeMap.set(id, {
-            type: 'update',
+          changeMap.set ( id, {
+            type: "update",
             before: prev.before,
             after: change.after,
-          });
-        } else if (change.type === 'delete') {
+          } )
+        } else if ( change.type === "delete" ) {
           // + CURR: Delete(B)
           // = Delete(A)  (The original state A is now gone)
-          changeMap.set(id, { type: 'delete', event: prev.before });
+          changeMap.set ( id, { type: "delete", event: prev.before } )
         }
-      } else if (prev.type === 'delete' && change.type === 'create') {
+      } else if ( prev.type === "delete" && change.type === "create" ) {
         // PREV: Delete(A)
         // + CURR: Create(B) (where B.id === A.id)
         // = Update(A->B)
-        changeMap.set(id, {
-          type: 'update',
+        changeMap.set ( id, {
+          type: "update",
           before: prev.event,
           after: change.event,
-        });
+        } )
       }
     }
 
-    return Array.from(changeMap.values());
+    return Array.from ( changeMap.values () )
   }
 }

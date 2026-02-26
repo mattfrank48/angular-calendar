@@ -1,11 +1,11 @@
-import { render, h } from 'preact';
+import { render, h } from "preact";
 
-import { ICalendarApp } from '@/types';
-import { isDeepEqual } from '@/utils/compareUtils';
+import { ICalendarApp } from "@/types";
+import { isDeepEqual } from "@/utils/compareUtils";
 
-import { CalendarRoot } from './CalendarRoot';
-import { CustomRenderingContext } from './CustomRenderingContext';
-import { CustomRenderingStore } from './CustomRenderingStore';
+import { CalendarRoot } from "./CalendarRoot";
+import { CustomRenderingContext } from "./CustomRenderingContext";
+import { CustomRenderingStore } from "./CustomRenderingStore";
 
 export class CalendarRenderer {
   private container: HTMLElement | null = null;
@@ -16,7 +16,7 @@ export class CalendarRenderer {
 
   constructor(
     private app: ICalendarApp,
-    initialOverrides?: string[]
+    initialOverrides?: string[],
   ) {
     this.customRenderingStore = new CustomRenderingStore(initialOverrides);
     // Subscribe to app state changes to trigger Preact re-renders
@@ -73,9 +73,9 @@ export class CalendarRenderer {
         {
           value: this.customRenderingStore,
         },
-        h(CalendarRoot, { app: this.app, ...this.extraProps })
+        h(CalendarRoot, { app: this.app, ...this.extraProps }),
       ),
-      this.container
+      this.container,
     );
   }
 }

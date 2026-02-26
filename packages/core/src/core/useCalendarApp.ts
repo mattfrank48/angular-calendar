@@ -4,7 +4,7 @@ import {
   useMemo,
   useEffect,
   useRef,
-} from 'preact/hooks';
+} from "preact/hooks"
 
 import {
   CalendarAppConfig,
@@ -13,268 +13,268 @@ import {
   CalendarType,
   RangeChangeReason,
   Event,
-} from '@/types';
-import { isDeepEqual } from '@/utils/helpers';
+} from "@/types"
+import { isDeepEqual } from "@/utils/helpers"
 
-import { CalendarApp } from './CalendarApp';
+import { CalendarApp } from "./CalendarApp"
 
-export function useCalendarApp(
-  config: CalendarAppConfig
+export function useCalendarApp (
+  config: CalendarAppConfig,
 ): UseCalendarAppReturn {
   // Create calendar application instance
-  const app = useMemo(() => new CalendarApp(config), []);
+  const app = useMemo ( () => new CalendarApp ( config ), [] )
 
   // Reactive state - synchronize state from app instance
-  const [currentView, setCurrentView] = useState<ViewType>(
-    app.state.currentView
-  );
-  const [currentDate, setCurrentDateState] = useState<Date>(
-    app.state.currentDate
-  );
-  const [events, setEvents] = useState<Event[]>(app.getEvents());
+  const [ currentView, setCurrentView ] = useState<ViewType> (
+    app.state.currentView,
+  )
+  const [ currentDate, setCurrentDateState ] = useState<Date> (
+    app.state.currentDate,
+  )
+  const [ events, setEvents ] = useState<Event[]> ( app.getEvents () )
   // Component re-render trigger
-  const [, forceUpdate] = useState({});
-  const updateTimerRef = useRef<number | null>(null);
+  const [ , forceUpdate ] = useState ( {} )
+  const updateTimerRef = useRef<number | null> ( null )
 
-  const triggerUpdate = useCallback(() => {
-    if (updateTimerRef.current !== null) return;
-    updateTimerRef.current = requestAnimationFrame(() => {
-      forceUpdate({});
-      updateTimerRef.current = null;
-    });
-  }, []);
+  const triggerUpdate = useCallback ( () => {
+    if ( updateTimerRef.current !== null ) return
+    updateTimerRef.current = requestAnimationFrame ( () => {
+      forceUpdate ( {} )
+      updateTimerRef.current = null
+    } )
+  }, [] )
 
-  useEffect(
+  useEffect (
     () => () => {
-      if (updateTimerRef.current !== null) {
-        cancelAnimationFrame(updateTimerRef.current);
+      if ( updateTimerRef.current !== null ) {
+        cancelAnimationFrame ( updateTimerRef.current )
       }
     },
-    []
-  );
+    [],
+  )
 
   // Synchronize state changes
-  useEffect(() => {
-    const originalChangeView = app.changeView;
-    app.changeView = (view: ViewType) => {
-      originalChangeView(view);
-      setCurrentView(view);
-    };
+  useEffect ( () => {
+    const originalChangeView = app.changeView
+    app.changeView = ( view: ViewType ) => {
+      originalChangeView ( view )
+      setCurrentView ( view )
+    }
 
-    const originalSetCurrentDate = app.setCurrentDate;
-    app.setCurrentDate = (date: Date) => {
-      originalSetCurrentDate(date);
-      setCurrentDateState(new Date(date));
-    };
+    const originalSetCurrentDate = app.setCurrentDate
+    app.setCurrentDate = ( date: Date ) => {
+      originalSetCurrentDate ( date )
+      setCurrentDateState ( new Date ( date ) )
+    }
 
-    const originalAddEvent = app.addEvent;
-    app.addEvent = (event: Event) => {
-      originalAddEvent(event);
-      setEvents([...app.getEvents()]);
-    };
+    const originalAddEvent = app.addEvent
+    app.addEvent = ( event: Event ) => {
+      originalAddEvent ( event )
+      setEvents ( [ ...app.getEvents () ] )
+    }
 
-    const originalUpdateEvent = app.updateEvent;
+    const originalUpdateEvent = app.updateEvent
     app.updateEvent = (
       id: string,
       eventUpdate: Partial<Event>,
-      isPending?: boolean
+      isPending?: boolean,
     ) => {
-      originalUpdateEvent(id, eventUpdate, isPending);
-      setEvents([...app.getEvents()]);
-    };
+      originalUpdateEvent ( id, eventUpdate, isPending )
+      setEvents ( [ ...app.getEvents () ] )
+    }
 
-    const originalDeleteEvent = app.deleteEvent;
-    app.deleteEvent = (id: string) => {
-      originalDeleteEvent(id);
-      setEvents([...app.getEvents()]);
-    };
+    const originalDeleteEvent = app.deleteEvent
+    app.deleteEvent = ( id: string ) => {
+      originalDeleteEvent ( id )
+      setEvents ( [ ...app.getEvents () ] )
+    }
 
-    const originalSetCalendarVisibility = app.setCalendarVisibility;
-    app.setCalendarVisibility = (calendarId: string, visible: boolean) => {
-      originalSetCalendarVisibility(calendarId, visible);
-      setEvents([...app.getEvents()]);
-    };
+    const originalSetCalendarVisibility = app.setCalendarVisibility
+    app.setCalendarVisibility = ( calendarId: string, visible: boolean ) => {
+      originalSetCalendarVisibility ( calendarId, visible )
+      setEvents ( [ ...app.getEvents () ] )
+    }
 
-    const originalSetAllCalendarsVisibility = app.setAllCalendarsVisibility;
-    app.setAllCalendarsVisibility = (visible: boolean) => {
-      originalSetAllCalendarsVisibility(visible);
-      setEvents([...app.getEvents()]);
-    };
+    const originalSetAllCalendarsVisibility = app.setAllCalendarsVisibility
+    app.setAllCalendarsVisibility = ( visible: boolean ) => {
+      originalSetAllCalendarsVisibility ( visible )
+      setEvents ( [ ...app.getEvents () ] )
+    }
 
-    const originalSetVisibleMonth = app.setVisibleMonth;
-    app.setVisibleMonth = (date: Date) => {
-      originalSetVisibleMonth(date);
-    };
+    const originalSetVisibleMonth = app.setVisibleMonth
+    app.setVisibleMonth = ( date: Date ) => {
+      originalSetVisibleMonth ( date )
+    }
 
-    const originalReorderCalendars = app.reorderCalendars;
-    app.reorderCalendars = (fromIndex: number, toIndex: number) => {
-      originalReorderCalendars(fromIndex, toIndex);
-    };
+    const originalReorderCalendars = app.reorderCalendars
+    app.reorderCalendars = ( fromIndex: number, toIndex: number ) => {
+      originalReorderCalendars ( fromIndex, toIndex )
+    }
 
-    const originalUpdateCalendar = app.updateCalendar;
+    const originalUpdateCalendar = app.updateCalendar
     app.updateCalendar = (
       id: string,
       updates: Partial<CalendarType>,
-      isPending?: boolean
+      isPending?: boolean,
     ) => {
-      originalUpdateCalendar(id, updates, isPending);
-    };
+      originalUpdateCalendar ( id, updates, isPending )
+    }
 
-    const originalCreateCalendar = app.createCalendar;
-    app.createCalendar = (calendar: CalendarType) => {
-      originalCreateCalendar(calendar);
-    };
+    const originalCreateCalendar = app.createCalendar
+    app.createCalendar = ( calendar: CalendarType ) => {
+      originalCreateCalendar ( calendar )
+    }
 
-    const originalDeleteCalendar = app.deleteCalendar;
-    app.deleteCalendar = (id: string) => {
-      originalDeleteCalendar(id);
-    };
+    const originalDeleteCalendar = app.deleteCalendar
+    app.deleteCalendar = ( id: string ) => {
+      originalDeleteCalendar ( id )
+    }
 
-    const originalMergeCalendars = app.mergeCalendars;
-    app.mergeCalendars = (sourceId: string, targetId: string) => {
-      originalMergeCalendars(sourceId, targetId);
-      setEvents([...app.getEvents()]);
-    };
+    const originalMergeCalendars = app.mergeCalendars
+    app.mergeCalendars = ( sourceId: string, targetId: string ) => {
+      originalMergeCalendars ( sourceId, targetId )
+      setEvents ( [ ...app.getEvents () ] )
+    }
 
-    const originalHighlightEvent = app.highlightEvent;
-    app.highlightEvent = (eventId: string | null) => {
-      originalHighlightEvent(eventId);
-    };
+    const originalHighlightEvent = app.highlightEvent
+    app.highlightEvent = ( eventId: string | null ) => {
+      originalHighlightEvent ( eventId )
+    }
 
-    const originalUndo = app.undo;
+    const originalUndo = app.undo
     app.undo = () => {
-      originalUndo();
-      setEvents([...app.getEvents()]);
-    };
+      originalUndo ()
+      setEvents ( [ ...app.getEvents () ] )
+    }
 
     return () => {
       // Cleanup work, if needed
-    };
-  }, [app]);
+    }
+  }, [ app ] )
 
   // Synchronize state on initialization
-  useEffect(() => {
-    setCurrentView(app.state.currentView);
-    setCurrentDateState(app.state.currentDate);
-    setEvents(app.getEvents());
-  }, [app]);
+  useEffect ( () => {
+    setCurrentView ( app.state.currentView )
+    setCurrentDateState ( app.state.currentDate )
+    setEvents ( app.getEvents () )
+  }, [ app ] )
 
   // Synchronize configuration updates
-  const lastConfigRef = useRef(config);
-  useEffect(() => {
-    if (!isDeepEqual(lastConfigRef.current, config)) {
-      app.updateConfig(config);
-      lastConfigRef.current = config;
+  const lastConfigRef = useRef ( config )
+  useEffect ( () => {
+    if ( !isDeepEqual ( lastConfigRef.current, config ) ) {
+      app.updateConfig ( config )
+      lastConfigRef.current = config
     }
-  }, [app, config]);
+  }, [ app, config ] )
 
   // Wrapped methods to ensure state synchronization
-  const changeView = useCallback(
-    (view: ViewType) => {
-      app.changeView(view);
-      triggerUpdate();
+  const changeView = useCallback (
+    ( view: ViewType ) => {
+      app.changeView ( view )
+      triggerUpdate ()
     },
-    [app, triggerUpdate]
-  );
+    [ app, triggerUpdate ],
+  )
 
-  const setCurrentDate = useCallback(
-    (date: Date) => {
-      app.setCurrentDate(date);
-      triggerUpdate();
+  const setCurrentDate = useCallback (
+    ( date: Date ) => {
+      app.setCurrentDate ( date )
+      triggerUpdate ()
     },
-    [app, triggerUpdate]
-  );
+    [ app, triggerUpdate ],
+  )
 
-  const addEvent = useCallback(
-    (event: Event) => {
-      app.addEvent(event);
-      triggerUpdate();
+  const addEvent = useCallback (
+    ( event: Event ) => {
+      app.addEvent ( event )
+      triggerUpdate ()
     },
-    [app, triggerUpdate]
-  );
+    [ app, triggerUpdate ],
+  )
 
-  const applyEventsChanges = useCallback(
+  const applyEventsChanges = useCallback (
     (
       changes: {
-        add?: Event[];
-        update?: Array<{ id: string; updates: Partial<Event> }>;
-        delete?: string[];
+        add?: Event[]
+        update?: Array<{ id: string; updates: Partial<Event> }>
+        delete?: string[]
       },
-      isPending?: boolean
+      isPending?: boolean,
     ) => {
-      app.applyEventsChanges(changes, isPending);
-      triggerUpdate();
+      app.applyEventsChanges ( changes, isPending )
+      triggerUpdate ()
     },
-    [app, triggerUpdate]
-  );
+    [ app, triggerUpdate ],
+  )
 
-  const updateEvent = useCallback(
-    (id: string, event: Partial<Event>, isPending?: boolean) => {
-      app.updateEvent(id, event, isPending);
-      triggerUpdate();
+  const updateEvent = useCallback (
+    ( id: string, event: Partial<Event>, isPending?: boolean ) => {
+      app.updateEvent ( id, event, isPending )
+      triggerUpdate ()
     },
-    [app, triggerUpdate]
-  );
+    [ app, triggerUpdate ],
+  )
 
-  const deleteEvent = useCallback(
-    (id: string) => {
-      app.deleteEvent(id);
-      triggerUpdate();
+  const deleteEvent = useCallback (
+    ( id: string ) => {
+      app.deleteEvent ( id )
+      triggerUpdate ()
     },
-    [app, triggerUpdate]
-  );
+    [ app, triggerUpdate ],
+  )
 
-  const undo = useCallback(() => {
-    app.undo();
-    triggerUpdate();
-  }, [app, triggerUpdate]);
+  const undo = useCallback ( () => {
+    app.undo ()
+    triggerUpdate ()
+  }, [ app, triggerUpdate ] )
 
   // Navigation methods
-  const goToToday = useCallback(() => {
-    app.goToToday();
-    triggerUpdate();
-  }, [app, triggerUpdate]);
+  const goToToday = useCallback ( () => {
+    app.goToToday ()
+    triggerUpdate ()
+  }, [ app, triggerUpdate ] )
 
-  const goToPrevious = useCallback(() => {
-    app.goToPrevious();
-    triggerUpdate();
-  }, [app, triggerUpdate]);
+  const goToPrevious = useCallback ( () => {
+    app.goToPrevious ()
+    triggerUpdate ()
+  }, [ app, triggerUpdate ] )
 
-  const goToNext = useCallback(() => {
-    app.goToNext();
-    triggerUpdate();
-  }, [app, triggerUpdate]);
+  const goToNext = useCallback ( () => {
+    app.goToNext ()
+    triggerUpdate ()
+  }, [ app, triggerUpdate ] )
 
-  const selectDate = useCallback(
-    (date: Date) => {
-      app.selectDate(date);
-      triggerUpdate();
+  const selectDate = useCallback (
+    ( date: Date ) => {
+      app.selectDate ( date )
+      triggerUpdate ()
     },
-    [app, triggerUpdate]
-  );
+    [ app, triggerUpdate ],
+  )
 
-  const setCalendarVisibility = useCallback(
-    (calendarId: string, visible: boolean) => {
-      app.setCalendarVisibility(calendarId, visible);
-      triggerUpdate();
+  const setCalendarVisibility = useCallback (
+    ( calendarId: string, visible: boolean ) => {
+      app.setCalendarVisibility ( calendarId, visible )
+      triggerUpdate ()
     },
-    [app, triggerUpdate]
-  );
+    [ app, triggerUpdate ],
+  )
 
-  const setAllCalendarsVisibility = useCallback(
-    (visible: boolean) => {
-      app.setAllCalendarsVisibility(visible);
-      triggerUpdate();
+  const setAllCalendarsVisibility = useCallback (
+    ( visible: boolean ) => {
+      app.setAllCalendarsVisibility ( visible )
+      triggerUpdate ()
     },
-    [app, triggerUpdate]
-  );
+    [ app, triggerUpdate ],
+  )
 
-  const emitVisibleRange = useCallback(
-    (start: Date, end: Date, reason?: RangeChangeReason) => {
-      app.emitVisibleRange(start, end, reason);
+  const emitVisibleRange = useCallback (
+    ( start: Date, end: Date, reason?: RangeChangeReason ) => {
+      app.emitVisibleRange ( start, end, reason )
     },
-    [app]
-  );
+    [ app ],
+  )
 
   return {
     app,
@@ -292,17 +292,17 @@ export function useCalendarApp(
     goToNext,
     selectDate,
     undo,
-    getCalendars: () => app.getCalendars(),
-    createCalendar: (calendar: CalendarType) => app.createCalendar(calendar),
-    mergeCalendars: (sourceId: string, targetId: string) =>
-      app.mergeCalendars(sourceId, targetId),
+    getCalendars: () => app.getCalendars (),
+    createCalendar: ( calendar: CalendarType ) => app.createCalendar ( calendar ),
+    mergeCalendars: ( sourceId: string, targetId: string ) =>
+      app.mergeCalendars ( sourceId, targetId ),
     setCalendarVisibility,
     setAllCalendarsVisibility,
-    getAllEvents: () => app.getAllEvents(),
-    highlightEvent: (eventId: string | null) => app.highlightEvent(eventId),
-    setVisibleMonth: (date: Date) => app.setVisibleMonth(date),
-    getVisibleMonth: () => app.getVisibleMonth(),
+    getAllEvents: () => app.getAllEvents (),
+    highlightEvent: ( eventId: string | null ) => app.highlightEvent ( eventId ),
+    setVisibleMonth: ( date: Date ) => app.setVisibleMonth ( date ),
+    getVisibleMonth: () => app.getVisibleMonth (),
     emitVisibleRange,
-    readOnlyConfig: app.getReadOnlyConfig(),
-  };
+    readOnlyConfig: app.getReadOnlyConfig (),
+  }
 }

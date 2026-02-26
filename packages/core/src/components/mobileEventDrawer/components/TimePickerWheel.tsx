@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'preact/hooks';
+import { useState, useEffect, useRef } from "preact/hooks";
 
 interface TimePickerWheelProps {
   date: Date;
@@ -43,10 +43,10 @@ export const TimePickerWheel = ({ date, onChange }: TimePickerWheelProps) => {
     }
   }, [initialHourScroll, initialMinuteScroll]);
 
-  const handleScrollStop = (type: 'hour' | 'minute', scrollTop: number) => {
+  const handleScrollStop = (type: "hour" | "minute", scrollTop: number) => {
     const index = Math.round(scrollTop / itemHeight);
 
-    if (type === 'hour') {
+    if (type === "hour") {
       const h = hours[index]; // Use extended array
       if (h !== undefined && h !== date.getHours()) {
         const newDate = new Date(date);
@@ -65,13 +65,13 @@ export const TimePickerWheel = ({ date, onChange }: TimePickerWheelProps) => {
 
   const onScroll = (
     e: { currentTarget: HTMLDivElement },
-    type: 'hour' | 'minute'
+    type: "hour" | "minute",
   ) => {
     const target = e.currentTarget;
     let scrollTop = target.scrollTop;
 
     // Infinite scroll logic: jump when reaching ends
-    if (type === 'hour') {
+    if (type === "hour") {
       const totalHeight = 24 * itemHeight; // Height of one set
       if (scrollTop < 10 * itemHeight) {
         scrollTop += totalHeight;
@@ -118,42 +118,42 @@ export const TimePickerWheel = ({ date, onChange }: TimePickerWheelProps) => {
     return {
       transform: `perspective(500px) rotateX(${-rotateX}deg) scale(${scale})`,
       opacity,
-      transition: 'transform 0.1s ease-out, opacity 0.1s ease-out',
+      transition: "transform 0.1s ease-out, opacity 0.1s ease-out",
     };
   };
 
   return (
-    <div className='relative mt-2 flex h-56 overflow-hidden rounded-lg'>
+    <div className="relative mt-2 flex h-56 overflow-hidden rounded-lg">
       <style>{`
             .no-scrollbar::-webkit-scrollbar { display: none; }
             .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         `}</style>
       <div
         ref={hourRef}
-        className='no-scrollbar flex-1 snap-y snap-mandatory overflow-y-auto'
-        style={{ touchAction: 'pan-y' }}
-        onScroll={e => onScroll(e, 'hour')}
+        className="no-scrollbar flex-1 snap-y snap-mandatory overflow-y-auto"
+        style={{ touchAction: "pan-y" }}
+        onScroll={(e) => onScroll(e, "hour")}
       >
         <div style={{ height: spacerHeight }}></div>
         {hours.map((h, i) => (
           <div
             key={`h-${i}-${h}`}
-            className='flex h-8 cursor-pointer snap-center items-center justify-end pr-5'
+            className="flex h-8 cursor-pointer snap-center items-center justify-end pr-5"
             onClick={() => {
               const newDate = new Date(date);
               newDate.setHours(h);
               onChange(newDate);
               hourRef.current?.scrollTo({
                 top: i * itemHeight,
-                behavior: 'smooth',
+                behavior: "smooth",
               });
             }}
           >
             <div
-              className={`w-10 text-center text-xl transition-colors duration-200 ${h === currentHour ? 'font-bold text-black dark:text-white' : 'text-gray-400 dark:text-gray-500'}`}
+              className={`w-10 text-center text-xl transition-colors duration-200 ${h === currentHour ? "font-bold text-black dark:text-white" : "text-gray-400 dark:text-gray-500"}`}
               style={getItemStyle(i, scrollTopHour)}
             >
-              {h.toString().padStart(2, '0')}
+              {h.toString().padStart(2, "0")}
             </div>
           </div>
         ))}
@@ -161,37 +161,37 @@ export const TimePickerWheel = ({ date, onChange }: TimePickerWheelProps) => {
       </div>
       <div
         ref={minRef}
-        className='no-scrollbar flex-1 snap-y snap-mandatory overflow-y-auto'
-        style={{ touchAction: 'pan-y' }}
-        onScroll={e => onScroll(e, 'minute')}
+        className="no-scrollbar flex-1 snap-y snap-mandatory overflow-y-auto"
+        style={{ touchAction: "pan-y" }}
+        onScroll={(e) => onScroll(e, "minute")}
       >
         <div style={{ height: spacerHeight }}></div>
         {minutes.map((m, i) => (
           <div
             key={`m-${i}-${m}`}
-            className='flex h-8 cursor-pointer snap-center items-center justify-start pl-5'
+            className="flex h-8 cursor-pointer snap-center items-center justify-start pl-5"
             onClick={() => {
               const newDate = new Date(date);
               newDate.setMinutes(m);
               onChange(newDate);
               minRef.current?.scrollTo({
                 top: i * itemHeight,
-                behavior: 'smooth',
+                behavior: "smooth",
               });
             }}
           >
             <div
-              className={`w-10 text-center text-xl transition-colors duration-200 ${m === currentMinute ? 'font-bold text-black dark:text-white' : 'text-gray-400 dark:text-gray-500'}`}
+              className={`w-10 text-center text-xl transition-colors duration-200 ${m === currentMinute ? "font-bold text-black dark:text-white" : "text-gray-400 dark:text-gray-500"}`}
               style={getItemStyle(i, scrollTopMin)}
             >
-              {m.toString().padStart(2, '0')}
+              {m.toString().padStart(2, "0")}
             </div>
           </div>
         ))}
         <div style={{ height: spacerHeight }}></div>
       </div>
       {/* Selection Highlight */}
-      <div className='pointer-events-none absolute top-24 right-2 left-2 h-8 rounded-lg border border-gray-300 bg-gray-300/20 dark:border-gray-600 dark:bg-gray-500/20'></div>
+      <div className="pointer-events-none absolute top-24 right-2 left-2 h-8 rounded-lg border border-gray-300 bg-gray-300/20 dark:border-gray-600 dark:bg-gray-500/20"></div>
     </div>
   );
 };

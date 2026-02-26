@@ -1,15 +1,15 @@
-import { RefObject } from 'preact';
+import { RefObject } from "preact";
 
-import DefaultEventDetailPanel from '@/components/common/DefaultEventDetailPanel';
-import { EventDetailPanelWithContent } from '@/components/common/EventDetailPanelWithContent';
-import { CustomRenderingStore } from '@/renderer/CustomRenderingStore';
+import DefaultEventDetailPanel from "@/components/common/DefaultEventDetailPanel";
+import { EventDetailPanelWithContent } from "@/components/common/EventDetailPanelWithContent";
+import { CustomRenderingStore } from "@/renderer/CustomRenderingStore";
 import {
   Event,
   ICalendarApp,
   EventDetailPosition,
   EventDetailContentRenderer,
   EventDetailDialogRenderer,
-} from '@/types';
+} from "@/types";
 
 interface EventDetailPanelProps {
   showDetailPanel: boolean;
@@ -18,7 +18,7 @@ interface EventDetailPanelProps {
   event: Event;
   detailPanelRef: RefObject<HTMLDivElement>;
   isAllDay: boolean;
-  eventVisibility: 'visible' | 'sticky-top' | 'sticky-bottom';
+  eventVisibility: "visible" | "sticky-top" | "sticky-bottom";
   calendarRef: RefObject<HTMLDivElement>;
   selectedEventElementRef: RefObject<HTMLElement | null>;
   onEventUpdate: (event: Event) => void;
@@ -70,7 +70,7 @@ export const EventDetailPanel = ({
     onClose: handlePanelClose,
   };
 
-  if (customRenderingStore?.isOverridden('eventDetailContent')) {
+  if (customRenderingStore?.isOverridden("eventDetailContent")) {
     return (
       <EventDetailPanelWithContent
         {...panelProps}

@@ -1,23 +1,23 @@
-import { Event } from '@/types';
+import { Event } from "@/types"
 
 class ClipboardStore {
-  private lastCopiedEvent: Event | null = null;
+  private lastCopiedEvent: Event | null = null
 
-  setEvent(event: Event) {
-    this.lastCopiedEvent = event;
+  setEvent ( event: Event ) {
+    this.lastCopiedEvent = event
   }
 
-  getEvent(): Event | null {
-    return this.lastCopiedEvent;
+  getEvent (): Event | null {
+    return this.lastCopiedEvent
   }
 
-  hasEvent(): boolean {
-    return this.lastCopiedEvent !== null;
+  hasEvent (): boolean {
+    return this.lastCopiedEvent !== null
   }
 
-  clear() {
-    this.lastCopiedEvent = null;
+  clear () {
+    this.lastCopiedEvent = null
   }
 }
 
-export const clipboardStore = new ClipboardStore();
+export const clipboardStore = new ClipboardStore ()

@@ -4,58 +4,58 @@ import {
   Heart,
   MapPin,
   Star,
-} from '@/components/common/Icons';
-import { MultiDayEventSegment } from '@/components/monthView/WeekComponent';
-import { Event } from '@/types';
-import { daysDifference } from '@/utils';
-import { temporalToDate } from '@/utils/temporal';
+} from "@/components/common/Icons";
+import { MultiDayEventSegment } from "@/components/monthView/WeekComponent";
+import { Event } from "@/types";
+import { daysDifference } from "@/utils";
+import { temporalToDate } from "@/utils/temporal";
 
 export const getEventIcon = (event: Event) => {
   if (event.icon === false) return null;
-  if (event.icon !== undefined && typeof event.icon !== 'boolean') {
+  if (event.icon !== undefined && typeof event.icon !== "boolean") {
     return event.icon;
   }
 
   const title = event.title.toLowerCase();
 
   if (
-    title.includes('holiday') ||
-    title.includes('vacation') ||
-    title.includes('假期')
+    title.includes("holiday") ||
+    title.includes("vacation") ||
+    title.includes("假期")
   ) {
-    return <Gift className='h-3 w-3' />;
+    return <Gift className="h-3 w-3" />;
   }
   if (
-    title.includes('birthday') ||
-    title.includes('anniversary') ||
-    title.includes('生日')
+    title.includes("birthday") ||
+    title.includes("anniversary") ||
+    title.includes("生日")
   ) {
-    return <Heart className='h-3 w-3' />;
+    return <Heart className="h-3 w-3" />;
   }
   if (
-    title.includes('conference') ||
-    title.includes('meeting') ||
-    title.includes('会议') ||
-    title.includes('研讨')
+    title.includes("conference") ||
+    title.includes("meeting") ||
+    title.includes("会议") ||
+    title.includes("研讨")
   ) {
-    return <Star className='h-3 w-3' />;
+    return <Star className="h-3 w-3" />;
   }
   if (
-    title.includes('trip') ||
-    title.includes('travel') ||
-    title.includes('旅行')
+    title.includes("trip") ||
+    title.includes("travel") ||
+    title.includes("旅行")
   ) {
-    return <MapPin className='h-3 w-3' />;
+    return <MapPin className="h-3 w-3" />;
   }
 
-  return <CalendarDays className='h-3 w-3' />;
+  return <CalendarDays className="h-3 w-3" />;
 };
 
 // Analyze multi-day events and generate segments for the current week (supports all-day events and multi-day regular events)
 export const analyzeMultiDayEventsForWeek = (
   events: Event[],
   weekStart: Date,
-  daysInWeek: number = 7
+  daysInWeek: number = 7,
 ): MultiDayEventSegment[] => {
   const segments: MultiDayEventSegment[] = [];
 
@@ -64,7 +64,7 @@ export const analyzeMultiDayEventsForWeek = (
   weekEnd.setDate(weekStart.getDate() + (daysInWeek - 1));
   weekEnd.setHours(23, 59, 59, 999);
 
-  events.forEach(event => {
+  events.forEach((event) => {
     // Use start and end as the event's start and end times
     const eventStartFull = temporalToDate(event.start);
     const eventEndFull = temporalToDate(event.end);
@@ -107,7 +107,8 @@ export const analyzeMultiDayEventsForWeek = (
 
       // Calculate dayIndex within the current week (0=Monday, 6=Sunday)
       const dayIndex = Math.floor(
-        (eventStartDate.getTime() - weekStart.getTime()) / (24 * 60 * 60 * 1000)
+        (eventStartDate.getTime() - weekStart.getTime()) /
+          (24 * 60 * 60 * 1000),
       );
 
       if (dayIndex >= 0 && dayIndex <= daysInWeek - 1) {
@@ -117,7 +118,7 @@ export const analyzeMultiDayEventsForWeek = (
           event,
           startDayIndex: dayIndex,
           endDayIndex: dayIndex,
-          segmentType: 'single',
+          segmentType: "single",
           totalDays: 1,
           segmentIndex: 0,
           isFirstSegment: true,
@@ -170,14 +171,15 @@ export const analyzeMultiDayEventsForWeek = (
     const startDayIndex = Math.max(
       0,
       Math.floor(
-        (weekEventStart.getTime() - weekStart.getTime()) / (24 * 60 * 60 * 1000)
-      )
+        (weekEventStart.getTime() - weekStart.getTime()) /
+          (24 * 60 * 60 * 1000),
+      ),
     );
     const endDayIndex = Math.min(
       daysInWeek - 1,
       Math.floor(
-        (weekEventEnd.getTime() - weekStart.getTime()) / (24 * 60 * 60 * 1000)
-      )
+        (weekEventEnd.getTime() - weekStart.getTime()) / (24 * 60 * 60 * 1000),
+      ),
     );
 
     // Determine segment type
@@ -186,20 +188,20 @@ export const analyzeMultiDayEventsForWeek = (
     const isWeekBoundary =
       startDayIndex === 0 || endDayIndex === daysInWeek - 1;
 
-    let segmentType: MultiDayEventSegment['segmentType'];
+    let segmentType: MultiDayEventSegment["segmentType"];
 
     if (isFirstSegment && isLastSegment) {
-      segmentType = 'single';
+      segmentType = "single";
     } else if (isFirstSegment) {
       segmentType =
         isWeekBoundary && endDayIndex === daysInWeek - 1
-          ? 'start-week-end'
-          : 'start';
+          ? "start-week-end"
+          : "start";
     } else if (isLastSegment) {
       segmentType =
-        isWeekBoundary && startDayIndex === 0 ? 'end-week-start' : 'end';
+        isWeekBoundary && startDayIndex === 0 ? "end-week-start" : "end";
     } else {
-      segmentType = 'middle';
+      segmentType = "middle";
     }
 
     const totalDays = daysDifference(eventStart, eventEnd) + 1;
@@ -225,7 +227,7 @@ export const analyzeMultiDayEventsForWeek = (
 export const analyzeMultiDayRegularEvent = (
   event: Event,
   weekStart: Date,
-  daysInWeek: number = 7
+  daysInWeek: number = 7,
 ): {
   dayIndex: number;
   startHour: number;
@@ -283,7 +285,7 @@ export const analyzeMultiDayRegularEvent = (
 
     // Calculate the index of the current date in the week
     const dayIndex = Math.floor(
-      (currentDate.getTime() - weekStart.getTime()) / (24 * 60 * 60 * 1000)
+      (currentDate.getTime() - weekStart.getTime()) / (24 * 60 * 60 * 1000),
     );
 
     // Skip dates not in the current week

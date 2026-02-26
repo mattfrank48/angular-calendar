@@ -5,34 +5,34 @@ import {
   useCallback,
   useMemo,
   useContext,
-} from 'preact/hooks';
+} from "preact/hooks";
 
-import { EventContextMenu } from '@/components/contextMenu';
-import { ContentSlot } from '@/renderer/ContentSlot';
-import { CustomRenderingContext } from '@/renderer/CustomRenderingContext';
-import { Event, ViewType } from '@/types';
+import { EventContextMenu } from "@/components/contextMenu";
+import { ContentSlot } from "@/renderer/ContentSlot";
+import { CustomRenderingContext } from "@/renderer/CustomRenderingContext";
+import { Event, ViewType } from "@/types";
 import {
   getSelectedBgColor,
   getEventBgColor,
   getEventTextColor,
-} from '@/utils';
+} from "@/utils";
 
-import { EventContent } from './components/EventContent';
-import { EventDetailPanel } from './components/EventDetailPanel';
-import { useClickOutside } from './hooks/useClickOutside';
-import { useDetailPanelPosition } from './hooks/useDetailPanelPosition';
-import { useEventActions } from './hooks/useEventActions';
-import { useEventInteraction } from './hooks/useEventInteraction';
-import { useEventStyles } from './hooks/useEventStyles';
-import { useEventVisibility } from './hooks/useEventVisibility';
-import { CalendarEventProps } from './types';
+import { EventContent } from "./components/EventContent";
+import { EventDetailPanel } from "./components/EventDetailPanel";
+import { useClickOutside } from "./hooks/useClickOutside";
+import { useDetailPanelPosition } from "./hooks/useDetailPanelPosition";
+import { useEventActions } from "./hooks/useEventActions";
+import { useEventInteraction } from "./hooks/useEventInteraction";
+import { useEventStyles } from "./hooks/useEventStyles";
+import { useEventVisibility } from "./hooks/useEventVisibility";
+import { CalendarEventProps } from "./types";
 // Import extracted utils and hooks
 import {
   getDayMetrics,
   getActiveDayIndex,
   getClickedDayIndex,
   getEventClasses,
-} from './utils';
+} from "./utils";
 
 const CalendarEvent = ({
   event,
@@ -66,7 +66,7 @@ const CalendarEvent = ({
   multiDaySegmentInfo,
   app,
   isMobile = false,
-  mode = 'standard',
+  mode = "standard",
   isCompact = false,
   enableTouch,
   hideTime,
@@ -135,8 +135,8 @@ const CalendarEvent = ({
     isBeingDragged;
 
   const [eventVisibility, setEventVisibility] = useState<
-    'visible' | 'sticky-top' | 'sticky-bottom'
-  >('visible');
+    "visible" | "sticky-top" | "sticky-bottom"
+  >("visible");
 
   // Utility Wrappers
   const setActiveDayIndex = (dayIndex: number | null) => {
@@ -151,21 +151,21 @@ const CalendarEvent = ({
         detailPanelKey,
         selectedDayIndexRef.current,
         multiDaySegmentInfo,
-        segment
+        segment,
       ),
-    [event, detailPanelEventId, detailPanelKey, multiDaySegmentInfo, segment]
+    [event, detailPanelEventId, detailPanelKey, multiDaySegmentInfo, segment],
   );
 
   const getClickedDayIdx = useCallback(
     (clientX: number) =>
       getClickedDayIndex(clientX, calendarRef, viewType, isMobile),
-    [calendarRef, viewType, isMobile]
+    [calendarRef, viewType, isMobile],
   );
 
   const getDayMetricsWrapper = useCallback(
     (dayIndex: number) =>
       getDayMetrics(dayIndex, calendarRef, viewType, isMobile),
-    [calendarRef, viewType, isMobile]
+    [calendarRef, viewType, isMobile],
   );
 
   // Positioning Hook
@@ -218,7 +218,7 @@ const CalendarEvent = ({
       getClickedDayIdx,
       updatePanelPosition,
       selectedEventElementRef,
-    }
+    },
   );
 
   // Styles Hook
@@ -299,7 +299,7 @@ const CalendarEvent = ({
       onEventDelete,
       onClose: handlePanelClose,
     }),
-    [event, isAllDay, onEventUpdate, onEventDelete, handlePanelClose]
+    [event, isAllDay, onEventUpdate, onEventDelete, handlePanelClose],
   );
 
   // Memoized args for the eventContent ContentSlot
@@ -312,7 +312,7 @@ const CalendarEvent = ({
       segment,
       layout,
     }),
-    [event, isAllDay, isMobile, viewType, segment, layout]
+    [event, isAllDay, isMobile, viewType, segment, layout],
   );
 
   // Stable contentRenderer for EventDetailPanelWithContent
@@ -320,11 +320,11 @@ const CalendarEvent = ({
     () => (
       <ContentSlot
         store={customRenderingStore}
-        generatorName='eventDetailContent'
+        generatorName="eventDetailContent"
         generatorArgs={panelSlotArgs}
       />
     ),
-    [customRenderingStore, panelSlotArgs]
+    [customRenderingStore, panelSlotArgs],
   );
 
   // Highlight effect
@@ -368,7 +368,7 @@ const CalendarEvent = ({
   ]);
 
   // Final Render
-  const calendarId = event.calendarId || 'blue';
+  const calendarId = event.calendarId || "blue";
   const calendarRegistry = app?.getCalendarRegistry();
 
   return (
@@ -381,21 +381,21 @@ const CalendarEvent = ({
           isAllDay,
           isMultiDay,
           segment,
-          yearSegment
-        )} ${isAllDay && newlyCreatedEventId === event.id ? 'df-all-day-event-animate' : ''}`}
+          yearSegment,
+        )} ${isAllDay && newlyCreatedEventId === event.id ? "df-all-day-event-animate" : ""}`}
         style={{
           ...calculateEventStyle(),
           backgroundColor: isEventSelected
             ? getSelectedBgColor(calendarId, calendarRegistry)
             : getEventBgColor(calendarId, calendarRegistry),
           color: isEventSelected
-            ? '#fff'
+            ? "#fff"
             : getEventTextColor(calendarId, calendarRegistry),
         }}
         onClick={isTouchEnabled ? undefined : handleClick}
         onContextMenu={isTouchEnabled ? undefined : handleContextMenu}
         onDblClick={isTouchEnabled ? undefined : handleDoubleClick}
-        onMouseDown={e => {
+        onMouseDown={(e) => {
           if (!isTouchEnabled) setIsPressed(true);
           if (onMoveStart) {
             const mouseEvent = e as MouseEvent;
@@ -457,13 +457,13 @@ const CalendarEvent = ({
       {showDetailPanel && !customEventDetailDialog && (
         <div
           style={{
-            position: 'fixed',
+            position: "fixed",
             top: 0,
             left: 0,
             right: 0,
             bottom: 0,
             zIndex: 9998,
-            pointerEvents: 'none',
+            pointerEvents: "none",
           }}
         />
       )}

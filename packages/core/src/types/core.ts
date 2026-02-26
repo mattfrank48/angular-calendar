@@ -1,32 +1,32 @@
 // oxlint-disable typescript/no-explicit-any
 // Core type definitions
-import { h, AnyComponent, ComponentChildren } from 'preact';
+import { h, AnyComponent, ComponentChildren } from "preact"
 
-import { ViewSwitcherMode } from '@/components/common/ViewHeader';
-import { CalendarRegistry } from '@/core/calendarRegistry';
-import { Locale } from '@/locale/types';
+import { ViewSwitcherMode } from "@/components/common/ViewHeader"
+import { CalendarRegistry } from "@/core/calendarRegistry"
+import { Locale } from "@/locale/types"
 
-import { CalendarType, ThemeConfig, ThemeMode } from './calendarTypes';
-import { Event } from './event';
+import { CalendarType, ThemeConfig, ThemeMode } from "./calendarTypes"
+import { Event } from "./event"
 
 /** Generic type for framework-specific components */
-export type TComponent = AnyComponent<any, any>;
+export type TComponent = AnyComponent<any, any>
 /** Generic type for framework-specific nodes/elements */
-export type TNode = ComponentChildren;
+export type TNode = ComponentChildren
 
 /**
  * Custom mobile event renderer (Drawer or Dialog)
  */
-export type MobileEventRenderer = AnyComponent<any, any>;
+export type MobileEventRenderer = AnyComponent<any, any>
 
 /**
  * View type enum
  */
 export enum ViewType {
-  DAY = 'day',
-  WEEK = 'week',
-  MONTH = 'month',
-  YEAR = 'year',
+  DAY = "day",
+  WEEK = "week",
+  MONTH = "month",
+  YEAR = "year",
 }
 
 /**
@@ -34,10 +34,10 @@ export enum ViewType {
  * Defines the basic structure of calendar plugins
  */
 export interface CalendarPlugin {
-  name: string;
-  install: (app: ICalendarApp) => void;
-  config?: Record<string, unknown>;
-  api?: unknown;
+  name: string
+  install: ( app: ICalendarApp ) => void
+  config?: Record<string, unknown>
+  api?: unknown
 }
 
 /**
@@ -45,84 +45,84 @@ export interface CalendarPlugin {
  * Defines the basic structure of calendar views
  */
 export interface CalendarView {
-  type: ViewType;
-  component: TComponent;
-  config?: Record<string, unknown>;
+  type: ViewType
+  component: TComponent
+  config?: Record<string, unknown>
 }
 
 export type RangeChangeReason =
-  | 'initial'
-  | 'navigation'
-  | 'viewChange'
-  | 'scroll';
+  | "initial"
+  | "navigation"
+  | "viewChange"
+  | "scroll"
 
 /**
  * View display mode
  * - standard: Full display (e.g., 7-day week)
  * - compact: Optimized for small screens (e.g., 2-day view on mobile)
  */
-export type ViewMode = 'standard' | 'compact';
+export type ViewMode = "standard" | "compact"
 
 export type EventChange =
-  | { type: 'create'; event: Event }
-  | { type: 'update'; before: Event; after: Event }
-  | { type: 'delete'; event: Event };
+  | { type: "create"; event: Event }
+  | { type: "update"; before: Event; after: Event }
+  | { type: "delete"; event: Event }
 
 /**
  * Calendar callbacks interface
  * Defines calendar event callback functions
  */
 export interface CalendarCallbacks {
-  onEventBatchChange?: (changes: EventChange[]) => void | Promise<void>;
-  onViewChange?: (view: ViewType) => void | Promise<void>;
-  onEventCreate?: (event: Event) => void | Promise<void>;
-  onEventUpdate?: (event: Event) => void | Promise<void>;
-  onEventDelete?: (eventId: string) => void | Promise<void>;
-  onDateChange?: (date: Date) => void | Promise<void>;
-  onRender?: () => void | Promise<void>;
+  onEventBatchChange?: ( changes: EventChange[] ) => void | Promise<void>
+  onViewChange?: ( view: ViewType ) => void | Promise<void>
+  onEventCreate?: ( event: Event ) => void | Promise<void>
+  onEventUpdate?: ( event: Event ) => void | Promise<void>
+  onEventDelete?: ( eventId: string ) => void | Promise<void>
+  onDateChange?: ( date: Date ) => void | Promise<void>
+  onRender?: () => void | Promise<void>
   /**
    * @deprecated This method is retained for backward compatibility and will be removed in future releases. Use ``onVisibleRangeChange`` instead.
    */
-  onVisibleMonthChange?: (date: Date) => void | Promise<void>;
+  onVisibleMonthChange?: ( date: Date ) => void | Promise<void>
   onVisibleRangeChange?: (
     start: Date,
     end: Date,
-    reason: RangeChangeReason
-  ) => void | Promise<void>;
-  onCalendarUpdate?: (calendar: CalendarType) => void | Promise<void>;
-  onCalendarCreate?: (calendar: CalendarType) => void | Promise<void>;
-  onCalendarDelete?: (calendarId: string) => void | Promise<void>;
+    reason: RangeChangeReason,
+  ) => void | Promise<void>
+  onCalendarUpdate?: ( calendar: CalendarType ) => void | Promise<void>
+  onCalendarCreate?: ( calendar: CalendarType ) => void | Promise<void>
+  onCalendarDelete?: ( calendarId: string ) => void | Promise<void>
   onCalendarMerge?: (
     sourceId: string,
-    targetId: string
-  ) => void | Promise<void>;
-  onEventClick?: (event: Event) => void | Promise<void>;
-  onMoreEventsClick?: (date: Date) => void | Promise<void>;
-  onDismissUI?: () => void | Promise<void>;
+    targetId: string,
+  ) => void | Promise<void>
+  onEventClick?: ( event: Event ) => void | Promise<void>
+  onMoreEventsClick?: ( date: Date ) => void | Promise<void>
+  onDismissUI?: () => void | Promise<void>
 }
 
 export interface CreateCalendarDialogProps {
-  onClose: () => void;
-  onCreate: (calendar: CalendarType) => void;
-  colorPickerMode?: 'default' | 'custom';
+  onClose: () => void
+  onCreate: ( calendar: CalendarType ) => void
+  colorPickerMode?: "default" | "custom"
 }
 
 export interface CalendarHeaderProps {
-  calendar: ICalendarApp;
-  switcherMode?: ViewSwitcherMode;
+  calendar: ICalendarApp
+  switcherMode?: ViewSwitcherMode
   onAddCalendar?: (
     e:
       | h.JSX.TargetedMouseEvent<HTMLElement>
-      | h.JSX.TargetedTouchEvent<HTMLElement>
-  ) => void;
-  onSearchChange?: (value: string) => void;
+      | h.JSX.TargetedTouchEvent<HTMLElement>,
+  ) => void
+  onSearchChange?: ( value: string ) => void
   /** Triggered when search icon is clicked (typically on mobile) */
-  onSearchClick?: () => void;
-  searchValue?: string;
-  isSearchOpen?: boolean;
-  isEditable?: boolean;
+  onSearchClick?: () => void
+  searchValue?: string
+  isSearchOpen?: boolean
+  isEditable?: boolean
   /** Left safe area padding (px) to avoid overlapping with traffic light buttons in macMode */
-  safeAreaLeft?: number;
+  safeAreaLeft?: number
 }
 
 /**
@@ -130,29 +130,29 @@ export interface CalendarHeaderProps {
  * Used to initialize CalendarApp
  */
 export interface CalendarAppConfig {
-  views: CalendarView[];
-  plugins?: CalendarPlugin[];
-  events?: Event[];
-  callbacks?: CalendarCallbacks;
-  defaultView?: ViewType;
-  initialDate?: Date;
-  switcherMode?: ViewSwitcherMode;
-  calendars?: CalendarType[];
-  defaultCalendar?: string;
-  theme?: ThemeConfig;
-  useEventDetailDialog?: boolean;
-  useCalendarHeader?: boolean | ((props: CalendarHeaderProps) => TNode);
-  customMobileEventRenderer?: MobileEventRenderer;
-  locale?: string | Locale;
-  readOnly?: boolean | ReadOnlyConfig;
+  views: CalendarView[]
+  plugins?: CalendarPlugin[]
+  events?: Event[]
+  callbacks?: CalendarCallbacks
+  defaultView?: ViewType
+  initialDate?: Date
+  switcherMode?: ViewSwitcherMode
+  calendars?: CalendarType[]
+  defaultCalendar?: string
+  theme?: ThemeConfig
+  useEventDetailDialog?: boolean
+  useCalendarHeader?: boolean | ( ( props: CalendarHeaderProps ) => TNode )
+  customMobileEventRenderer?: MobileEventRenderer
+  locale?: string | Locale
+  readOnly?: boolean | ReadOnlyConfig
 }
 
 /**
  * Read-only configuration
  */
 export interface ReadOnlyConfig {
-  draggable?: boolean; // Whether to allow dragging
-  viewable?: boolean; // Whether to allow inspecting (open detail panel/dialog/drawer)
+  draggable?: boolean // Whether to allow dragging
+  viewable?: boolean // Whether to allow inspecting (open detail panel/dialog/drawer)
 }
 
 /**
@@ -160,17 +160,17 @@ export interface ReadOnlyConfig {
  * Internal state of CalendarApp
  */
 export interface CalendarAppState {
-  currentView: ViewType;
-  currentDate: Date;
-  events: Event[];
-  plugins: Map<string, CalendarPlugin>;
-  views: Map<ViewType, CalendarView>;
-  switcherMode?: ViewSwitcherMode;
+  currentView: ViewType
+  currentDate: Date
+  events: Event[]
+  plugins: Map<string, CalendarPlugin>
+  views: Map<ViewType, CalendarView>
+  switcherMode?: ViewSwitcherMode
 
-  locale: string | Locale;
-  highlightedEventId?: string | null;
-  selectedEventId?: string | null;
-  readOnly: boolean | ReadOnlyConfig;
+  locale: string | Locale
+  highlightedEventId?: string | null
+  selectedEventId?: string | null
+  readOnly: boolean | ReadOnlyConfig
 }
 
 /**
@@ -179,98 +179,98 @@ export interface CalendarAppState {
  */
 export interface ICalendarApp {
   // State
-  state: CalendarAppState;
-  getReadOnlyConfig: () => ReadOnlyConfig;
+  state: CalendarAppState
+  getReadOnlyConfig: () => ReadOnlyConfig
 
   // Subscription management
-  subscribe: (listener: (app: ICalendarApp) => void) => () => void;
+  subscribe: ( listener: ( app: ICalendarApp ) => void ) => () => void
 
   // View management
-  changeView: (view: ViewType) => void;
-  getCurrentView: () => CalendarView;
-  getViewConfig: (viewType: ViewType) => Record<string, unknown>;
+  changeView: ( view: ViewType ) => void
+  getCurrentView: () => CalendarView
+  getViewConfig: ( viewType: ViewType ) => Record<string, unknown>
 
   // Date management
-  setCurrentDate: (date: Date) => void;
-  getCurrentDate: () => Date;
-  goToToday: () => void;
-  goToPrevious: () => void;
-  goToNext: () => void;
-  selectDate: (date: Date) => void;
+  setCurrentDate: ( date: Date ) => void
+  getCurrentDate: () => Date
+  goToToday: () => void
+  goToPrevious: () => void
+  goToNext: () => void
+  selectDate: ( date: Date ) => void
 
   // Undo management
-  undo: () => void;
+  undo: () => void
 
   // Event management
   applyEventsChanges: (
     changes: {
-      add?: Event[];
-      update?: Array<{ id: string; updates: Partial<Event> }>;
-      delete?: string[];
+      add?: Event[]
+      update?: Array<{ id: string; updates: Partial<Event> }>
+      delete?: string[]
     },
-    isPending?: boolean
-  ) => void;
-  addEvent: (event: Event) => void;
-  updateEvent: (id: string, event: Partial<Event>, isPending?: boolean) => void;
-  deleteEvent: (id: string) => void;
-  getEvents: () => Event[];
-  getAllEvents: () => Event[];
-  onEventClick: (event: Event) => void;
-  onMoreEventsClick: (date: Date) => void;
-  highlightEvent: (eventId: string | null) => void;
-  selectEvent: (eventId: string | null) => void;
-  getCalendars: () => CalendarType[];
-  reorderCalendars: (fromIndex: number, toIndex: number) => void;
-  setCalendarVisibility: (calendarId: string, visible: boolean) => void;
-  setAllCalendarsVisibility: (visible: boolean) => void;
+    isPending?: boolean,
+  ) => void
+  addEvent: ( event: Event ) => void
+  updateEvent: ( id: string, event: Partial<Event>, isPending?: boolean ) => void
+  deleteEvent: ( id: string ) => void
+  getEvents: () => Event[]
+  getAllEvents: () => Event[]
+  onEventClick: ( event: Event ) => void
+  onMoreEventsClick: ( date: Date ) => void
+  highlightEvent: ( eventId: string | null ) => void
+  selectEvent: ( eventId: string | null ) => void
+  getCalendars: () => CalendarType[]
+  reorderCalendars: ( fromIndex: number, toIndex: number ) => void
+  setCalendarVisibility: ( calendarId: string, visible: boolean ) => void
+  setAllCalendarsVisibility: ( visible: boolean ) => void
   updateCalendar: (
     id: string,
     updates: Partial<CalendarType>,
-    isPending?: boolean
-  ) => void;
-  createCalendar: (calendar: CalendarType) => void;
-  deleteCalendar: (id: string) => void;
-  mergeCalendars: (sourceId: string, targetId: string) => void;
-  setVisibleMonth: (date: Date) => void;
-  getVisibleMonth: () => Date;
+    isPending?: boolean,
+  ) => void
+  createCalendar: ( calendar: CalendarType ) => void
+  deleteCalendar: ( id: string ) => void
+  mergeCalendars: ( sourceId: string, targetId: string ) => void
+  setVisibleMonth: ( date: Date ) => void
+  getVisibleMonth: () => Date
   emitVisibleRange: (
     start: Date,
     end: Date,
-    reason?: RangeChangeReason
-  ) => void;
+    reason?: RangeChangeReason,
+  ) => void
 
   // UI Signals
-  dismissUI: () => void;
+  dismissUI: () => void
 
   // Plugin management
-  getPlugin: <T = unknown>(name: string) => T | undefined;
-  hasPlugin: (name: string) => boolean;
+  getPlugin: <T = unknown>( name: string ) => T | undefined
+  hasPlugin: ( name: string ) => boolean
 
   // Calendar Header
   getCalendarHeaderConfig: () =>
     | boolean
-    | ((props: CalendarHeaderProps) => TNode);
+    | ( ( props: CalendarHeaderProps ) => TNode )
 
   // Trigger render callback (internal use, notify subscribers)
-  triggerRender: () => void;
+  triggerRender: () => void
 
   // Get CalendarRegistry instance
-  getCalendarRegistry: () => CalendarRegistry;
+  getCalendarRegistry: () => CalendarRegistry
 
   // Get whether to use event detail dialog
-  getUseEventDetailDialog: () => boolean;
+  getUseEventDetailDialog: () => boolean
 
   // Get custom mobile event renderer
-  getCustomMobileEventRenderer: () => MobileEventRenderer | undefined;
+  getCustomMobileEventRenderer: () => MobileEventRenderer | undefined
 
   // Update configuration dynamically
-  updateConfig: (config: Partial<CalendarAppConfig>) => void;
+  updateConfig: ( config: Partial<CalendarAppConfig> ) => void
 
   // Theme management
-  setTheme: (mode: ThemeMode) => void;
-  getTheme: () => ThemeMode;
-  subscribeThemeChange: (callback: (theme: ThemeMode) => void) => () => void;
-  unsubscribeThemeChange: (callback: (theme: ThemeMode) => void) => void;
+  setTheme: ( mode: ThemeMode ) => void
+  getTheme: () => ThemeMode
+  subscribeThemeChange: ( callback: ( theme: ThemeMode ) => void ) => () => void
+  unsubscribeThemeChange: ( callback: ( theme: ThemeMode ) => void ) => void
 }
 
 /**
@@ -278,43 +278,43 @@ export interface ICalendarApp {
  * Calendar application interface provided for React components
  */
 export interface UseCalendarAppReturn {
-  app: ICalendarApp;
-  currentView: ViewType;
-  currentDate: Date;
-  events: Event[];
+  app: ICalendarApp
+  currentView: ViewType
+  currentDate: Date
+  events: Event[]
   applyEventsChanges: (
     changes: {
-      add?: Event[];
-      update?: Array<{ id: string; updates: Partial<Event> }>;
-      delete?: string[];
+      add?: Event[]
+      update?: Array<{ id: string; updates: Partial<Event> }>
+      delete?: string[]
     },
-    isPending?: boolean
-  ) => void;
-  changeView: (view: ViewType) => void;
-  setCurrentDate: (date: Date) => void;
-  addEvent: (event: Event) => void;
-  updateEvent: (id: string, event: Partial<Event>, isPending?: boolean) => void;
-  deleteEvent: (id: string) => void;
-  goToToday: () => void;
-  goToPrevious: () => void;
-  goToNext: () => void;
-  selectDate: (date: Date) => void;
-  undo: () => void;
-  getCalendars: () => CalendarType[];
-  createCalendar: (calendar: CalendarType) => void;
-  mergeCalendars: (sourceId: string, targetId: string) => void;
-  setCalendarVisibility: (calendarId: string, visible: boolean) => void;
-  setAllCalendarsVisibility: (visible: boolean) => void;
-  getAllEvents: () => Event[];
-  highlightEvent: (eventId: string | null) => void;
-  setVisibleMonth: (date: Date) => void;
-  getVisibleMonth: () => Date;
+    isPending?: boolean,
+  ) => void
+  changeView: ( view: ViewType ) => void
+  setCurrentDate: ( date: Date ) => void
+  addEvent: ( event: Event ) => void
+  updateEvent: ( id: string, event: Partial<Event>, isPending?: boolean ) => void
+  deleteEvent: ( id: string ) => void
+  goToToday: () => void
+  goToPrevious: () => void
+  goToNext: () => void
+  selectDate: ( date: Date ) => void
+  undo: () => void
+  getCalendars: () => CalendarType[]
+  createCalendar: ( calendar: CalendarType ) => void
+  mergeCalendars: ( sourceId: string, targetId: string ) => void
+  setCalendarVisibility: ( calendarId: string, visible: boolean ) => void
+  setAllCalendarsVisibility: ( visible: boolean ) => void
+  getAllEvents: () => Event[]
+  highlightEvent: ( eventId: string | null ) => void
+  setVisibleMonth: ( date: Date ) => void
+  getVisibleMonth: () => Date
   emitVisibleRange: (
     start: Date,
     end: Date,
-    reason?: RangeChangeReason
-  ) => void;
-  readOnlyConfig: ReadOnlyConfig;
+    reason?: RangeChangeReason,
+  ) => void
+  readOnlyConfig: ReadOnlyConfig
 }
 
 /**
@@ -322,43 +322,43 @@ export interface UseCalendarAppReturn {
  * Contains drag and view configurations
  */
 export interface CalendarConfig {
-  locale?: string;
+  locale?: string
   drag: {
-    HOUR_HEIGHT: number;
-    FIRST_HOUR: number;
-    LAST_HOUR: number;
-    MIN_DURATION: number;
-    TIME_COLUMN_WIDTH: number;
-    ALL_DAY_HEIGHT: number;
-    getLineColor: (color: string) => string;
-    getDynamicPadding: (drag: { endHour: number; startHour: number }) => string;
-  };
+    HOUR_HEIGHT: number
+    FIRST_HOUR: number
+    LAST_HOUR: number
+    MIN_DURATION: number
+    TIME_COLUMN_WIDTH: number
+    ALL_DAY_HEIGHT: number
+    getLineColor: ( color: string ) => string
+    getDynamicPadding: ( drag: { endHour: number; startHour: number } ) => string
+  }
   views: {
-    day: Record<string, unknown>;
-    week: Record<string, unknown>;
-    month: Record<string, unknown>;
-  };
+    day: Record<string, unknown>
+    week: Record<string, unknown>
+    month: Record<string, unknown>
+  }
 }
 
 export interface UseCalendarReturn {
   // State
-  view: ViewType;
-  currentDate: Date;
-  events: Event[];
-  currentWeekStart: Date;
+  view: ViewType
+  currentDate: Date
+  events: Event[]
+  currentWeekStart: Date
 
   // Actions
-  changeView: (view: ViewType) => void;
-  goToToday: () => void;
-  goToPrevious: () => void;
-  goToNext: () => void;
-  selectDate: (date: Date) => void;
+  changeView: ( view: ViewType ) => void
+  goToToday: () => void
+  goToPrevious: () => void
+  goToNext: () => void
+  selectDate: ( date: Date ) => void
   updateEvent: (
     eventId: string,
     updates: Partial<Event>,
-    isPending?: boolean
-  ) => void;
-  deleteEvent: (eventId: string) => void;
-  addEvent: (event: Omit<Event, 'id'>) => void;
-  setEvents: (events: Event[] | ((prev: Event[]) => Event[])) => void;
+    isPending?: boolean,
+  ) => void
+  deleteEvent: ( eventId: string ) => void
+  addEvent: ( event: Omit<Event, "id"> ) => void
+  setEvents: ( events: Event[] | ( ( prev: Event[] ) => Event[] ) ) => void
 }

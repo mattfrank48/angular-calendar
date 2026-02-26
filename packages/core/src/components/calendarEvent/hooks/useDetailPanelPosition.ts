@@ -1,43 +1,43 @@
-import { RefObject } from 'preact';
-import { useState, useCallback, useEffect } from 'preact/hooks';
+import { RefObject } from "preact"
+import { useState, useCallback, useEffect } from "preact/hooks"
 
-import { getTimeColumnWidth } from '@/components/calendarEvent/utils';
-import { MultiDayEventSegment } from '@/components/monthView/WeekComponent';
-import { YearMultiDaySegment } from '@/components/yearView/utils';
-import { Event, ViewType, EventDetailPosition } from '@/types';
+import { getTimeColumnWidth } from "@/components/calendarEvent/utils"
+import { MultiDayEventSegment } from "@/components/monthView/WeekComponent"
+import { YearMultiDaySegment } from "@/components/yearView/utils"
+import { Event, ViewType, EventDetailPosition } from "@/types"
 
 interface UseDetailPanelPositionProps {
-  event: Event;
-  viewType: ViewType;
-  isMultiDay: boolean;
-  segment?: MultiDayEventSegment;
-  yearSegment?: YearMultiDaySegment;
+  event: Event
+  viewType: ViewType
+  isMultiDay: boolean
+  segment?: MultiDayEventSegment
+  yearSegment?: YearMultiDaySegment
   multiDaySegmentInfo?: {
-    startHour: number;
-    endHour: number;
-    isFirst: boolean;
-    isLast: boolean;
-    dayIndex?: number;
-  };
-  calendarRef: RefObject<HTMLElement>;
-  eventRef: RefObject<HTMLElement>;
-  detailPanelRef: RefObject<HTMLElement>;
-  selectedEventElementRef: RefObject<HTMLElement>;
-  isMobile: boolean;
-  eventVisibility: 'visible' | 'sticky-top' | 'sticky-bottom';
-  firstHour: number;
-  hourHeight: number;
-  columnsPerRow?: number;
-  showDetailPanel: boolean;
-  detailPanelEventId?: string | null;
-  detailPanelKey: string;
-  getActiveDayIdx: () => number;
+    startHour: number
+    endHour: number
+    isFirst: boolean
+    isLast: boolean
+    dayIndex?: number
+  }
+  calendarRef: RefObject<HTMLElement>
+  eventRef: RefObject<HTMLElement>
+  detailPanelRef: RefObject<HTMLElement>
+  selectedEventElementRef: RefObject<HTMLElement>
+  isMobile: boolean
+  eventVisibility: "visible" | "sticky-top" | "sticky-bottom"
+  firstHour: number
+  hourHeight: number
+  columnsPerRow?: number
+  showDetailPanel: boolean
+  detailPanelEventId?: string | null
+  detailPanelKey: string
+  getActiveDayIdx: () => number
   getDayMetricsWrapper: (
-    dayIndex: number
-  ) => { left: number; width: number } | null;
+    dayIndex: number,
+  ) => { left: number; width: number } | null
 }
 
-export const useDetailPanelPosition = ({
+export const useDetailPanelPosition = ( {
   event,
   viewType,
   isMultiDay,
@@ -58,76 +58,76 @@ export const useDetailPanelPosition = ({
   detailPanelKey,
   getActiveDayIdx,
   getDayMetricsWrapper,
-}: UseDetailPanelPositionProps) => {
-  const [detailPanelPosition, setDetailPanelPosition] =
-    useState<EventDetailPosition | null>(null);
+}: UseDetailPanelPositionProps ) => {
+  const [ detailPanelPosition, setDetailPanelPosition ] =
+    useState<EventDetailPosition | null> ( null )
 
-  const isDayView = viewType === ViewType.DAY;
-  const isMonthView = viewType === ViewType.MONTH;
-  const isYearView = viewType === ViewType.YEAR;
+  const isDayView = viewType === ViewType.DAY
+  const isMonthView = viewType === ViewType.MONTH
+  const isYearView = viewType === ViewType.YEAR
 
-  const updatePanelPosition = useCallback(() => {
+  const updatePanelPosition = useCallback ( () => {
     if (
       !selectedEventElementRef.current ||
       !calendarRef.current ||
       !detailPanelRef.current
     )
-      return;
+      return
 
-    const calendarRect = calendarRef.current.getBoundingClientRect();
-    const positionDayIndex = getActiveDayIdx();
-    const metricsForPosition = getDayMetricsWrapper(positionDayIndex);
+    const calendarRect = calendarRef.current.getBoundingClientRect ()
+    const positionDayIndex = getActiveDayIdx ()
+    const metricsForPosition = getDayMetricsWrapper ( positionDayIndex )
 
-    let dayStartX: number;
-    let dayColumnWidth: number;
+    let dayStartX: number
+    let dayColumnWidth: number
 
-    if (metricsForPosition) {
-      dayStartX = metricsForPosition.left;
-      dayColumnWidth = metricsForPosition.width;
-    } else if (isMonthView) {
-      dayColumnWidth = calendarRect.width / 7;
-      dayStartX = calendarRect.left + positionDayIndex * dayColumnWidth;
+    if ( metricsForPosition ) {
+      dayStartX = metricsForPosition.left
+      dayColumnWidth = metricsForPosition.width
+    } else if ( isMonthView ) {
+      dayColumnWidth = calendarRect.width / 7
+      dayStartX = calendarRect.left + positionDayIndex * dayColumnWidth
     } else {
-      const timeColumnWidth = getTimeColumnWidth(calendarRef, isMobile);
-      dayColumnWidth = (calendarRect.width - timeColumnWidth) / 7;
+      const timeColumnWidth = getTimeColumnWidth ( calendarRef, isMobile )
+      dayColumnWidth = ( calendarRect.width - timeColumnWidth ) / 7
       dayStartX =
-        calendarRect.left + timeColumnWidth + positionDayIndex * dayColumnWidth;
+        calendarRect.left + timeColumnWidth + positionDayIndex * dayColumnWidth
     }
 
-    const boundaryWidth = Math.min(window.innerWidth, calendarRect.right);
-    const boundaryHeight = Math.min(window.innerHeight, calendarRect.bottom);
+    const boundaryWidth = Math.min ( window.innerWidth, calendarRect.right )
+    const boundaryHeight = Math.min ( window.innerHeight, calendarRect.bottom )
 
-    requestAnimationFrame(() => {
-      if (!detailPanelRef.current) return;
-      const eventElement = selectedEventElementRef.current;
-      if (!eventElement) return;
+    requestAnimationFrame ( () => {
+      if ( !detailPanelRef.current ) return
+      const eventElement = selectedEventElementRef.current
+      if ( !eventElement ) return
 
-      const panelRect = detailPanelRef.current.getBoundingClientRect();
-      const panelWidth = panelRect.width;
-      const panelHeight = panelRect.height;
+      const panelRect = detailPanelRef.current.getBoundingClientRect ()
+      const panelWidth = panelRect.width
+      const panelHeight = panelRect.height
 
-      let left: number, top: number;
-      let eventRect: DOMRect;
+      let left: number, top: number
+      let eventRect: DOMRect
 
       if (
-        eventVisibility === 'sticky-top' ||
-        eventVisibility === 'sticky-bottom'
+        eventVisibility === "sticky-top" ||
+        eventVisibility === "sticky-bottom"
       ) {
-        const actualEventRect = eventRef.current?.getBoundingClientRect();
-        if (!actualEventRect) return;
+        const actualEventRect = eventRef.current?.getBoundingClientRect ()
+        if ( !actualEventRect ) return
 
-        eventRect = actualEventRect;
+        eventRect = actualEventRect
       } else {
-        eventRect = selectedEventElementRef!.current!.getBoundingClientRect();
+        eventRect = selectedEventElementRef!.current!.getBoundingClientRect ()
       }
 
-      if (isMonthView && isMultiDay && segment) {
-        const metrics = getDayMetricsWrapper(positionDayIndex);
-        const currentDayColumnWidth = metrics?.width ?? calendarRect.width / 7;
+      if ( isMonthView && isMultiDay && segment ) {
+        const metrics = getDayMetricsWrapper ( positionDayIndex )
+        const currentDayColumnWidth = metrics?.width ?? calendarRect.width / 7
         const selectedDayLeft =
           metrics?.left ??
-          calendarRect.left + positionDayIndex * currentDayColumnWidth;
-        const selectedDayRight = selectedDayLeft + currentDayColumnWidth;
+          calendarRect.left + positionDayIndex * currentDayColumnWidth
+        const selectedDayRight = selectedDayLeft + currentDayColumnWidth
         eventRect = {
           top: eventRect.top,
           bottom: eventRect.bottom,
@@ -137,43 +137,43 @@ export const useDetailPanelPosition = ({
           height: eventRect.height,
           x: selectedDayLeft,
           y: eventRect.top,
-          toJSON: () => ({}),
-        } as DOMRect;
+          toJSON: () => ( {} ),
+        } as DOMRect
       }
 
-      const spaceOnRight = boundaryWidth - eventRect.right;
-      const spaceOnLeft = eventRect.left - calendarRect.left;
+      const spaceOnRight = boundaryWidth - eventRect.right
+      const spaceOnLeft = eventRect.left - calendarRect.left
 
-      if (spaceOnRight >= panelWidth + 20) {
-        left = eventRect.right + 10;
-      } else if (spaceOnLeft >= panelWidth + 20) {
-        left = eventRect.left - panelWidth - 10;
+      if ( spaceOnRight >= panelWidth + 20 ) {
+        left = eventRect.right + 10
+      } else if ( spaceOnLeft >= panelWidth + 20 ) {
+        left = eventRect.left - panelWidth - 10
       } else {
         left =
           spaceOnRight > spaceOnLeft
-            ? Math.max(calendarRect.left + 10, boundaryWidth - panelWidth - 10)
-            : calendarRect.left + 10;
+            ? Math.max ( calendarRect.left + 10, boundaryWidth - panelWidth - 10 )
+            : calendarRect.left + 10
       }
 
-      const idealTop = eventRect.top - panelHeight / 2 + eventRect.height / 2;
-      const topBoundary = Math.max(10, calendarRect.top + 10);
-      const bottomBoundary = boundaryHeight - 10;
+      const idealTop = eventRect.top - panelHeight / 2 + eventRect.height / 2
+      const topBoundary = Math.max ( 10, calendarRect.top + 10 )
+      const bottomBoundary = boundaryHeight - 10
       top =
         idealTop < topBoundary
           ? topBoundary
           : idealTop + panelHeight > bottomBoundary
             ? bottomBoundary - panelHeight
-            : idealTop;
+            : idealTop
 
-      setDetailPanelPosition(prev => {
-        if (!prev) return null;
-        let isSunday = left < dayStartX;
-        if (isYearView) {
-          isSunday = left < eventRect.left;
+      setDetailPanelPosition ( prev => {
+        if ( !prev ) return null
+        let isSunday = left < dayStartX
+        if ( isYearView ) {
+          isSunday = left < eventRect.left
         }
-        return { ...prev, top, left, isSunday };
-      });
-    });
+        return { ...prev, top, left, isSunday }
+      } )
+    } )
   }, [
     calendarRef,
     event.day,
@@ -198,24 +198,24 @@ export const useDetailPanelPosition = ({
     selectedEventElementRef,
     detailPanelRef,
     eventRef,
-  ]);
+  ] )
 
-  useEffect(() => {
-    if (showDetailPanel && !detailPanelPosition && !isMobile) {
-      setDetailPanelPosition({
+  useEffect ( () => {
+    if ( showDetailPanel && !detailPanelPosition && !isMobile ) {
+      setDetailPanelPosition ( {
         top: -9999,
         left: -9999,
         eventHeight: 0,
         eventMiddleY: 0,
         isSunday: false,
-      });
-      requestAnimationFrame(() => updatePanelPosition());
+      } )
+      requestAnimationFrame ( () => updatePanelPosition () )
     }
-  }, [showDetailPanel, detailPanelPosition, updatePanelPosition, isMobile]);
+  }, [ showDetailPanel, detailPanelPosition, updatePanelPosition, isMobile ] )
 
   return {
     detailPanelPosition,
     setDetailPanelPosition,
     updatePanelPosition,
-  };
-};
+  }
+}

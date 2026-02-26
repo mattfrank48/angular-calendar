@@ -1,6 +1,6 @@
-import { Temporal } from 'temporal-polyfill';
+import { Temporal } from "temporal-polyfill";
 
-import { compareDates } from '@/components/rangePicker/utils';
+import { compareDates } from "@/components/rangePicker/utils";
 
 interface CalendarGridProps {
   calendarDays: Temporal.PlainDate[];
@@ -29,25 +29,25 @@ const CalendarGrid = ({
       compareDates(day, startDate) >= 0 && compareDates(day, endDate) <= 0;
 
     const baseClasses =
-      'flex h-9 w-9 items-center justify-center rounded-md text-sm transition';
+      "flex h-9 w-9 items-center justify-center rounded-md text-sm transition";
 
     const stateClass = (() => {
       if (isStart || isEnd) {
-        return 'bg-primary text-primary-foreground font-semibold';
+        return "bg-primary text-primary-foreground font-semibold";
       }
       if (isInRange) {
-        return 'bg-primary/10 text-primary';
+        return "bg-primary/10 text-primary";
       }
       if (isOutsideMonth) {
-        return 'text-slate-300 dark:text-gray-600';
+        return "text-slate-300 dark:text-gray-600";
       }
-      return 'text-slate-700 dark:text-gray-300 hover:bg-primary/10 hover:text-primary';
+      return "text-slate-700 dark:text-gray-300 hover:bg-primary/10 hover:text-primary";
     })();
 
     return (
       <button
         key={day.toString()}
-        type='button'
+        type="button"
         disabled={disabled}
         onClick={() => onDaySelect(day)}
         className={`${baseClasses} ${stateClass}`}
@@ -59,12 +59,12 @@ const CalendarGrid = ({
 
   return (
     <>
-      <div className='grid grid-cols-7 gap-1 px-1 pt-2 pb-3 text-center text-[12px] tracking-wide text-slate-400 uppercase dark:text-gray-500'>
+      <div className="grid grid-cols-7 gap-1 px-1 pt-2 pb-3 text-center text-[12px] tracking-wide text-slate-400 uppercase dark:text-gray-500">
         {weekDayLabels.map((day: string) => (
           <span key={day}>{day}</span>
         ))}
       </div>
-      <div className='grid grid-cols-7 gap-1 px-1'>
+      <div className="grid grid-cols-7 gap-1 px-1">
         {calendarDays.map(renderDayCell)}
       </div>
     </>

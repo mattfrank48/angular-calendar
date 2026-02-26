@@ -1,29 +1,29 @@
-import { RefObject, JSX } from 'preact';
+import { RefObject, JSX } from "preact";
 import {
   useMemo,
   useRef,
   useCallback,
   useState,
   useEffect,
-} from 'preact/hooks';
-import { Temporal } from 'temporal-polyfill';
+} from "preact/hooks";
+import { Temporal } from "temporal-polyfill";
 
-import { CalendarEvent } from '@/components/calendarEvent';
-import ViewHeader from '@/components/common/ViewHeader';
-import { GridContextMenu } from '@/components/contextMenu';
-import { useLocale } from '@/locale';
-import { useDragForView } from '@/plugins/dragBridge';
-import { scrollbarHide } from '@/styles/classNames';
+import { CalendarEvent } from "@/components/calendarEvent";
+import ViewHeader from "@/components/common/ViewHeader";
+import { GridContextMenu } from "@/components/contextMenu";
+import { useLocale } from "@/locale";
+import { useDragForView } from "@/plugins/dragBridge";
+import { scrollbarHide } from "@/styles/classNames";
 import {
   Event,
   ViewType,
   EventDetailContentRenderer,
   EventDetailDialogRenderer,
   ICalendarApp,
-} from '@/types';
-import { temporalToDate } from '@/utils/temporal';
+} from "@/types";
+import { temporalToDate } from "@/utils/temporal";
 
-import { YearMultiDaySegment } from './utils';
+import { YearMultiDaySegment } from "./utils";
 
 interface FixedWeekYearViewProps {
   app: ICalendarApp;
@@ -55,7 +55,7 @@ const MIN_ROW_HEIGHT = 60; // 12 months × 60px = 720px, fits well in typical co
 function analyzeEventsForMonth(
   events: Event[],
   monthIndex: number,
-  year: number
+  year: number,
 ): { segments: MonthEventSegment[]; maxVisualRow: number } {
   const monthStart = new Date(year, monthIndex, 1);
   const daysInMonth = new Date(year, monthIndex + 1, 0).getDate();
@@ -66,7 +66,7 @@ function analyzeEventsForMonth(
   const monthEndMs = monthEnd.getTime();
 
   // Filter events that overlap with this month
-  const monthEvents = events.filter(event => {
+  const monthEvents = events.filter((event) => {
     if (!event.start) return false;
     const eventStart = temporalToDate(event.start);
     const eventEnd = event.end ? temporalToDate(event.end) : eventStart;
@@ -74,12 +74,12 @@ function analyzeEventsForMonth(
     const eventStartMs = new Date(
       eventStart.getFullYear(),
       eventStart.getMonth(),
-      eventStart.getDate()
+      eventStart.getDate(),
     ).getTime();
     const eventEndMs = new Date(
       eventEnd.getFullYear(),
       eventEnd.getMonth(),
-      eventEnd.getDate()
+      eventEnd.getDate(),
     ).getTime();
 
     return eventStartMs <= monthEndMs && eventEndMs >= monthStartMs;
@@ -102,7 +102,7 @@ function analyzeEventsForMonth(
   const segments: MonthEventSegment[] = [];
   const occupiedSlots: boolean[][] = [];
 
-  monthEvents.forEach(event => {
+  monthEvents.forEach((event) => {
     const eventStart = temporalToDate(event.start!);
     const eventEnd = event.end ? temporalToDate(event.end) : eventStart;
 
@@ -163,7 +163,9 @@ function analyzeEventsForMonth(
 
   // Calculate max visual row index
   const maxVisualRow =
-    segments.length > 0 ? Math.max(...segments.map(s => s.visualRowIndex)) : -1;
+    segments.length > 0
+      ? Math.max(...segments.map((s) => s.visualRowIndex))
+      : -1;
 
   return { segments, maxVisualRow };
 }
@@ -197,7 +199,7 @@ export const FixedWeekYearView = ({
 
   // State for event selection and detail panel
   const [internalSelectedId, setInternalSelectedId] = useState<string | null>(
-    null
+    null,
   );
   const [internalDetailPanelEventId, setInternalDetailPanelEventId] = useState<
     string | null
@@ -229,7 +231,7 @@ export const FixedWeekYearView = ({
   };
 
   const [newlyCreatedEventId, setNewlyCreatedEventId] = useState<string | null>(
-    null
+    null,
   );
 
   const [contextMenu, setContextMenu] = useState<{
@@ -248,12 +250,12 @@ export const FixedWeekYearView = ({
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
-      const clickedEvent = target.closest('[data-event-id]');
-      const clickedPanel = target.closest('[data-event-detail-panel]');
-      const clickedDialog = target.closest('[data-event-detail-dialog]');
-      const clickedRangePicker = target.closest('[data-range-picker-popup]');
+      const clickedEvent = target.closest("[data-event-id]");
+      const clickedPanel = target.closest("[data-event-detail-panel]");
+      const clickedDialog = target.closest("[data-event-detail-dialog]");
+      const clickedRangePicker = target.closest("[data-range-picker-popup]");
       const clickedCalendarPicker = target.closest(
-        '[data-calendar-picker-dropdown]'
+        "[data-calendar-picker-dropdown]",
       );
 
       if (
@@ -268,8 +270,8 @@ export const FixedWeekYearView = ({
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   // Calculate the maximum number of columns required for the current year
@@ -299,8 +301,8 @@ export const FixedWeekYearView = ({
     viewType: ViewType.YEAR,
     onEventsUpdate: (updateFunc, isResizing) => {
       const newEvents = updateFunc(rawEvents);
-      newEvents.forEach(newEvent => {
-        const oldEvent = rawEvents.find(e => e.id === newEvent.id);
+      newEvents.forEach((newEvent) => {
+        const oldEvent = rawEvents.find((e) => e.id === newEvent.id);
         if (
           oldEvent &&
           (oldEvent.start !== newEvent.start || oldEvent.end !== newEvent.end)
@@ -311,10 +313,10 @@ export const FixedWeekYearView = ({
     },
     currentWeekStart: new Date(),
     events: rawEvents,
-    onEventCreate: event => {
+    onEventCreate: (event) => {
       app.addEvent(event);
     },
-    onEventEdit: event => {
+    onEventEdit: (event) => {
       setNewlyCreatedEventId(event.id);
     },
   });
@@ -337,7 +339,7 @@ export const FixedWeekYearView = ({
         });
         const newEvent: Event = {
           id: `event-${Date.now()}`,
-          title: t('newEvent') || 'New Event',
+          title: t("newEvent") || "New Event",
           start: plainDate,
           end: plainDate,
           allDay: true,
@@ -346,16 +348,16 @@ export const FixedWeekYearView = ({
         setNewlyCreatedEventId(newEvent.id);
       }
     },
-    [showTimedEvents, handleCreateStart, app]
+    [showTimedEvents, handleCreateStart, app],
   );
 
   // Generate week header labels
   const weekLabels = useMemo(() => {
-    const labels = getWeekDaysLabels(locale, 'short');
+    const labels = getWeekDaysLabels(locale, "short");
     const sundayStartLabels = [labels[6], ...labels.slice(0, 6)];
 
-    const formattedLabels = sundayStartLabels.map(label => {
-      if (locale.startsWith('zh')) {
+    const formattedLabels = sundayStartLabels.map((label) => {
+      if (locale.startsWith("zh")) {
         return label.at(-1);
       }
       const twoChars = label.slice(0, 2);
@@ -377,7 +379,7 @@ export const FixedWeekYearView = ({
     const yearStart = new Date(currentYear, 0, 1);
     const yearEnd = new Date(currentYear, 11, 31, 23, 59, 59);
 
-    return rawEvents.filter(event => {
+    return rawEvents.filter((event) => {
       if (!event.start) return false;
       // If showTimedEvents is false, only show all-day events
       if (!showTimedEvents && !event.allDay) return false;
@@ -410,7 +412,7 @@ export const FixedWeekYearView = ({
       }
 
       const rawMonthName = monthStart.toLocaleDateString(locale, {
-        month: 'short',
+        month: "short",
       });
       const monthName =
         rawMonthName.charAt(0).toUpperCase() +
@@ -420,14 +422,14 @@ export const FixedWeekYearView = ({
       const { segments: eventSegments, maxVisualRow } = analyzeEventsForMonth(
         yearEvents,
         month,
-        currentYear
+        currentYear,
       );
 
       // Calculate dynamic row height based on number of event rows
       const eventRows = maxVisualRow + 1;
       const minHeight = Math.max(
         MIN_ROW_HEIGHT,
-        DATE_HEADER_HEIGHT + eventRows * EVENT_ROW_SPACING
+        DATE_HEADER_HEIGHT + eventRows * EVENT_ROW_SPACING,
       );
 
       data.push({
@@ -452,7 +454,7 @@ export const FixedWeekYearView = ({
         monthLabelsRef.current.scrollTop = target.scrollTop;
       }
     },
-    []
+    [],
   );
 
   // Measure scrollbar dimensions to sync the sidebar/header padding
@@ -465,8 +467,8 @@ export const FixedWeekYearView = ({
         // Vertical scrollbar width = offsetWidth - clientWidth
         const vScrollbar = el.offsetWidth - el.clientWidth;
 
-        setScrollbarHeight(prev => (prev === hScrollbar ? prev : hScrollbar));
-        setScrollbarWidth(prev => (prev === vScrollbar ? prev : vScrollbar));
+        setScrollbarHeight((prev) => (prev === hScrollbar ? prev : hScrollbar));
+        setScrollbarWidth((prev) => (prev === vScrollbar ? prev : vScrollbar));
       }
     };
 
@@ -485,22 +487,22 @@ export const FixedWeekYearView = ({
   }, [monthsData]); // Re-measure when content changes
 
   const getCustomTitle = () => {
-    const isAsianLocale = locale.startsWith('zh') || locale.startsWith('ja');
+    const isAsianLocale = locale.startsWith("zh") || locale.startsWith("ja");
     return isAsianLocale ? `${currentYear}年` : `${currentYear}`;
   };
 
   return (
     <div
-      className='h-full overflow-hidden bg-white select-none dark:bg-gray-900'
+      className="h-full overflow-hidden bg-white select-none dark:bg-gray-900"
       style={{
-        display: 'grid',
-        gridTemplateColumns: '3rem 1fr',
-        gridTemplateRows: 'auto auto 1fr',
+        display: "grid",
+        gridTemplateColumns: "3rem 1fr",
+        gridTemplateRows: "auto auto 1fr",
       }}
-      onContextMenu={e => e.preventDefault()}
+      onContextMenu={(e) => e.preventDefault()}
     >
       {/* Year Header */}
-      <div className='col-span-2'>
+      <div className="col-span-2">
         <ViewHeader
           calendar={app}
           viewType={ViewType.YEAR}
@@ -523,22 +525,22 @@ export const FixedWeekYearView = ({
       </div>
 
       {/* Corner - Fixed */}
-      <div className='z-30 border-r border-b border-gray-200 bg-gray-50 dark:border-gray-800 dark:bg-gray-900' />
+      <div className="z-30 border-r border-b border-gray-200 bg-gray-50 dark:border-gray-800 dark:bg-gray-900" />
 
       {/* Week Labels Header */}
       <div
         ref={weekLabelsRef}
-        className='overflow-hidden border-b border-gray-200 bg-gray-50 dark:border-gray-800 dark:bg-gray-900'
+        className="overflow-hidden border-b border-gray-200 bg-gray-50 dark:border-gray-800 dark:bg-gray-900"
       >
         <div
-          className='flex'
+          className="flex"
           style={{ minWidth: `calc(1352px + ${scrollbarWidth}px)` }}
         >
           <div
-            className='grid flex-1'
+            className="grid flex-1"
             style={{
               gridTemplateColumns: `repeat(${totalColumns}, minmax(0, 1fr))`,
-              minWidth: '1352px',
+              minWidth: "1352px",
             }}
           >
             {weekLabels.map((label, i) => {
@@ -547,7 +549,7 @@ export const FixedWeekYearView = ({
               return (
                 <div
                   key={`label-${i}`}
-                  className={`border-r border-gray-200 py-2 text-center text-[10px] font-bold tracking-wider text-gray-500 dark:border-gray-700 dark:text-gray-400 ${isWeekend ? 'df-year-view-weekend-header' : ''}`}
+                  className={`border-r border-gray-200 py-2 text-center text-[10px] font-bold tracking-wider text-gray-500 dark:border-gray-700 dark:text-gray-400 ${isWeekend ? "df-year-view-weekend-header" : ""}`}
                 >
                   {label}
                 </div>
@@ -557,7 +559,7 @@ export const FixedWeekYearView = ({
           {/* Spacer to compensate for vertical scrollbar in content area */}
           {scrollbarWidth > 0 && (
             <div
-              className='shrink-0 bg-gray-50 dark:bg-gray-900'
+              className="shrink-0 bg-gray-50 dark:bg-gray-900"
               style={{ width: `${scrollbarWidth}px` }}
             />
           )}
@@ -567,13 +569,13 @@ export const FixedWeekYearView = ({
       {/* Month Labels Sidebar */}
       <div
         ref={monthLabelsRef}
-        className='overflow-hidden border-r border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900'
+        className="overflow-hidden border-r border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900"
       >
-        <div className='flex min-h-full flex-col'>
-          {monthsData.map(month => (
+        <div className="flex min-h-full flex-col">
+          {monthsData.map((month) => (
             <div
               key={month.monthIndex}
-              className='flex shrink-0 grow items-center justify-center border-b border-gray-200 text-[10px] font-bold text-gray-500 dark:border-gray-700 dark:text-gray-400'
+              className="flex shrink-0 grow items-center justify-center border-b border-gray-200 text-[10px] font-bold text-gray-500 dark:border-gray-700 dark:text-gray-400"
               style={{ minHeight: `${month.minHeight}px` }}
             >
               {month.monthName}
@@ -582,7 +584,7 @@ export const FixedWeekYearView = ({
           {/* Spacer to compensate for horizontal scrollbar in content area */}
           {scrollbarHeight > 0 && (
             <div
-              className='shrink-0 bg-white dark:bg-gray-900'
+              className="shrink-0 bg-white dark:bg-gray-900"
               style={{ height: `${scrollbarHeight}px` }}
             />
           )}
@@ -596,18 +598,18 @@ export const FixedWeekYearView = ({
         onScroll={handleContentScroll}
       >
         <div
-          className='flex min-h-full flex-col'
-          style={{ minWidth: '1352px' }}
+          className="flex min-h-full flex-col"
+          style={{ minWidth: "1352px" }}
         >
-          {monthsData.map(month => (
+          {monthsData.map((month) => (
             <div
               key={month.monthIndex}
-              className='relative shrink-0 grow'
+              className="relative shrink-0 grow"
               style={{ minHeight: `${month.minHeight}px` }}
             >
               {/* Background grid cells */}
               <div
-                className='absolute inset-0 z-0 grid'
+                className="absolute inset-0 z-0 grid"
                 style={{
                   gridTemplateColumns: `repeat(${totalColumns}, minmax(0, 1fr))`,
                 }}
@@ -620,7 +622,7 @@ export const FixedWeekYearView = ({
                     return (
                       <div
                         key={`empty-${month.monthIndex}-${dayIndex}`}
-                        className={`border-r border-b border-gray-200 bg-gray-50/80 dark:border-gray-700 dark:bg-gray-800/40 ${isWeekend ? 'df-year-view-weekend-cell' : ''}`}
+                        className={`border-r border-b border-gray-200 bg-gray-50/80 dark:border-gray-700 dark:bg-gray-800/40 ${isWeekend ? "df-year-view-weekend-cell" : ""}`}
                       />
                     );
                   }
@@ -628,19 +630,19 @@ export const FixedWeekYearView = ({
                   const isToday = isDateToday(date);
 
                   // Format date for data attribute (YYYY-MM-DD)
-                  const dateString = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+                  const dateString = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
 
                   return (
                     <div
                       key={date.getTime()}
                       data-date={dateString}
-                      className={`relative flex cursor-pointer items-start justify-end border-r border-b border-gray-200 p-0.5 transition-colors hover:bg-blue-100 dark:border-gray-700 dark:hover:bg-primary/20 ${isWeekend ? 'df-year-view-weekend-cell bg-blue-50 dark:bg-blue-900/30' : ''} `}
+                      className={`relative flex cursor-pointer items-start justify-end border-r border-b border-gray-200 p-0.5 transition-colors hover:bg-blue-100 dark:border-gray-700 dark:hover:bg-primary/20 ${isWeekend ? "df-year-view-weekend-cell bg-blue-50 dark:bg-blue-900/30" : ""} `}
                       onClick={() => app.selectDate(date)}
-                      onDblClick={e => handleCellDoubleClick(e, date)}
-                      onContextMenu={e => handleContextMenu(e, date)}
+                      onDblClick={(e) => handleCellDoubleClick(e, date)}
+                      onContextMenu={(e) => handleContextMenu(e, date)}
                     >
                       <span
-                        className={`flex h-5 w-5 items-center justify-center rounded-full text-[10px] font-medium ${isToday ? 'bg-primary font-bold text-primary-foreground shadow-sm' : 'text-gray-700 dark:text-gray-300'} `}
+                        className={`flex h-5 w-5 items-center justify-center rounded-full text-[10px] font-medium ${isToday ? "bg-primary font-bold text-primary-foreground shadow-sm" : "text-gray-700 dark:text-gray-300"} `}
                       >
                         {date.getDate()}
                       </span>
@@ -652,12 +654,12 @@ export const FixedWeekYearView = ({
               {/* Event segments overlay */}
               {month.eventSegments.length > 0 && (
                 <div
-                  className='pointer-events-none absolute inset-0 z-20'
+                  className="pointer-events-none absolute inset-0 z-20"
                   style={{ top: 20 }}
                 >
-                  <div className='relative h-full w-full'>
-                    {month.eventSegments.map(segment => (
-                      <div key={segment.id} className='pointer-events-auto'>
+                  <div className="relative h-full w-full">
+                    {month.eventSegments.map((segment) => (
+                      <div key={segment.id} className="pointer-events-auto">
                         <CalendarEvent
                           event={segment.event}
                           viewType={ViewType.YEAR}
@@ -680,10 +682,10 @@ export const FixedWeekYearView = ({
                           customEventDetailDialog={customEventDetailDialog}
                           firstHour={0}
                           hourHeight={0}
-                          onEventUpdate={updated =>
+                          onEventUpdate={(updated) =>
                             app.updateEvent(updated.id, updated)
                           }
-                          onEventDelete={id => app.deleteEvent(id)}
+                          onEventDelete={(id) => app.deleteEvent(id)}
                         />
                       </div>
                     ))}

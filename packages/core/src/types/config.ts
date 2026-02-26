@@ -1,25 +1,25 @@
 // Configuration-related type definitions
 
-import { ViewType } from './core';
+import { ViewType } from "./core"
 
 /**
  * Drag configuration type
  * Defines configuration parameters for drag functionality
  */
 export interface DragConfig {
-  viewType: ViewType;
+  viewType: ViewType
 
   // Color utility function
-  getLineColor: (color: string) => string;
+  getLineColor: ( color: string ) => string
 
   // Dynamic padding utility function
-  getDynamicPadding: (drag: { endHour: number; startHour: number }) => string;
+  getDynamicPadding: ( drag: { endHour: number; startHour: number } ) => string
 
   // Layout constants
-  HOUR_HEIGHT: number;
-  FIRST_HOUR: number;
-  LAST_HOUR: number;
-  MIN_DURATION: number;
-  TIME_COLUMN_WIDTH: number;
-  ALL_DAY_HEIGHT: number;
+  HOUR_HEIGHT: number
+  FIRST_HOUR: number
+  LAST_HOUR: number
+  MIN_DURATION: number
+  TIME_COLUMN_WIDTH: number
+  ALL_DAY_HEIGHT: number
 }

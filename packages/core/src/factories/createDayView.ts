@@ -1,10 +1,10 @@
 // Factory function for creating Day view
-import { h } from 'preact';
+import { h } from "preact"
 
-import { DayViewConfig, DayViewProps, ViewFactory, ViewType } from '@/types';
-import DayView from '@/views/DayView';
+import { DayViewConfig, DayViewProps, ViewFactory, ViewType } from "@/types"
+import DayView from "@/views/DayView"
 
-import { ViewAdapter } from './ViewAdapter';
+import { ViewAdapter } from "./ViewAdapter"
 
 // Default Day view configuration
 const defaultDayViewConfig: DayViewConfig = {
@@ -17,21 +17,21 @@ const defaultDayViewConfig: DayViewConfig = {
   firstHour: 0,
   lastHour: 24,
   allDayHeight: 28,
-};
+}
 
 // Day view factory function
-export const createDayView: ViewFactory<DayViewConfig> = (config = {}) => {
+export const createDayView: ViewFactory<DayViewConfig> = ( config = {} ) => {
   // Merge configuration
-  const finalConfig = { ...defaultDayViewConfig, ...config };
+  const finalConfig = { ...defaultDayViewConfig, ...config }
 
   // Create adapter component
-  const DayViewAdapter = (props: DayViewProps) =>
-    h(ViewAdapter, {
+  const DayViewAdapter = ( props: DayViewProps ) =>
+    h ( ViewAdapter, {
       viewType: ViewType.DAY,
       originalComponent: DayView,
       app: props.app,
       config: finalConfig,
-      className: 'day-view-factory',
+      className: "day-view-factory",
       customDetailPanelContent: props.customDetailPanelContent,
       customEventDetailDialog: props.customEventDetailDialog,
       calendarRef: props.calendarRef,
@@ -41,16 +41,16 @@ export const createDayView: ViewFactory<DayViewConfig> = (config = {}) => {
       onEventSelect: props.onEventSelect,
       detailPanelEventId: props.detailPanelEventId,
       onDetailPanelToggle: props.onDetailPanelToggle,
-    });
+    } )
 
   // Set display name for debugging
-  DayViewAdapter.displayName = 'DayViewAdapter';
+  DayViewAdapter.displayName = "DayViewAdapter"
 
   return {
     type: ViewType.DAY,
     component: DayViewAdapter,
     config: finalConfig,
-  };
-};
+  }
+}
 
-export default createDayView;
+export default createDayView

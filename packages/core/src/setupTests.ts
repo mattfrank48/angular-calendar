@@ -1,17 +1,16 @@
-import '@testing-library/jest-dom';
+import "@testing-library/jest-dom"
 
 // Mock ResizeObserver
 global.ResizeObserver = class ResizeObserver {
-  // eslint-disable-next-line class-methods-use-this
-  observe() {
+  observe () {
     /* noop */
   }
-  // eslint-disable-next-line class-methods-use-this
-  unobserve() {
+
+  unobserve () {
     /* noop */
   }
-  // eslint-disable-next-line class-methods-use-this
-  disconnect() {
+
+  disconnect () {
     /* noop */
   }
-};
+}

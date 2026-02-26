@@ -8,7 +8,7 @@
 import {
   getDefaultCalendarRegistry,
   CalendarRegistry,
-} from '@/core/calendarRegistry';
+} from "@/core/calendarRegistry"
 
 // ============================================================================
 // Color Tools
@@ -20,12 +20,12 @@ import {
  */
 export const getEventBgColor = (
   calendarIdOrColor: string,
-  registry?: CalendarRegistry
+  registry?: CalendarRegistry,
 ): string => {
-  const reg = registry || getDefaultCalendarRegistry();
-  const colors = reg.resolveColors(calendarIdOrColor);
-  return colors.eventColor;
-};
+  const reg = registry || getDefaultCalendarRegistry ()
+  const colors = reg.resolveColors ( calendarIdOrColor )
+  return colors.eventColor
+}
 
 /**
  * Get event text color (actual color value, not CSS class)
@@ -33,12 +33,12 @@ export const getEventBgColor = (
  */
 export const getEventTextColor = (
   calendarIdOrColor: string,
-  registry?: CalendarRegistry
+  registry?: CalendarRegistry,
 ): string => {
-  const reg = registry || getDefaultCalendarRegistry();
-  const colors = reg.resolveColors(calendarIdOrColor);
-  return colors.textColor;
-};
+  const reg = registry || getDefaultCalendarRegistry ()
+  const colors = reg.resolveColors ( calendarIdOrColor )
+  return colors.textColor
+}
 
 /**
  * Get selected background color
@@ -46,12 +46,12 @@ export const getEventTextColor = (
  */
 export const getSelectedBgColor = (
   calendarIdOrColor: string,
-  registry?: CalendarRegistry
+  registry?: CalendarRegistry,
 ): string => {
-  const reg = registry || getDefaultCalendarRegistry();
-  const colors = reg.resolveColors(calendarIdOrColor);
-  return colors.eventSelectedColor;
-};
+  const reg = registry || getDefaultCalendarRegistry ()
+  const colors = reg.resolveColors ( calendarIdOrColor )
+  return colors.eventSelectedColor
+}
 
 /**
  * Get line color
@@ -59,9 +59,9 @@ export const getSelectedBgColor = (
  */
 export const getLineColor = (
   calendarIdOrColor: string,
-  registry?: CalendarRegistry
+  registry?: CalendarRegistry,
 ): string => {
-  const reg = registry || getDefaultCalendarRegistry();
-  const colors = reg.resolveColors(calendarIdOrColor);
-  return colors.lineColor;
-};
+  const reg = registry || getDefaultCalendarRegistry ()
+  const colors = reg.resolveColors ( calendarIdOrColor )
+  return colors.lineColor
+}

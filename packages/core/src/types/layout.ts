@@ -1,5 +1,5 @@
 // Event layout related type definitions
-import { Event } from './event';
+import { Event } from "./event"
 
 /**
  * Event layout configuration constants
@@ -14,21 +14,21 @@ export const LAYOUT_CONFIG = {
   EDGE_MARGIN: 3,
   MAX_LOAD_IMBALANCE: 0,
   REBALANCE_THRESHOLD: 2,
-} as const;
+} as const
 
 /**
  * Event layout interface
  * Defines position and styling of events in the UI
  */
 export interface EventLayout {
-  id: string;
-  left: number;
-  width: number;
-  zIndex: number;
-  level: number;
-  isPrimary: boolean;
-  indentOffset: number;
-  importance: number;
+  id: string
+  left: number
+  width: number
+  zIndex: number
+  level: number
+  isPrimary: boolean
+  indentOffset: number
+  importance: number
 }
 
 /**
@@ -36,10 +36,10 @@ export interface EventLayout {
  * Represents hierarchical relationships of events
  */
 export interface NestedLayer {
-  events: Event[];
-  level: number;
-  parentEvent?: Event;
-  timeSlot?: { start: number; end: number };
+  events: Event[]
+  level: number
+  parentEvent?: Event
+  timeSlot?: { start: number; end: number }
 }
 
 /**
@@ -47,13 +47,13 @@ export interface NestedLayer {
  * Represents a group of related events and their nested structure
  */
 export interface EventGroup {
-  events: Event[];
-  startHour: number;
-  endHour: number;
-  primaryEvent?: Event;
-  nestedStructure: NestedLayer[];
-  specialLayoutRules?: SpecialLayoutRule[];
-  originalBranchMap?: Map<string, Event>;
+  events: Event[]
+  startHour: number
+  endHour: number
+  primaryEvent?: Event
+  nestedStructure: NestedLayer[]
+  specialLayoutRules?: SpecialLayoutRule[]
+  originalBranchMap?: Map<string, Event>
 }
 
 /**
@@ -61,12 +61,12 @@ export interface EventGroup {
  * Describes relationships of events in nested structures
  */
 export interface EventRelations {
-  directChildren: Event[];
-  allDescendants: Event[];
-  directParent: Event | null;
-  layer: NestedLayer | null;
-  subtreeSize: number;
-  isLeaf: boolean;
+  directChildren: Event[]
+  allDescendants: Event[]
+  directParent: Event | null
+  layer: NestedLayer | null
+  subtreeSize: number
+  isLeaf: boolean
 }
 
 /**
@@ -74,12 +74,12 @@ export interface EventRelations {
  * Used to analyze structural information of event trees
  */
 export interface SubtreeAnalysis {
-  rootEvent: Event;
-  allDescendants: Event[];
-  timeSpan: { start: number; end: number; duration: number };
-  descendantCount: number;
-  maxDepth: number;
-  branchPath: Event[];
+  rootEvent: Event
+  allDescendants: Event[]
+  timeSpan: { start: number; end: number; duration: number }
+  descendantCount: number
+  maxDepth: number
+  branchPath: Event[]
 }
 
 /**
@@ -87,9 +87,9 @@ export interface SubtreeAnalysis {
  * Used for balance algorithms to optimize event layouts
  */
 export interface BalanceStrategy {
-  type: 'count_balance' | 'timespan_balance';
-  transfers: TransferOperation[];
-  specialLayoutRules: SpecialLayoutRule[];
+  type: "count_balance" | "timespan_balance"
+  transfers: TransferOperation[]
+  specialLayoutRules: SpecialLayoutRule[]
 }
 
 /**
@@ -97,10 +97,10 @@ export interface BalanceStrategy {
  * Describes movement of events in layout optimization
  */
 export interface TransferOperation {
-  event: Event;
-  fromParent: Event;
-  toParent: Event;
-  reason: string;
+  event: Event
+  fromParent: Event
+  toParent: Event
+  reason: string
 }
 
 /**
@@ -108,13 +108,13 @@ export interface TransferOperation {
  * Defines layout constraints for specific events
  */
 export interface SpecialLayoutRule {
-  eventId: string;
+  eventId: string
   layoutType:
-    | 'align_with_ancestor'
-    | 'full_width'
-    | 'full_width_from_level'
-    | 'align_with_sibling';
-  referenceEvent?: Event; // Reference event (for alignment)
-  targetLevel?: number; // Target level
-  reason?: string; // Reason for applying the rule
+    | "align_with_ancestor"
+    | "full_width"
+    | "full_width_from_level"
+    | "align_with_sibling"
+  referenceEvent?: Event // Reference event (for alignment)
+  targetLevel?: number // Target level
+  reason?: string // Reason for applying the rule
 }

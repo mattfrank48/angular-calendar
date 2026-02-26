@@ -1,8 +1,8 @@
-import { ComponentChildren } from 'preact';
-import { useRef, useEffect, useContext, useState } from 'preact/hooks';
+import { ComponentChildren } from "preact";
+import { useRef, useEffect, useContext, useState } from "preact/hooks";
 
-import { CustomRenderingContext } from './CustomRenderingContext';
-import { CustomRenderingStore } from './CustomRenderingStore';
+import { CustomRenderingContext } from "./CustomRenderingContext";
+import { CustomRenderingStore } from "./CustomRenderingStore";
 
 interface ContentSlotProps {
   generatorName: string; // e.g. 'eventContent'
@@ -13,12 +13,12 @@ interface ContentSlotProps {
 
 let guid = 0;
 function generateId() {
-  return 'df-slot-' + guid++;
+  return "df-slot-" + guid++;
 }
 
 /**
  * Preact component: Creates a placeholder <div> and registers it with CustomRenderingStore.
- * If a framework adapter (React/Vue) is present, it will portal its content into this <div>.
+ * If a framework adapter (React) is present, it will portal its content into this <div>.
  * Otherwise, it displays defaultContent.
  */
 export function ContentSlot({
@@ -51,7 +51,7 @@ export function ContentSlot({
 
     // Subscribe to store updates to re-render when overrides change
     const unsubscribe = store.subscribe(() => {
-      setTick(t => t + 1);
+      setTick((t) => t + 1);
     });
 
     return () => {
@@ -74,14 +74,14 @@ export function ContentSlot({
     });
   }, [generatorName, generatorArgs]);
 
-  const isEventSlot = generatorName === 'eventContent';
-  const isSidebarSlot = generatorName === 'sidebar';
+  const isEventSlot = generatorName === "eventContent";
+  const isSidebarSlot = generatorName === "sidebar";
   const isOverridden = store?.isOverridden(generatorName);
 
   return (
     <div
       ref={containerRef}
-      className={`df-content-slot ${isEventSlot || isSidebarSlot ? 'flex h-full flex-1 flex-col' : ''}`}
+      className={`df-content-slot ${isEventSlot || isSidebarSlot ? "flex h-full flex-1 flex-col" : ""}`}
     >
       {!isOverridden && defaultContent}
     </div>

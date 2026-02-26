@@ -3,60 +3,60 @@
  * Only logs in development mode
  */
 
-type LogLevel = 'log' | 'warn' | 'error' | 'debug';
+type LogLevel = "log" | "warn" | "error" | "debug"
 
 class Logger {
-  private isDevelopment: boolean;
+  private isDevelopment: boolean
 
-  constructor() {
+  constructor () {
     this.isDevelopment =
-      (globalThis as unknown as { process?: { env?: { NODE_ENV?: string } } })
-        .process?.env?.NODE_ENV !== 'production';
+      ( globalThis as unknown as { process?: { env?: { NODE_ENV?: string } } } )
+        .process?.env?.NODE_ENV !== "production"
   }
 
-  private formatMessage(
+  private formatMessage (
     level: LogLevel,
     message: string,
     ...args: unknown[]
   ): void {
-    if (!this.isDevelopment) return;
+    if ( !this.isDevelopment ) return
 
-    const timestamp = new Date().toISOString();
-    const prefix = `[DayFlow ${level.toUpperCase()}] ${timestamp}:`;
+    const timestamp = new Date ().toISOString ()
+    const prefix = `[DayFlow ${level.toUpperCase ()}] ${timestamp}:`
 
-    switch (level) {
-      case 'log':
-        console.log(prefix, message, ...args);
-        break;
-      case 'warn':
-        console.warn(prefix, message, ...args);
-        break;
-      case 'error':
-        console.error(prefix, message, ...args);
-        break;
-      case 'debug':
-        console.debug(prefix, message, ...args);
-        break;
+    switch ( level ) {
+      case "log":
+        console.log ( prefix, message, ...args )
+        break
+      case "warn":
+        console.warn ( prefix, message, ...args )
+        break
+      case "error":
+        console.error ( prefix, message, ...args )
+        break
+      case "debug":
+        console.debug ( prefix, message, ...args )
+        break
       default:
-        break;
+        break
     }
   }
 
-  log(message: string, ...args: unknown[]): void {
-    this.formatMessage('log', message, ...args);
+  log ( message: string, ...args: unknown[] ): void {
+    this.formatMessage ( "log", message, ...args )
   }
 
-  warn(message: string, ...args: unknown[]): void {
-    this.formatMessage('warn', message, ...args);
+  warn ( message: string, ...args: unknown[] ): void {
+    this.formatMessage ( "warn", message, ...args )
   }
 
-  error(message: string, ...args: unknown[]): void {
-    this.formatMessage('error', message, ...args);
+  error ( message: string, ...args: unknown[] ): void {
+    this.formatMessage ( "error", message, ...args )
   }
 
-  debug(message: string, ...args: unknown[]): void {
-    this.formatMessage('debug', message, ...args);
+  debug ( message: string, ...args: unknown[] ): void {
+    this.formatMessage ( "debug", message, ...args )
   }
 }
 
-export const logger = new Logger();
+export const logger = new Logger ()

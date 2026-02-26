@@ -1,13 +1,13 @@
-import { CalendarDays } from '@/components/common/Icons';
-import { MultiDayEventSegment } from '@/components/monthView/WeekComponent';
+import { CalendarDays } from "@/components/common/Icons";
+import { MultiDayEventSegment } from "@/components/monthView/WeekComponent";
 import {
   eventIcon,
   eventTitleSmall,
   px1,
   resizeHandleLeft,
   resizeHandleRight,
-} from '@/styles/classNames';
-import { Event, ViewMode } from '@/types';
+} from "@/styles/classNames";
+import { Event, ViewMode } from "@/types";
 
 interface AllDayContentProps {
   event: Event;
@@ -25,15 +25,15 @@ const AllDayContent = ({
   onResizeStart,
   isMultiDay,
   segment,
-  mode = 'standard',
+  mode = "standard",
   isCompact,
 }: AllDayContentProps) => {
   const showIcon = event.icon !== false;
-  const customIcon = typeof event.icon === 'boolean' ? null : event.icon;
+  const customIcon = typeof event.icon === "boolean" ? null : event.icon;
 
   // Calculate title offset for mobile 2-column mode
   const titleOffsetStyle = (() => {
-    if ((mode !== 'compact' && !isCompact) || !isMultiDay || !segment)
+    if ((mode !== "compact" && !isCompact) || !isMultiDay || !segment)
       return {};
     // The current visible window starts at index 2 of the 6-day range
     const visibleStartIndex = 2;
@@ -66,12 +66,12 @@ const AllDayContent = ({
       {onResizeStart && isEditable && (
         <div
           className={resizeHandleLeft}
-          onMouseDown={e => {
+          onMouseDown={(e) => {
             e.preventDefault();
             e.stopPropagation();
-            onResizeStart(e, event, 'left');
+            onResizeStart(e, event, "left");
           }}
-          onClick={e => {
+          onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
           }}
@@ -80,11 +80,11 @@ const AllDayContent = ({
 
       {showIcon &&
         (customIcon ? (
-          <div className='mr-1 shrink-0'>{customIcon}</div>
+          <div className="mr-1 shrink-0">{customIcon}</div>
         ) : (
           <CalendarDays className={eventIcon} />
         ))}
-      <div className={`${eventTitleSmall} pr-1`} style={{ lineHeight: '1.2' }}>
+      <div className={`${eventTitleSmall} pr-1`} style={{ lineHeight: "1.2" }}>
         {event.title}
       </div>
 
@@ -92,12 +92,12 @@ const AllDayContent = ({
       {onResizeStart && isEditable && (
         <div
           className={resizeHandleRight}
-          onMouseDown={e => {
+          onMouseDown={(e) => {
             e.preventDefault();
             e.stopPropagation();
-            onResizeStart(e, event, 'right');
+            onResizeStart(e, event, "right");
           }}
-          onClick={e => {
+          onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
           }}

@@ -1,17 +1,17 @@
-import { RefObject } from 'preact';
-import { createPortal } from 'preact/compat';
+import { RefObject } from "preact";
+import { createPortal } from "preact/compat";
 import {
   useState,
   useEffect,
   useRef,
   useMemo,
   useLayoutEffect,
-} from 'preact/hooks';
+} from "preact/hooks";
 
-import { useLocale } from '@/locale';
-import { ICalendarApp, Event } from '@/types';
-import { generateUniKey } from '@/utils/helpers';
-import { dateToZonedDateTime } from '@/utils/temporal';
+import { useLocale } from "@/locale";
+import { ICalendarApp, Event } from "@/types";
+import { generateUniKey } from "@/utils/helpers";
+import { dateToZonedDateTime } from "@/utils/temporal";
 
 interface QuickCreateEventPopupProps {
   app: ICalendarApp;
@@ -21,7 +21,7 @@ interface QuickCreateEventPopupProps {
 }
 
 interface SuggestionItem {
-  type: 'new' | 'history';
+  type: "new" | "history";
   title: string;
   calendarId: string;
   color: string;
@@ -32,8 +32,8 @@ interface SuggestionItem {
 // Format time for display (e.g., 10:00 - 11:00)
 const formatTime = (d: Date) =>
   d.toLocaleTimeString([], {
-    hour: '2-digit',
-    minute: '2-digit',
+    hour: "2-digit",
+    minute: "2-digit",
     hour12: false,
   });
 
@@ -47,7 +47,7 @@ export const QuickCreateEventPopup = ({
   isOpen,
 }: QuickCreateEventPopupProps) => {
   const { t } = useLocale();
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [isReady, setIsReady] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -65,7 +65,7 @@ export const QuickCreateEventPopup = ({
     if (isOpen) {
       // Small delay to ensure render
       setTimeout(() => inputRef.current?.focus(), 50);
-      setInputValue('');
+      setInputValue("");
       setSelectedIndex(0);
     }
   }, [isOpen]);
@@ -84,13 +84,13 @@ export const QuickCreateEventPopup = ({
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isOpen, onClose, anchorRef]);
 
   // Calculate Position
   const [position, setPosition] = useState({ top: 0, left: 0 });
-  const [placement, setPlacement] = useState<'top' | 'bottom'>('top');
+  const [placement, setPlacement] = useState<"top" | "bottom">("top");
   const [arrowLeft, setArrowLeft] = useState(0);
 
   // Time Calculation
@@ -114,13 +114,13 @@ export const QuickCreateEventPopup = ({
 
     // Try to find if this title exists in history to pick calendar
     const historyEvent = allEvents.find(
-      e => e.title.toLowerCase() === lowerInput
+      (e) => e.title.toLowerCase() === lowerInput,
     );
     let targetCalendarId = historyEvent?.calendarId;
 
     if (!targetCalendarId) {
       // Pick random calendar if no history
-      const visibleCalendars = calendars.filter(c => c.isVisible !== false);
+      const visibleCalendars = calendars.filter((c) => c.isVisible !== false);
       if (visibleCalendars.length > 0) {
         const randomIndex = Math.floor(Math.random() * visibleCalendars.length);
         targetCalendarId = visibleCalendars[randomIndex].id;
@@ -129,13 +129,13 @@ export const QuickCreateEventPopup = ({
       }
     }
 
-    const targetCalendar = calendars.find(c => c.id === targetCalendarId);
-    const color = targetCalendar?.colors.lineColor || '#3b82f6';
+    const targetCalendar = calendars.find((c) => c.id === targetCalendarId);
+    const color = targetCalendar?.colors.lineColor || "#3b82f6";
 
     results.push({
-      type: 'new',
+      type: "new",
       title: inputValue,
-      calendarId: targetCalendarId || '',
+      calendarId: targetCalendarId || "",
       color,
       start: nextHourRange.start,
       end: nextHourRange.end,
@@ -147,19 +147,19 @@ export const QuickCreateEventPopup = ({
     const seenTitles = new Set<string>([inputValue.toLowerCase()]); // Don't show exact match again in history if it's same as input
 
     const matchedEvents = allEvents.filter(
-      e =>
+      (e) =>
         e.title.toLowerCase().includes(lowerInput) &&
-        !seenTitles.has(e.title.toLowerCase())
+        !seenTitles.has(e.title.toLowerCase()),
     );
 
-    matchedEvents.slice(0, 5).forEach(e => {
+    matchedEvents.slice(0, 5).forEach((e) => {
       seenTitles.add(e.title.toLowerCase());
-      const cal = calendars.find(c => c.id === e.calendarId);
+      const cal = calendars.find((c) => c.id === e.calendarId);
       results.push({
-        type: 'history',
+        type: "history",
         title: e.title,
-        calendarId: e.calendarId || '',
-        color: cal?.colors.lineColor || '#9ca3af',
+        calendarId: e.calendarId || "",
+        color: cal?.colors.lineColor || "#9ca3af",
         start: nextHourRange.start,
         end: nextHourRange.end,
       });
@@ -200,13 +200,13 @@ export const QuickCreateEventPopup = ({
       const requiredSpace = popupHeight + 20;
 
       let newTop = 0;
-      let newPlacement: 'top' | 'bottom' = 'top';
+      let newPlacement: "top" | "bottom" = "top";
 
       if (spaceAbove < requiredSpace) {
-        newPlacement = 'bottom';
+        newPlacement = "bottom";
         newTop = rect.bottom + 12;
       } else {
-        newPlacement = 'top';
+        newPlacement = "top";
         newTop = rect.top - 12 - popupHeight;
       }
 
@@ -240,15 +240,15 @@ export const QuickCreateEventPopup = ({
     if (!isOpen) return;
 
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'ArrowDown') {
+      if (e.key === "ArrowDown") {
         e.preventDefault();
-        setSelectedIndex(prev => (prev + 1) % suggestions.length);
-      } else if (e.key === 'ArrowUp') {
+        setSelectedIndex((prev) => (prev + 1) % suggestions.length);
+      } else if (e.key === "ArrowUp") {
         e.preventDefault();
         setSelectedIndex(
-          prev => (prev - 1 + suggestions.length) % suggestions.length
+          (prev) => (prev - 1 + suggestions.length) % suggestions.length,
         );
-      } else if (e.key === 'Enter') {
+      } else if (e.key === "Enter") {
         e.preventDefault();
         if (suggestions[selectedIndex]) {
           handleCreate(suggestions[selectedIndex]);
@@ -256,8 +256,8 @@ export const QuickCreateEventPopup = ({
       }
     };
 
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isOpen, suggestions, selectedIndex]);
 
   if (!isOpen) return null;
@@ -265,35 +265,37 @@ export const QuickCreateEventPopup = ({
   return createPortal(
     <div
       ref={popupRef}
-      className={`fixed z-1000 flex w-85 flex-col rounded-xl border border-gray-200 bg-white shadow-2xl dark:border-slate-700 dark:bg-slate-800 ${isReady ? 'animate-in fade-in zoom-in-95 duration-100' : ''}`}
+      className={`fixed z-1000 flex w-85 flex-col rounded-xl border border-gray-200 bg-white shadow-2xl dark:border-slate-700 dark:bg-slate-800 ${isReady ? "animate-in fade-in zoom-in-95 duration-100" : ""}`}
       style={{
         top: position.top,
         left: position.left,
-        visibility: isReady ? 'visible' : 'hidden',
+        visibility: isReady ? "visible" : "hidden",
       }}
     >
-      <div className='p-4 pb-2'>
-        <div className='mb-2 text-xs font-semibold tracking-wider text-gray-500 uppercase dark:text-gray-400'>
-          {t('quickCreateEvent') || 'Quick Create Event'}
+      <div className="p-4 pb-2">
+        <div className="mb-2 text-xs font-semibold tracking-wider text-gray-500 uppercase dark:text-gray-400">
+          {t("quickCreateEvent") || "Quick Create Event"}
         </div>
-        <div className='relative'>
+        <div className="relative">
           <input
             ref={inputRef}
-            type='text'
-            className='w-full rounded-lg border border-slate-200 px-3 py-1.5 text-sm text-gray-900 shadow-sm transition focus:border-primary focus:ring-2 focus:ring-primary focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100'
+            type="text"
+            className="w-full rounded-lg border border-slate-200 px-3 py-1.5 text-sm text-gray-900 shadow-sm transition focus:border-primary focus:ring-2 focus:ring-primary focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
             placeholder={
-              t('quickCreatePlaceholder') || 'Enter title (e.g. Code review)'
+              t("quickCreatePlaceholder") || "Enter title (e.g. Code review)"
             }
             value={inputValue}
-            onChange={e => setInputValue((e.target as HTMLInputElement).value)}
+            onChange={(e) =>
+              setInputValue((e.target as HTMLInputElement).value)
+            }
           />
         </div>
       </div>
 
-      <div className='max-h-75 flex-1 overflow-y-auto px-2 py-1'>
+      <div className="max-h-75 flex-1 overflow-y-auto px-2 py-1">
         {suggestions.length === 0 && inputValue && (
-          <div className='px-4 py-3 text-center text-sm text-gray-400'>
-            {t('noSuggestions') || 'Type to create'}
+          <div className="px-4 py-3 text-center text-sm text-gray-400">
+            {t("noSuggestions") || "Type to create"}
           </div>
         )}
 
@@ -302,26 +304,26 @@ export const QuickCreateEventPopup = ({
             key={`${item.type}-${index}`}
             className={`flex cursor-pointer items-center rounded-lg px-4 py-2 transition-colors ${
               index === selectedIndex
-                ? 'bg-primary/10 ring-1 ring-primary/20 ring-inset dark:bg-primary/20'
-                : 'hover:bg-gray-50 dark:hover:bg-slate-700/50'
+                ? "bg-primary/10 ring-1 ring-primary/20 ring-inset dark:bg-primary/20"
+                : "hover:bg-gray-50 dark:hover:bg-slate-700/50"
             }`}
             onClick={() => handleCreate(item)}
             onMouseEnter={() => setSelectedIndex(index)}
           >
             <div
-              className='mr-3 h-8 w-1 shrink-0 rounded-full'
+              className="mr-3 h-8 w-1 shrink-0 rounded-full"
               style={{ backgroundColor: item.color }}
             />
-            <div className='flex min-w-0 flex-1 flex-col gap-0.5'>
-              <div className='truncate text-sm font-medium text-gray-900 dark:text-gray-100'>
+            <div className="flex min-w-0 flex-1 flex-col gap-0.5">
+              <div className="truncate text-sm font-medium text-gray-900 dark:text-gray-100">
                 {item.title}
               </div>
-              <div className='flex'>
-                <span className='rounded bg-gray-100 px-1 text-[10px] font-semibold text-gray-500 dark:bg-slate-700 dark:text-gray-400'>
-                  {item.type === 'new' ? t('today') : t('tomorrow')}
+              <div className="flex">
+                <span className="rounded bg-gray-100 px-1 text-[10px] font-semibold text-gray-500 dark:bg-slate-700 dark:text-gray-400">
+                  {item.type === "new" ? t("today") : t("tomorrow")}
                 </span>
               </div>
-              <div className='text-xs text-gray-500 dark:text-gray-400'>
+              <div className="text-xs text-gray-500 dark:text-gray-400">
                 {formatTimeRange(item.start, item.end)}
               </div>
             </div>
@@ -332,15 +334,15 @@ export const QuickCreateEventPopup = ({
       {/* Triangle Arrow */}
       <div
         className={`absolute h-3 w-3 -translate-x-1/2 rotate-45 border-gray-200 bg-white dark:border-slate-700 dark:bg-slate-800 ${
-          placement === 'top'
-            ? '-bottom-1.5 border-r border-b'
-            : '-top-1.5 border-t border-l'
+          placement === "top"
+            ? "-bottom-1.5 border-r border-b"
+            : "-top-1.5 border-t border-l"
         }`}
         style={{
           left: arrowLeft,
         }}
       />
     </div>,
-    document.body
+    document.body,
   );
 };

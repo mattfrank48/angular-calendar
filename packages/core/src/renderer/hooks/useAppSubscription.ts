@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'preact/hooks';
+import { useState, useEffect } from "preact/hooks"
 
-import { ICalendarApp } from '@/types';
+import { ICalendarApp } from "@/types"
 
 export interface AppSubscriptionResult {
-  tick: number;
-  selectedEventId: string | null;
+  tick: number
+  selectedEventId: string | null
 }
 
 /**
@@ -14,21 +14,21 @@ export interface AppSubscriptionResult {
  * The two setState calls inside a single subscriber let React/Preact
  * batch them into one render automatically.
  */
-export function useAppSubscription(app: ICalendarApp): AppSubscriptionResult {
-  const [tick, setTick] = useState(0);
-  const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
+export function useAppSubscription ( app: ICalendarApp ): AppSubscriptionResult {
+  const [ tick, setTick ] = useState ( 0 )
+  const [ selectedEventId, setSelectedEventId ] = useState<string | null> ( null )
 
-  useEffect(
+  useEffect (
     () =>
-      app.subscribe(appInstance => {
-        setTick(t => t + 1);
-        setSelectedEventId(prev => {
-          const next = appInstance.state.selectedEventId ?? null;
-          return prev === next ? prev : next;
-        });
-      }),
-    [app]
-  );
+      app.subscribe ( appInstance => {
+        setTick ( t => t + 1 )
+        setSelectedEventId ( prev => {
+          const next = appInstance.state.selectedEventId ?? null
+          return prev === next ? prev : next
+        } )
+      } ),
+    [ app ],
+  )
 
-  return { tick, selectedEventId };
+  return { tick, selectedEventId }
 }

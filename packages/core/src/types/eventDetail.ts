@@ -1,60 +1,60 @@
 // oxlint-disable typescript/no-explicit-any
-import { AnyComponent, RefObject } from 'preact';
+import { AnyComponent, RefObject } from "preact"
 
-import { ICalendarApp } from '@/types';
+import { ICalendarApp } from "@/types"
 
-import { EventDetailPosition } from './dragIndicator';
-import { Event } from './event';
+import { EventDetailPosition } from "./dragIndicator"
+import { Event } from "./event"
 
 // Re-export EventDetailPosition for convenience
-export type { EventDetailPosition } from './dragIndicator';
+export type { EventDetailPosition } from "./dragIndicator"
 
 /**
  * Event detail panel Props
  */
 export interface EventDetailPanelProps {
   /** Current event data */
-  event: Event;
+  event: Event
   /** Panel position information */
-  position: EventDetailPosition;
+  position: EventDetailPosition
   /** Panel DOM reference */
-  panelRef: RefObject<HTMLDivElement>;
+  panelRef: RefObject<HTMLDivElement>
   /** Whether the event is all-day */
-  isAllDay: boolean;
+  isAllDay: boolean
   /** Event visibility state */
-  eventVisibility: 'visible' | 'sticky-top' | 'sticky-bottom';
+  eventVisibility: "visible" | "sticky-top" | "sticky-bottom"
   /** Calendar container reference */
-  calendarRef: RefObject<HTMLDivElement>;
+  calendarRef: RefObject<HTMLDivElement>
   /** Selected event element reference */
-  selectedEventElementRef: RefObject<HTMLElement | null>;
+  selectedEventElementRef: RefObject<HTMLElement | null>
   /** Event update callback */
-  onEventUpdate: (updatedEvent: Event) => void;
+  onEventUpdate: ( updatedEvent: Event ) => void
   /** Event delete callback */
-  onEventDelete: (eventId: string) => void;
+  onEventDelete: ( eventId: string ) => void
   /** Close panel callback (optional) */
-  onClose?: () => void;
+  onClose?: () => void
 }
 
 /**
  * Custom event detail panel renderer (full panel including positioning and styling)
  */
-export type EventDetailPanelRenderer = AnyComponent<EventDetailPanelProps, any>;
+export type EventDetailPanelRenderer = AnyComponent<EventDetailPanelProps, any>
 
 /**
  * Event detail content Props (excluding panel container, content only)
  */
 export interface EventDetailContentProps {
   /** Current event data */
-  event: Event;
+  event: Event
   /** Whether the event is all-day */
-  isAllDay: boolean;
+  isAllDay: boolean
   /** Event update callback */
-  onEventUpdate: (updatedEvent: Event) => void;
+  onEventUpdate: ( updatedEvent: Event ) => void
   /** Event delete callback */
-  onEventDelete: (eventId: string) => void;
+  onEventDelete: ( eventId: string ) => void
   /** Close panel callback (optional) */
-  onClose?: () => void;
-  app?: ICalendarApp;
+  onClose?: () => void
+  app?: ICalendarApp
 }
 
 /**
@@ -63,25 +63,25 @@ export interface EventDetailContentProps {
 export type EventDetailContentRenderer = AnyComponent<
   EventDetailContentProps,
   any
->;
+>
 
 /**
  * Event detail dialog Props
  */
 export interface EventDetailDialogProps {
   /** Current event data */
-  event: Event;
+  event: Event
   /** Whether the dialog is open */
-  isOpen: boolean;
+  isOpen: boolean
   /** Whether the event is all-day */
-  isAllDay: boolean;
+  isAllDay: boolean
   /** Event update callback */
-  onEventUpdate: (updatedEvent: Event) => void;
+  onEventUpdate: ( updatedEvent: Event ) => void
   /** Event delete callback */
-  onEventDelete: (eventId: string) => void;
+  onEventDelete: ( eventId: string ) => void
   /** Close dialog callback */
-  onClose: () => void;
-  app?: ICalendarApp;
+  onClose: () => void
+  app?: ICalendarApp
 }
 
 /**
@@ -90,4 +90,4 @@ export interface EventDetailDialogProps {
 export type EventDetailDialogRenderer = AnyComponent<
   EventDetailDialogProps,
   any
->;
+>

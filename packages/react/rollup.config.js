@@ -1,23 +1,23 @@
-import commonjs from '@rollup/plugin-commonjs';
-import resolve from '@rollup/plugin-node-resolve';
-import terser from '@rollup/plugin-terser';
-import typescript from '@rollup/plugin-typescript';
-import peerDepsExternal from 'rollup-plugin-peer-deps-external';
+import commonjs from "@rollup/plugin-commonjs";
+import resolve from "@rollup/plugin-node-resolve";
+import terser from "@rollup/plugin-terser";
+import typescript from "@rollup/plugin-typescript";
+import peerDepsExternal from "rollup-plugin-peer-deps-external";
 
 export default {
-  input: 'src/index.ts',
+  input: "src/index.ts",
   output: [
     {
-      file: 'dist/index.js',
-      format: 'cjs',
+      file: "dist/index.js",
+      format: "cjs",
       sourcemap: false,
-      exports: 'named',
+      exports: "named",
     },
     {
-      file: 'dist/index.esm.js',
-      format: 'esm',
+      file: "dist/index.esm.js",
+      format: "esm",
       sourcemap: false,
-      exports: 'named',
+      exports: "named",
     },
   ],
   plugins: [
@@ -25,18 +25,18 @@ export default {
     resolve(),
     commonjs(),
     typescript({
-      tsconfig: './tsconfig.json',
+      tsconfig: "./tsconfig.json",
       declaration: true,
-      declarationDir: 'dist',
+      declarationDir: "dist",
     }),
     terser(),
   ],
   external: [
-    'react',
-    'react-dom',
-    '@dayflow/core',
-    'preact',
-    'preact/hooks',
-    'preact/compat',
+    "react",
+    "react-dom",
+    "@dayflow/core",
+    "preact",
+    "preact/hooks",
+    "preact/compat",
   ],
 };

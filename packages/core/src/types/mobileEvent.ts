@@ -1,20 +1,20 @@
-import { ICalendarApp } from './core';
-import { Event } from './event';
+import { ICalendarApp } from "./core"
+import { Event } from "./event"
 
 /**
  * Mobile event drawer/dialog Props
  */
 export interface MobileEventProps {
   /** Whether the drawer/dialog is open */
-  isOpen: boolean;
+  isOpen: boolean
   /** Callback to close the drawer/dialog */
-  onClose: () => void;
+  onClose: () => void
   /** Callback to save the event (creates or updates) */
-  onSave: (event: Event) => void;
+  onSave: ( event: Event ) => void
   /** Callback to delete an existing event by id */
-  onEventDelete?: (id: string) => void;
+  onEventDelete?: ( id: string ) => void
   /** Current event data (newly created template or existing event) */
-  draftEvent: Event | null;
+  draftEvent: Event | null
   /** The ICalendarApp instance providing built-in services */
-  app: ICalendarApp;
+  app: ICalendarApp
 }

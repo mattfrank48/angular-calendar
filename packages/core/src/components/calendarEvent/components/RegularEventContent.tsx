@@ -5,15 +5,15 @@ import {
   resizeHandleTop,
   resizeHandleBottom,
   resizeHandleRight,
-} from '@/styles/classNames';
-import { Event, ICalendarApp } from '@/types';
+} from "@/styles/classNames";
+import { Event, ICalendarApp } from "@/types";
 import {
   formatEventTimeRange,
   getLineColor,
   extractHourFromDate,
   getEventEndHour,
   formatTime,
-} from '@/utils';
+} from "@/utils";
 
 interface RegularEventContentProps {
   event: Event;
@@ -31,7 +31,7 @@ interface RegularEventContentProps {
   onResizeStart?: (
     e: MouseEvent | TouchEvent,
     event: Event,
-    direction: string
+    direction: string,
   ) => void;
 }
 
@@ -55,11 +55,11 @@ const RegularEventContent = ({
     ? multiDaySegmentInfo.isFirst
     : true;
   const isLastSegment = multiDaySegmentInfo ? multiDaySegmentInfo.isLast : true;
-  const calendarId = event.calendarId || 'blue';
+  const calendarId = event.calendarId || "blue";
 
   const getDynamicPadding = () => {
     const d = getEventEndHour(event) - extractHourFromDate(event.start);
-    return d <= 0.25 ? 'px-1 py-0' : 'p-1';
+    return d <= 0.25 ? "px-1 py-0" : "p-1";
   };
 
   return (
@@ -68,8 +68,8 @@ const RegularEventContent = ({
         className={eventColorBar}
         style={{
           backgroundColor: getLineColor(
-            event.calendarId || 'blue',
-            app?.getCalendarRegistry()
+            event.calendarId || "blue",
+            app?.getCalendarRegistry(),
           ),
         }}
       />
@@ -79,7 +79,7 @@ const RegularEventContent = ({
         <div
           className={`${eventTitleSmall} pr-1`}
           style={{
-            lineHeight: duration <= 0.25 ? '1.2' : 'normal',
+            lineHeight: duration <= 0.25 ? "1.2" : "normal",
           }}
         >
           {event.title}
@@ -99,26 +99,26 @@ const RegularEventContent = ({
           {isFirstSegment && (
             <div
               className={resizeHandleTop}
-              onMouseDown={e => onResizeStart(e, event, 'top')}
+              onMouseDown={(e) => onResizeStart(e, event, "top")}
             />
           )}
           {/* Only show bottom resize handle on the last segment */}
           {isLastSegment && (
             <div
               className={resizeHandleBottom}
-              onMouseDown={e => onResizeStart(e, event, 'bottom')}
+              onMouseDown={(e) => onResizeStart(e, event, "bottom")}
             />
           )}
           {/* Right resize handle for multi-day events (only on the last segment) */}
           {!isFirstSegment && isLastSegment && multiDaySegmentInfo && (
             <div
               className={resizeHandleRight}
-              onMouseDown={e => {
+              onMouseDown={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                onResizeStart(e, event, 'right');
+                onResizeStart(e, event, "right");
               }}
-              onClick={e => {
+              onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
               }}
@@ -131,24 +131,24 @@ const RegularEventContent = ({
         <>
           {/* Top-Right Indicator (Start Time) */}
           <div
-            className='absolute -top-1.5 right-5 z-50 h-2.5 w-2.5 rounded-full border-2 bg-white'
+            className="absolute -top-1.5 right-5 z-50 h-2.5 w-2.5 rounded-full border-2 bg-white"
             style={{
               borderColor: getLineColor(calendarId, app?.getCalendarRegistry()),
             }}
-            onTouchStart={e => {
+            onTouchStart={(e) => {
               e.stopPropagation();
-              onResizeStart(e, event, 'top');
+              onResizeStart(e, event, "top");
             }}
           />
           {/* Bottom-Left Indicator (End Time) */}
           <div
-            className='absolute -bottom-1.5 left-5 z-50 h-2.5 w-2.5 rounded-full border-2 bg-white'
+            className="absolute -bottom-1.5 left-5 z-50 h-2.5 w-2.5 rounded-full border-2 bg-white"
             style={{
               borderColor: getLineColor(calendarId, app?.getCalendarRegistry()),
             }}
-            onTouchStart={e => {
+            onTouchStart={(e) => {
               e.stopPropagation();
-              onResizeStart(e, event, 'bottom');
+              onResizeStart(e, event, "bottom");
             }}
           />
         </>

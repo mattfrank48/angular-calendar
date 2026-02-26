@@ -3,8 +3,8 @@ import {
   ChevronRight,
   CalendarType,
   useLocale,
-} from '@dayflow/core';
-import { useState, useRef, useEffect } from 'preact/hooks';
+} from "@dayflow/core";
+import { useState, useRef, useEffect } from "preact/hooks";
 
 interface MergeMenuItemProps {
   calendars: CalendarType[];
@@ -44,14 +44,16 @@ export const MergeMenuItem = ({
   useEffect(() => {
     const el = submenuRef.current;
     if (el) {
-      el.addEventListener('mousedown', stopPropagation);
+      el.addEventListener("mousedown", stopPropagation);
       return () => {
-        el.removeEventListener('mousedown', stopPropagation);
+        el.removeEventListener("mousedown", stopPropagation);
       };
     }
   }, [isHovered]);
 
-  const availableCalendars = calendars.filter(c => c.id !== currentCalendarId);
+  const availableCalendars = calendars.filter(
+    (c) => c.id !== currentCalendarId,
+  );
 
   if (availableCalendars.length === 0) return null;
 
@@ -59,42 +61,42 @@ export const MergeMenuItem = ({
     <>
       <div
         ref={itemRef}
-        className='relative flex cursor-default items-center justify-between rounded-sm px-3 py-0.5 text-[12px] transition-colors outline-none select-none hover:bg-primary hover:text-white dark:text-slate-200 dark:hover:bg-primary dark:hover:text-white'
+        className="relative flex cursor-default items-center justify-between rounded-sm px-3 py-0.5 text-[12px] transition-colors outline-none select-none hover:bg-primary hover:text-white dark:text-slate-200 dark:hover:bg-primary dark:hover:text-white"
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
-        <span>{t('merge')}</span>
-        <ChevronRight className='h-4 w-4' />
+        <span>{t("merge")}</span>
+        <ChevronRight className="h-4 w-4" />
       </div>
       {isHovered &&
         createPortal(
           <div
             ref={submenuRef}
-            data-submenu-content='true'
-            className='animate-in fade-in-0 zoom-in-95 fixed z-60 min-w-48 overflow-hidden rounded-md border border-slate-200 bg-white p-1 shadow-md duration-100 dark:border-slate-800 dark:bg-slate-950'
+            data-submenu-content="true"
+            className="animate-in fade-in-0 zoom-in-95 fixed z-60 min-w-48 overflow-hidden rounded-md border border-slate-200 bg-white p-1 shadow-md duration-100 dark:border-slate-800 dark:bg-slate-950"
             style={{ top: position.y, left: position.x }}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
-            onMouseDown={e => e.stopPropagation()}
+            onMouseDown={(e) => e.stopPropagation()}
           >
-            {availableCalendars.map(calendar => (
+            {availableCalendars.map((calendar) => (
               <div
                 key={calendar.id}
-                className='flex cursor-pointer items-center rounded-sm px-3 py-1 text-[12px] text-slate-900 transition-colors hover:bg-primary hover:text-white dark:text-slate-50 dark:hover:bg-primary dark:hover:text-white'
-                onClick={e => {
+                className="flex cursor-pointer items-center rounded-sm px-3 py-1 text-[12px] text-slate-900 transition-colors hover:bg-primary hover:text-white dark:text-slate-50 dark:hover:bg-primary dark:hover:text-white"
+                onClick={(e) => {
                   e.stopPropagation();
                   onMergeSelect(calendar.id);
                 }}
               >
                 <div
-                  className='mr-2 h-3 w-3 shrink-0 rounded-sm'
+                  className="mr-2 h-3 w-3 shrink-0 rounded-sm"
                   style={{ backgroundColor: calendar.colors.lineColor }}
                 />
-                <span className='truncate'>{calendar.name || calendar.id}</span>
+                <span className="truncate">{calendar.name || calendar.id}</span>
               </div>
             ))}
           </div>,
-          document.body
+          document.body,
         )}
     </>
   );

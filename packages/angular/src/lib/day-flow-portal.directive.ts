@@ -5,25 +5,25 @@ import {
   OnDestroy,
   Directive,
   Input,
-} from '@angular/core';
+} from "@angular/core"
 
-@Directive({
-  selector: '[dayflowPortal]',
-})
+@Directive ( {
+  selector: "[dayflowPortal]",
+} )
 export class DayFlowPortalDirective implements OnChanges, OnDestroy {
-  @Input('dayflowPortal') targetEl!: HTMLElement;
+  @Input ( "dayflowPortal" ) targetEl!: HTMLElement
 
-  constructor(private el: ElementRef) {}
+  constructor ( private el: ElementRef ) {}
 
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes['targetEl'] && this.targetEl) {
-      this.targetEl.append(this.el.nativeElement);
+  ngOnChanges ( changes: SimpleChanges ) {
+    if ( changes["targetEl"] && this.targetEl ) {
+      this.targetEl.append ( this.el.nativeElement )
     }
   }
 
-  ngOnDestroy() {
-    if (this.el.nativeElement.parentNode === this.targetEl) {
-      this.el.nativeElement.remove();
+  ngOnDestroy () {
+    if ( this.el.nativeElement.parentNode === this.targetEl ) {
+      this.el.nativeElement.remove ()
     }
   }
 }

@@ -1,13 +1,13 @@
-import { JSX } from 'preact';
-import { createPortal } from 'preact/compat';
+import { JSX } from "preact";
+import { createPortal } from "preact/compat";
 
-import { useTheme } from '@/contexts/ThemeContext';
-import { eventDetailPanel } from '@/styles/classNames';
+import { useTheme } from "@/contexts/ThemeContext";
+import { eventDetailPanel } from "@/styles/classNames";
 import {
   EventDetailPanelProps,
   EventDetailContentRenderer,
-} from '@/types/eventDetail';
-import { resolveAppliedTheme } from '@/utils/themeUtils';
+} from "@/types/eventDetail";
+import { resolveAppliedTheme } from "@/utils/themeUtils";
 
 /**
  * Event detail panel wrapper for rendering custom content in the default panel
@@ -32,38 +32,38 @@ export const EventDetailPanelWithContent = ({
 }: EventDetailPanelWithContentProps) => {
   const { effectiveTheme } = useTheme();
   const appliedTheme = resolveAppliedTheme(effectiveTheme);
-  const arrowBgColor = appliedTheme === 'dark' ? '#1f2937' : 'white';
+  const arrowBgColor = appliedTheme === "dark" ? "#1f2937" : "white";
   const arrowBorderColor =
-    appliedTheme === 'dark' ? 'rgb(55, 65, 81)' : 'rgb(229, 231, 235)';
+    appliedTheme === "dark" ? "rgb(55, 65, 81)" : "rgb(229, 231, 235)";
 
   // Calculate arrow style (same logic as DefaultEventDetailPanel)
   const calculateArrowStyle = (): JSX.CSSProperties => {
     let arrowStyle: JSX.CSSProperties = {};
 
-    if (eventVisibility === 'sticky-top') {
+    if (eventVisibility === "sticky-top") {
       const calendarContent =
-        calendarRef.current?.querySelector('.calendar-content');
+        calendarRef.current?.querySelector(".calendar-content");
       if (calendarContent) {
         const contentRect = calendarContent.getBoundingClientRect();
         const stickyEventCenterY = contentRect.top + 3;
         const arrowRelativeY = stickyEventCenterY - position.top;
 
         arrowStyle = {
-          position: 'absolute',
-          width: '12px',
-          height: '12px',
+          position: "absolute",
+          width: "12px",
+          height: "12px",
           backgroundColor: arrowBgColor,
-          transform: 'rotate(45deg)',
-          transformOrigin: 'center',
+          transform: "rotate(45deg)",
+          transformOrigin: "center",
           top: `${arrowRelativeY - 6}px`,
-          borderRight: `${position.isSunday ? `1px solid ${arrowBorderColor}` : 'none'}`,
-          borderTop: `${position.isSunday ? `1px solid ${arrowBorderColor}` : 'none'}`,
-          borderLeft: `${position.isSunday ? 'none' : `1px solid ${arrowBorderColor}`}`,
-          borderBottom: `${position.isSunday ? 'none' : `1px solid ${arrowBorderColor}`}`,
-          ...(position.isSunday ? { right: '-6px' } : { left: '-6px' }),
+          borderRight: `${position.isSunday ? `1px solid ${arrowBorderColor}` : "none"}`,
+          borderTop: `${position.isSunday ? `1px solid ${arrowBorderColor}` : "none"}`,
+          borderLeft: `${position.isSunday ? "none" : `1px solid ${arrowBorderColor}`}`,
+          borderBottom: `${position.isSunday ? "none" : `1px solid ${arrowBorderColor}`}`,
+          ...(position.isSunday ? { right: "-6px" } : { left: "-6px" }),
         };
       }
-    } else if (eventVisibility === 'sticky-bottom') {
+    } else if (eventVisibility === "sticky-bottom") {
       const panelElement = panelRef.current;
       let arrowTop = 200;
 
@@ -79,26 +79,26 @@ export const EventDetailPanelWithContent = ({
       }
 
       arrowStyle = {
-        position: 'absolute',
-        width: '12px',
-        height: '12px',
+        position: "absolute",
+        width: "12px",
+        height: "12px",
         backgroundColor: arrowBgColor,
-        transform: 'rotate(45deg)',
-        transformOrigin: 'center',
+        transform: "rotate(45deg)",
+        transformOrigin: "center",
         top: `${arrowTop}px`,
-        left: position.isSunday ? undefined : '-6px',
-        right: position.isSunday ? '-6px' : undefined,
-        borderRight: `${position.isSunday ? `1px solid ${arrowBorderColor}` : 'none'}`,
-        borderTop: `${position.isSunday ? `1px solid ${arrowBorderColor}` : 'none'}`,
-        borderLeft: `${position.isSunday ? 'none' : `1px solid ${arrowBorderColor}`}`,
-        borderBottom: `${position.isSunday ? 'none' : `1px solid ${arrowBorderColor}`}`,
+        left: position.isSunday ? undefined : "-6px",
+        right: position.isSunday ? "-6px" : undefined,
+        borderRight: `${position.isSunday ? `1px solid ${arrowBorderColor}` : "none"}`,
+        borderTop: `${position.isSunday ? `1px solid ${arrowBorderColor}` : "none"}`,
+        borderLeft: `${position.isSunday ? "none" : `1px solid ${arrowBorderColor}`}`,
+        borderBottom: `${position.isSunday ? "none" : `1px solid ${arrowBorderColor}`}`,
       };
     } else {
       if (position && selectedEventElementRef.current && calendarRef.current) {
         const eventRect =
           selectedEventElementRef.current.getBoundingClientRect();
         const calendarContent =
-          calendarRef.current.querySelector('.calendar-content');
+          calendarRef.current.querySelector(".calendar-content");
 
         if (calendarContent) {
           const viewportRect = calendarContent.getBoundingClientRect();
@@ -135,22 +135,22 @@ export const EventDetailPanelWithContent = ({
           const minArrowY = 12;
           const finalArrowY = Math.max(
             minArrowY,
-            Math.min(maxArrowY, arrowRelativeY)
+            Math.min(maxArrowY, arrowRelativeY),
           );
 
           arrowStyle = {
-            position: 'absolute',
-            width: '12px',
-            height: '12px',
+            position: "absolute",
+            width: "12px",
+            height: "12px",
             backgroundColor: arrowBgColor,
-            transform: 'rotate(45deg)',
-            transformOrigin: 'center',
+            transform: "rotate(45deg)",
+            transformOrigin: "center",
             top: `${finalArrowY - 6}px`,
-            borderRight: `${position.isSunday ? `1px solid ${arrowBorderColor}` : 'none'}`,
-            borderTop: `${position.isSunday ? `1px solid ${arrowBorderColor}` : 'none'}`,
-            borderLeft: `${position.isSunday ? 'none' : `1px solid ${arrowBorderColor}`}`,
-            borderBottom: `${position.isSunday ? 'none' : `1px solid ${arrowBorderColor}`}`,
-            ...(position.isSunday ? { right: '-6px' } : { left: '-6px' }),
+            borderRight: `${position.isSunday ? `1px solid ${arrowBorderColor}` : "none"}`,
+            borderTop: `${position.isSunday ? `1px solid ${arrowBorderColor}` : "none"}`,
+            borderLeft: `${position.isSunday ? "none" : `1px solid ${arrowBorderColor}`}`,
+            borderBottom: `${position.isSunday ? "none" : `1px solid ${arrowBorderColor}`}`,
+            ...(position.isSunday ? { right: "-6px" } : { left: "-6px" }),
           };
         }
       }
@@ -165,14 +165,14 @@ export const EventDetailPanelWithContent = ({
     <div
       ref={panelRef}
       className={`${eventDetailPanel} p-3`}
-      data-event-detail-panel='true'
+      data-event-detail-panel="true"
       data-event-id={event.id}
       style={{
         top: `${position.top}px`,
         left: `${position.left}px`,
         zIndex: 9999,
-        pointerEvents: 'auto',
-        backgroundColor: appliedTheme === 'dark' ? '#1f2937' : '#ffffff',
+        pointerEvents: "auto",
+        backgroundColor: appliedTheme === "dark" ? "#1f2937" : "#ffffff",
       }}
     >
       <div style={arrowStyle}></div>
