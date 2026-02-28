@@ -379,7 +379,7 @@ export class CalendarRegistry {
 
     // Fall back to default calendar if not found
     if ( !calendar ) {
-      calendar = this.getDefaultCalendar ()
+      calendar = this.getDefaultCalendar ( )
     }
 
     // Return appropriate colors based on theme

@@ -2,15 +2,17 @@
 node_modules
 .pnp
 .pnp.js
+npm-debug.log
+yarn-error.log
 
 # Testing
 coverage
 
-# Next.js
-build
+# Compiled output
 dist
-website/.next
-website/out
+tmp
+out-tsc
+bazel-out
 
 # Production
 *.log
@@ -21,13 +23,17 @@ yarn-error.log*
 # Misc
 .DS_Store
 *.pem
+Thumbs.db
 
 # Debug
 .vscode/*
 !.vscode/settings.json
 !.vscode/extensions.json
+!.vscode/tasks.json
+!.vscode/launch.json
 !.zed/settings.json
 .idea
+.history/*
 
 # Local env files
 .env*.local
@@ -43,3 +49,22 @@ next-env.d.ts
 .turbo/
 
 /bundle-analysis.html
+
+# IDEs and editors
+.idea/
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# Miscellaneous
+/.angular/cache
+.sass-cache/
+/connect.lock
+/coverage
+/libpeerconnection.log
+testem.log
+/typings
+__screenshots__/

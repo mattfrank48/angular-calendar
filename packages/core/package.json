@@ -23,6 +23,7 @@
   },
   "license": "MIT",
   "author": "Jayce Li",
+  "type": "module",
   "repository": {
     "type": "git",
     "url": "https://github.com/dayflow-js/dayflow.git"
@@ -44,12 +45,10 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.esm.js",
       "require": "./dist/index.js"
-    },
-    "./dist/styles.css": "./dist/styles.css"
+    }
   },
   "scripts": {
-    "build": "tsc -p tsconfig.build.json && rollup -c --bundleConfigAsCjs && pnpm run build:css",
-    "build:css": "node ./scripts/build-css.mjs",
+    "build": "tsc -p tsconfig.build.json && rollup -c",
     "clean": "rimraf dist node_modules",
     "dev": "vite --port 5529 --host",
     "postbuild": "rimraf dist/types",

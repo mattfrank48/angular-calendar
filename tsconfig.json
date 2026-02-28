@@ -37,6 +37,6 @@
       "@/*": ["packages/core/src/*"]
     }
   },
-  "include": ["packages/*/src", "examples", "website"],
+  "include": ["packages/*/src", "examples"],
   "exclude": ["node_modules", "dist"]
 }

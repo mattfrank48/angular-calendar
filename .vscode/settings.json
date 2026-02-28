@@ -1,0 +1,19 @@
+{
+  "search.exclude": {
+    "**/*dist": true,
+    "**/.git": true,
+    "**/node_modules": true,
+    "**/bower_components": true,
+    "**/tmp": true,
+    "**/client/.angular": true,
+    "**/dev/bin": true,
+    "**/client/android": true,
+    "**/client/ios": true,
+    "**/client/dist": true,
+    "**/*.cpuprofile": true,
+    "**/client/coverage": true,
+  },
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+  "eslint.codeActionsOnSave.rules": null
+}

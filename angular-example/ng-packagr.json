@@ -1,0 +1,12 @@
+{
+  "$schema": "./node_modules/ng-packagr/ng-package.schema.json",
+  "lib": {
+    "entryFile": "src/app/public-api.ts"
+  },
+  "assets": [
+    "README.md",
+    "LICENSE",
+    { "glob": "styles.css", "input": "src/", "output": "styles/" }
+  ],
+  "dest": "dist"
+}

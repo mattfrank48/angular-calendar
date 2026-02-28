@@ -1,0 +1,22 @@
+<div class="min-h-screen bg-gray-50 p-2 text-gray-900 transition-colors duration-200 dark:bg-slate-950 dark:text-gray-100">
+  <div class="">
+    <div class="mb-4 flex items-center justify-between gap-4 px-4">
+      <div class="space-y-4">
+        <h1 class="text-3xl font-bold tracking-tight">
+          Calendar Example
+        </h1>
+      </div>
+      <app-theme-toggle />
+    </div>
+
+    <div>
+      @if (calendar(); as calendarData) {
+        <app-dayflow-calendar [calendar]="calendar()!" #calendarComponent />
+      } @else {
+        <p class="text-sm text-gray-500">
+          Loading calendar...
+        </p>
+      }
+    </div>
+  </div>
+</div>

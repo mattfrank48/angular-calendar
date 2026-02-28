@@ -1,30 +1,28 @@
 {
-  "name": "@dayflow/plugin-keyboard-shortcuts",
-  "version": "1.0.2",
-  "description": "Keyboard shortcuts plugin for DayFlow calendar",
+  "name": "@angular-calendar/plugin-keyboard-shortcuts",
+  "version": "1.0.0",
+  "description": "Keyboard shortcuts plugin for Angular Calendar",
   "keywords": [
     "calendar",
-    "dayflow",
+    "angular",
     "keyboard",
     "plugin",
     "shortcuts"
   ],
   "license": "MIT",
-  "author": "Jayce Li",
+  "author": "IQX",
   "files": [
     "dist",
     "README.md",
     "LICENSE"
   ],
   "type": "module",
-  "main": "dist/index.js",
-  "module": "dist/index.esm.js",
+  "module": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.esm.js",
-      "require": "./dist/index.js"
+      "import": "./dist/index.js"
     }
   },
   "scripts": {
@@ -33,17 +31,21 @@
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
-    "@dayflow/core": "workspace:*",
-    "@rollup/plugin-commonjs": "catalog:",
-    "@rollup/plugin-node-resolve": "catalog:",
-    "@rollup/plugin-typescript": "catalog:",
-    "rimraf": "catalog:",
-    "rollup": "catalog:",
-    "rollup-plugin-dts": "catalog:",
-    "temporal-polyfill": "catalog:",
-    "typescript": "catalog:"
+    "@dayflow/core": "^3.1.2",
+    "@rollup/plugin-commonjs": "^29.0.0",
+    "@rollup/plugin-node-resolve": "^16.0.3",
+    "@rollup/plugin-typescript": "^12.3.0",
+    "rimraf": "^6.1.3",
+    "rollup": "^4.59.0",
+    "rollup-plugin-dts": "^6.3.0",
+    "temporal-polyfill": "^0.3.0",
+    "tsc-alias": "^1.8.16",
+    "typescript": "^5.9.3"
   },
   "peerDependencies": {
-    "@dayflow/core": "workspace:*"
+    "@dayflow/core": "^3.1.2"
+  },
+  "volta": {
+    "node": "24.14.0"
   }
 }
