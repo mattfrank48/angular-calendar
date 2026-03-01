@@ -12,7 +12,7 @@ import { Temporal } from "temporal-polyfill"
  * Check if value is Temporal.PlainDate
  * Uses multiple methods to check, handling polyfill and serialization issues
  */
-export function isPlainDate ( date: unknown ): date is Temporal.PlainDate {
+export const isPlainDate = ( date: unknown ): date is Temporal.PlainDate => {
   if ( !date || typeof date !== "object" ) return false
   if ( date instanceof Date ) return false
 
@@ -42,7 +42,7 @@ export function isPlainDate ( date: unknown ): date is Temporal.PlainDate {
 /**
  * Check if value is Temporal.ZonedDateTime
  */
-export function isZonedDateTime ( date: unknown ): date is Temporal.ZonedDateTime {
+export const isZonedDateTime = ( date: unknown ): date is Temporal.ZonedDateTime => {
   if ( !date || typeof date !== "object" ) return false
   if ( date instanceof Date ) return false
   const d = date as Record<string, unknown>
@@ -54,7 +54,7 @@ export function isZonedDateTime ( date: unknown ): date is Temporal.ZonedDateTim
 /**
  * Check if value is Date object
  */
-export function isDate ( value: unknown ): value is Date {
+export const isDate = ( value: unknown ): value is Date => {
   return value instanceof Date
 }
 
@@ -68,10 +68,10 @@ export function isDate ( value: unknown ): value is Date {
  * @param timeZone Timezone (defaults to system timezone)
  * @returns Temporal.ZonedDateTime
  */
-export function dateToZonedDateTime (
+export const dateToZonedDateTime = (
   date: Date,
   timeZone: string = Temporal.Now.timeZoneId (),
-): Temporal.ZonedDateTime {
+): Temporal.ZonedDateTime => {
   return Temporal.Instant.fromEpochMilliseconds (
     date.getTime (),
   ).toZonedDateTimeISO ( timeZone )
@@ -82,7 +82,7 @@ export function dateToZonedDateTime (
  * @param date Date object
  * @returns Temporal.PlainDate
  */
-export function dateToPlainDate ( date: Date ): Temporal.PlainDate {
+export const dateToPlainDate = ( date: Date ): Temporal.PlainDate => {
   return Temporal.PlainDate.from ( {
     year: date.getFullYear (),
     month: date.getMonth () + 1,
@@ -95,7 +95,7 @@ export function dateToPlainDate ( date: Date ): Temporal.PlainDate {
  * @param zdt Temporal.ZonedDateTime
  * @returns Date object
  */
-export function zonedDateTimeToDate ( zdt: Temporal.ZonedDateTime ): Date {
+export const zonedDateTimeToDate = ( zdt: Temporal.ZonedDateTime ): Date => {
   if ( typeof zdt.epochMilliseconds === "number" ) {
     return new Date ( zdt.epochMilliseconds )
   }
@@ -110,10 +110,10 @@ export function zonedDateTimeToDate ( zdt: Temporal.ZonedDateTime ): Date {
  * @param timeZone Timezone (optional)
  * @returns Date object (time set to 00:00:00)
  */
-export function plainDateToDate (
+export const plainDateToDate = (
   plainDate: Temporal.PlainDate,
   timeZone: string = Temporal.Now.timeZoneId (),
-): Date {
+): Date => {
   if ( typeof plainDate.toZonedDateTime === "function" ) {
     try {
       const zdt = plainDate.toZonedDateTime ( {
@@ -135,14 +135,14 @@ export function plainDateToDate (
  * @param timeZone Timezone (optional, only used for PlainDate)
  * @returns Date object
  */
-export function temporalToDate (
+export const temporalToDate = (
   temporal:
     | Temporal.PlainDate
     | Temporal.PlainDateTime
     | Temporal.ZonedDateTime
     | Date,
   timeZone?: string,
-): Date {
+): Date => {
   if ( temporal instanceof Date ) {
     return temporal
   }
@@ -189,13 +189,13 @@ export function temporalToDate (
  * @param temporal Temporal time object
  * @returns Hour number (0-24, supports decimals), returns 0 if PlainDate
  */
-export function extractHourFromTemporal (
+export const extractHourFromTemporal = (
   temporal:
     | Temporal.PlainDate
     | Temporal.PlainDateTime
     | Temporal.ZonedDateTime
     | Date,
-): number {
+): number => {
   if ( temporal instanceof Date ) {
     return temporal.getHours () + temporal.getMinutes () / 60
   }
@@ -226,13 +226,13 @@ export function extractHourFromTemporal (
  * @param hour Hour number (supports decimals)
  * @returns New Temporal (PlainDateTime or ZonedDateTime)
  */
-export function createTemporalWithHour (
+export const createTemporalWithHour = (
   temporal:
     | Temporal.PlainDate
     | Temporal.PlainDateTime
     | Temporal.ZonedDateTime,
   hour: number,
-): Temporal.PlainDateTime | Temporal.ZonedDateTime {
+): Temporal.PlainDateTime | Temporal.ZonedDateTime => {
   const hours = Math.floor ( hour )
   const minutes = Math.round ( ( hour - hours ) * 60 )
 
@@ -271,7 +271,7 @@ export function createTemporalWithHour (
 /**
  * Check if two Temporal dates are on the same day
  */
-export function isSamePlainDate (
+export const isSamePlainDate = (
   date1:
     | Temporal.PlainDate
     | Temporal.PlainDateTime
@@ -282,7 +282,7 @@ export function isSamePlainDate (
     | Temporal.PlainDateTime
     | Temporal.ZonedDateTime
     | Date,
-): boolean {
+): boolean => {
   if ( date1 instanceof Date && date2 instanceof Date ) {
     return date1.toDateString () === date2.toDateString ()
   }
@@ -309,7 +309,7 @@ export function isSamePlainDate (
 /**
  * Check if event spans multiple days
  */
-export function isMultiDayTemporalEvent (
+export const isMultiDayTemporalEvent = (
   start:
     | Temporal.PlainDate
     | Temporal.PlainDateTime
@@ -320,20 +320,20 @@ export function isMultiDayTemporalEvent (
     | Temporal.PlainDateTime
     | Temporal.ZonedDateTime
     | Date,
-): boolean {
+): boolean => {
   return !isSamePlainDate ( start, end )
 }
 
 /**
  * Get start time of Temporal date (00:00:00)
  */
-export function getStartOfTemporal (
+export const getStartOfTemporal = (
   temporal:
     | Temporal.PlainDate
     | Temporal.PlainDateTime
     | Temporal.ZonedDateTime,
   timeZone: string = Temporal.Now.timeZoneId (),
-): Temporal.ZonedDateTime {
+): Temporal.ZonedDateTime => {
   if (
     typeof ( temporal as { toZonedDateTime?: unknown } ).toZonedDateTime ===
     "function"
@@ -364,13 +364,13 @@ export function getStartOfTemporal (
 /**
  * Get end time of Temporal date (23:59:59.999)
  */
-export function getEndOfTemporal (
+export const getEndOfTemporal = (
   temporal:
     | Temporal.PlainDate
     | Temporal.PlainDateTime
     | Temporal.ZonedDateTime,
   timeZone: string = Temporal.Now.timeZoneId (),
-): Temporal.ZonedDateTime {
+): Temporal.ZonedDateTime => {
   if (
     typeof ( temporal as { toZonedDateTime?: unknown } ).toZonedDateTime ===
     "function"
@@ -411,10 +411,10 @@ export function getEndOfTemporal (
 /**
  * Calculate days difference between two Temporal dates
  */
-export function daysBetween (
+export const daysBetween = (
   start: Temporal.PlainDate | Temporal.ZonedDateTime,
   end: Temporal.PlainDate | Temporal.ZonedDateTime,
-): number {
+): number => {
   const getPD = ( d: unknown ) => {
     if ( isPlainDate ( d ) ) return d
     if ( typeof ( d as { toPlainDate?: unknown } ).toPlainDate === "function" )
@@ -434,7 +434,7 @@ export function daysBetween (
 /**
  * Calculate days difference between two Date objects (ignoring time component)
  */
-export function daysDifference ( date1: Date, date2: Date ): number {
+export const daysDifference = ( date1: Date, date2: Date ): number => {
   const oneDay = 24 * 60 * 60 * 1000
   const firstDate = new Date (
     date1.getFullYear (),
@@ -452,7 +452,7 @@ export function daysDifference ( date1: Date, date2: Date ): number {
 /**
  * Add specified days to a date
  */
-export function addDays ( date: Date, days: number ): Date {
+export const addDays = ( date: Date, days: number ): Date => {
   const result = new Date ( date )
   result.setDate ( result.getDate () + days )
   return result
@@ -461,17 +461,17 @@ export function addDays ( date: Date, days: number ): Date {
 /**
  * Get current time (Temporal.ZonedDateTime)
  */
-export function now (
+export const now = (
   timeZone: string = Temporal.Now.timeZoneId (),
-): Temporal.ZonedDateTime {
+): Temporal.ZonedDateTime => {
   return Temporal.Now.zonedDateTimeISO ( timeZone )
 }
 
 /**
  * Get today's date (Temporal.PlainDate)
  */
-export function today (
+export const today = (
   timeZone: string = Temporal.Now.timeZoneId (),
-): Temporal.PlainDate {
+): Temporal.PlainDate => {
   return Temporal.Now.plainDateISO ( timeZone )
 }

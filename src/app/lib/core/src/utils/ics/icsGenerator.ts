@@ -17,10 +17,10 @@ import { generateVEvent, escapeICSValue } from "./utils"
  * @param options - Export options
  * @returns ICS file content string
  */
-export function generateICS (
+export const generateICS = (
   events: Event[],
   options: ICSExportOptions = {},
-): string {
+): string => {
   const {
     calendarName = "DayFlow Calendar",
     productId = "-//DayFlow//DayFlow Calendar//EN",
@@ -53,10 +53,10 @@ export function generateICS (
  * @param events - Events to export
  * @param options - Export options
  */
-export function downloadICS (
+export const downloadICS = (
   events: Event[],
   options: ICSExportOptions = {},
-): void {
+): void => {
   const content = generateICS ( events, options )
   const filename = `${options.filename || "calendar"}.ics`
 

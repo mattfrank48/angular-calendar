@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 // Core type definitions
-import { h, AnyComponent, ComponentChildren } from "preact"
+import { AnyComponent, ComponentChildren, TargetedMouseEvent, TargetedTouchEvent } from "preact"
 
 import { ViewSwitcherMode } from "@/components/common/ViewHeader"
 import { CalendarRegistry } from "@/core/calendarRegistry"
@@ -110,8 +111,8 @@ export interface CalendarHeaderProps {
   switcherMode?: ViewSwitcherMode
   onAddCalendar?: (
     e:
-      | h.JSX.TargetedMouseEvent<HTMLElement>
-      | h.JSX.TargetedTouchEvent<HTMLElement>,
+      | TargetedMouseEvent<HTMLElement>
+      | TargetedTouchEvent<HTMLElement>,
   ) => void
   onSearchChange?: ( value: string ) => void
   /** Triggered when search icon is clicked (typically on mobile) */

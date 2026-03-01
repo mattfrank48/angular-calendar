@@ -1,4 +1,4 @@
-import { JSX, RefObject } from "preact"
+import { RefObject, TargetedMouseEvent, TargetedTouchEvent } from "preact"
 import { useState, useCallback, useRef } from "preact/hooks"
 
 import { ICalendarApp, Event } from "@/types"
@@ -15,8 +15,8 @@ export interface QuickCreateController {
   setMobileDraftEvent: ( event: Event | null ) => void
   handleAddButtonClick: (
     e:
-      | JSX.TargetedMouseEvent<HTMLElement>
-      | JSX.TargetedTouchEvent<HTMLElement>,
+      | TargetedMouseEvent<HTMLElement>
+      | TargetedTouchEvent<HTMLElement>,
   ) => void
   isCreateCalendarOpen: boolean
   setIsCreateCalendarOpen: ( open: boolean ) => void
@@ -26,11 +26,11 @@ export interface QuickCreateController {
  * Manages the "add event" affordance for both desktop (QuickCreateEventPopup)
  * and mobile (MobileEventDrawer with a pre-populated draft event).
  */
-export function useQuickCreateController (
+export const useQuickCreateController = (
   app: ICalendarApp,
   isMobile: boolean,
   sidebarEnabled: boolean,
-): QuickCreateController {
+): QuickCreateController => {
   const [ isQuickCreateOpen, setIsQuickCreateOpen ] = useState ( false )
   const quickCreateAnchorRef = useRef<HTMLElement> ( null! )
   const [ isMobileDrawerOpen, setIsMobileDrawerOpen ] = useState ( false )
@@ -44,8 +44,8 @@ export function useQuickCreateController (
   const handleAddButtonClick = useCallback (
     (
       e:
-        | JSX.TargetedMouseEvent<HTMLElement>
-        | JSX.TargetedTouchEvent<HTMLElement>,
+        | TargetedMouseEvent<HTMLElement>
+        | TargetedTouchEvent<HTMLElement>,
     ) => {
       const isEditable = !app.state.readOnly
       if ( !isEditable ) return

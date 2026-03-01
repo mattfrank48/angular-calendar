@@ -17,7 +17,7 @@ export const defaultEventsConfig: EventsPluginConfig = {
 }
 
 // Utility function to get current week start time
-function getCurrentWeekStart ( date: Date ): Date {
+const getCurrentWeekStart = ( date: Date ): Date => {
   const day = date.getDay ()
   const diff = date.getDate () - day + ( day === 0 ? -6 : 1 )
   const monday = new Date ( date )
@@ -26,9 +26,9 @@ function getCurrentWeekStart ( date: Date ): Date {
   return monday
 }
 
-export function createEventsPlugin (
+export const createEventsPlugin = (
   config: EventsPluginConfig = {},
-): CalendarPlugin {
+): CalendarPlugin => {
   const finalConfig = { ...defaultEventsConfig, ...config }
   let app: ICalendarApp
 

@@ -3,9 +3,9 @@ import { registerDragImplementation } from "../dragBridge"
 
 import { useDrag } from "./hooks"
 
-export function createDragPlugin (
+export const createDragPlugin = (
   config: Partial<DragPluginConfig> = {},
-): CalendarPlugin {
+): CalendarPlugin => {
   const finalConfig: DragPluginConfig = {
     enableDrag: true,
     enableResize: true,
@@ -34,6 +34,7 @@ export function createDragPlugin (
     config: finalConfig,
     install: ( _app: ICalendarApp ) => {
       if (
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         ( globalThis as unknown as { process?: { env?: { NODE_ENV?: string } } } )
           .process?.env?.NODE_ENV !== "production"
       ) {
@@ -109,7 +110,7 @@ export function createDragPlugin (
   }
 }
 
-export function isDragService ( obj: unknown ): obj is DragService {
+export const isDragService = ( obj: unknown ): obj is DragService => {
   return (
     typeof obj === "object" &&
     obj !== null &&
@@ -119,9 +120,9 @@ export function isDragService ( obj: unknown ): obj is DragService {
   )
 }
 
-export function createDragConfig (
+export const createDragConfig = (
   overrides: Partial<DragPluginConfig> = {},
-): DragPluginConfig {
+): DragPluginConfig => {
   return {
     enableDrag: true,
     enableResize: true,

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { Event } from "@/types"
 
 export interface LayoutWeekEvent extends Event {

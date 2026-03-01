@@ -17,7 +17,7 @@ import { ICSVEvent, ICSDateParams, ICSImportOptions } from "./types"
 /**
  * Pad number to 2 digits
  */
-export function pad2 ( num: number | string ): string {
+export const pad2 = ( num: number | string ): string => {
   return String ( num ).padStart ( 2, "0" )
 }
 
@@ -29,11 +29,11 @@ export function pad2 ( num: number | string ): string {
  * @param defaultTimeZone - Default timezone when none specified
  * @returns Temporal.PlainDate, PlainDateTime, or ZonedDateTime
  */
-export function parseICSDate (
+export const parseICSDate = (
   dateStr: string,
   params?: ICSDateParams,
   defaultTimeZone?: string,
-): Temporal.PlainDate | Temporal.PlainDateTime | Temporal.ZonedDateTime {
+): Temporal.PlainDate | Temporal.PlainDateTime | Temporal.ZonedDateTime => {
   const cleanStr = dateStr.trim ()
   const ICS_DATE_REGEX = /^(\d{4})(\d{2})(\d{2})$/
   const ICS_DATETIME_REGEX = /^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})$/
@@ -99,13 +99,13 @@ export function parseICSDate (
  * @param allDay - Force all-day format
  * @returns Object with value and optional params
  */
-export function formatICSDate (
+export const formatICSDate = (
   temporal:
     | Temporal.PlainDate
     | Temporal.PlainDateTime
     | Temporal.ZonedDateTime,
   allDay: boolean = false,
-): { value: string; params?: Record<string, string> } {
+): { value: string; params?: Record<string, string> } => {
   // All-day event
   if ( allDay || isPlainDate ( temporal ) ) {
     const pd = isPlainDate ( temporal ) ? temporal : temporal.toPlainDate ()
@@ -137,7 +137,7 @@ export function formatICSDate (
 /**
  * Format a Date to ICS timestamp (UTC format for DTSTAMP)
  */
-export function formatDateToICSTimestamp ( date: Date ): string {
+export const formatDateToICSTimestamp = ( date: Date ): string => {
   const year = date.getUTCFullYear ()
   const month = pad2 ( date.getUTCMonth () + 1 )
   const day = pad2 ( date.getUTCDate () )
@@ -151,7 +151,7 @@ export function formatDateToICSTimestamp ( date: Date ): string {
 // String Utilities
 // ============================================================================
 
-export function escapeICSValue ( value: string ): string {
+export const escapeICSValue = ( value: string ): string => {
   if ( !value ) return ""
   return value
     .replaceAll ( "\\", "\\\\" )
@@ -160,7 +160,7 @@ export function escapeICSValue ( value: string ): string {
     .replaceAll ( "\n", "\\n" )
 }
 
-export function unescapeICSValue ( value: string ): string {
+export const unescapeICSValue = ( value: string ): string => {
   if ( !value ) return ""
   return value
     .replaceAll ( "\\,", "," )
@@ -169,7 +169,7 @@ export function unescapeICSValue ( value: string ): string {
     .replaceAll ( "\\\\", "\\" )
 }
 
-export function foldLine ( line: string ): string {
+export const foldLine = ( line: string ): string => {
   if ( line.length <= 75 ) return line
   const chunks = []
   let remaining = line
@@ -182,11 +182,11 @@ export function foldLine ( line: string ): string {
   return chunks.join ( "\r\n" )
 }
 
-export function formatProperty (
+export const formatProperty = (
   name: string,
   value: string,
   params?: Record<string, string>,
-): string {
+): string => {
   let line = name
   if ( params ) {
     Object.entries ( params ).forEach ( ( [ key, val ] ) => {
@@ -201,7 +201,7 @@ export function formatProperty (
 // Internal Logic
 // ============================================================================
 
-export function generateVEvent ( event: Event ): string[] {
+export const generateVEvent = ( event: Event ): string[] => {
   const lines: string[] = [ "BEGIN:VEVENT" ]
   const uid = event.meta?.originalUid || `${event.id}@dayflow`
   lines.push ( `UID:${uid}` )
@@ -229,7 +229,7 @@ export function generateVEvent ( event: Event ): string[] {
   return lines
 }
 
-export function extractVEvents ( lines: string[] ): string[][] {
+export const extractVEvents = ( lines: string[] ): string[][] => {
   const vevents: string[][] = []
   let currentEventLines: string[] | null = null
   let inVEvent = false
@@ -256,7 +256,7 @@ export function extractVEvents ( lines: string[] ): string[][] {
   return vevents
 }
 
-export function parseVEventLines ( lines: string[] ): ICSVEvent {
+export const parseVEventLines = ( lines: string[] ): ICSVEvent => {
   const event: Partial<ICSVEvent> = {}
   for ( const line of lines ) {
     const colonIndex = line.indexOf ( ":" )
@@ -313,10 +313,10 @@ export function parseVEventLines ( lines: string[] ): ICSVEvent {
   return event as ICSVEvent
 }
 
-export function convertToDayFlowEvent (
+export const convertToDayFlowEvent = (
   icsEvent: ICSVEvent,
   options: ICSImportOptions,
-): Event {
+): Event => {
   const {
     calendarId = "default",
     generateNewIds = true,

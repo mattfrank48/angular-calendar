@@ -44,16 +44,14 @@ export const defaultCalendarConfig: CalendarConfig = {
 }
 
 // Utility function to check if value is an object
- 
-function isObject ( item: any ): item is Record<string, any> {
+const isObject = ( item: any ): item is Record<string, any> => {
   return item && typeof item === "object" && !Array.isArray ( item )
 }
 
- 
-export function deepMerge<T extends Record<string, any>> (
+export const deepMerge = <T extends Record<string, any>> (
   target: T,
   ...sources: Partial<T>[]
-): T {
+): T => {
   if ( !sources.length ) return target
 
   const source = sources.shift ()
@@ -72,37 +70,36 @@ export function deepMerge<T extends Record<string, any>> (
   return deepMerge ( target, ...sources )
 }
 
-export function createCalendarConfig (
+export const createCalendarConfig = (
   overrides?: Partial<CalendarConfig>,
-): CalendarConfig {
+): CalendarConfig => {
   return deepMerge (
     JSON.parse ( JSON.stringify ( defaultCalendarConfig ) ), // Deep copy default configuration
     overrides || {},
   )
 }
 
-export function createDragConfig (
+export const createDragConfig = (
   overrides?: Partial<typeof defaultDragConfig>,
-) {
+) => {
   return deepMerge (
     JSON.parse ( JSON.stringify ( defaultDragConfig ) ),
     overrides || {},
   )
 }
 
-export function createViewConfig (
+export const createViewConfig = (
   viewType: "day" | "week" | "month",
-   
   overrides?: Record<string, any>,
-) {
+) => {
   const defaultConfig = defaultViewConfigs[viewType]
   return deepMerge ( JSON.parse ( JSON.stringify ( defaultConfig ) ), overrides || {} )
 }
 
 // Configuration validation function
-export function validateCalendarConfig (
+export const validateCalendarConfig = (
   config: Partial<CalendarConfig>,
-): string[] {
+): string[] => {
   const errors: string[] = []
 
   // Validate drag configuration
@@ -142,26 +139,27 @@ export function validateCalendarConfig (
   return errors
 }
 
+// eslint-disable-next-line custom/filename-matches-export
 export class ConfigManager {
   private config: CalendarConfig
 
-  constructor ( initialConfig?: Partial<CalendarConfig> ) {
+  public constructor ( initialConfig?: Partial<CalendarConfig> ) {
     this.config = createCalendarConfig ( initialConfig )
   }
 
-  getConfig (): CalendarConfig {
+  public getConfig (): CalendarConfig {
     return JSON.parse ( JSON.stringify ( this.config ) )
   }
 
-  getDragConfig () {
+  public getDragConfig () {
     return this.config.drag
   }
 
-  getViewConfig ( viewType: "day" | "week" | "month" ) {
+  public getViewConfig ( viewType: "day" | "week" | "month" ) {
     return this.config.views[viewType]
   }
 
-  updateConfig ( updates: Partial<CalendarConfig> ): void {
+  public updateConfig ( updates: Partial<CalendarConfig> ): void {
     const errors = validateCalendarConfig ( updates )
     if ( errors.length > 0 ) {
       throw new Error ( `Configuration validation failed: ${errors.join ( ", " )}` )
@@ -169,7 +167,7 @@ export class ConfigManager {
     this.config = deepMerge ( this.config, updates )
   }
 
-  resetConfig ( newConfig?: Partial<CalendarConfig> ): void {
+  public resetConfig ( newConfig?: Partial<CalendarConfig> ): void {
     this.config = createCalendarConfig ( newConfig )
   }
 }

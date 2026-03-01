@@ -17,10 +17,10 @@ export * from "./icsGenerator"
  * @param options - Import options
  * @returns Promise resolving to import result
  */
-export async function importICSFile (
+export const importICSFile = async (
   file: File,
   options?: ICSImportOptions,
-): Promise<ICSImportResult> {
+): Promise<ICSImportResult> => {
   try {
     const content = await file.text ()
     if ( !content ) {

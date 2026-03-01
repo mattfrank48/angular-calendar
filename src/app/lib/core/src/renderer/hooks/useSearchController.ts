@@ -24,10 +24,10 @@ export interface SearchController {
  * Manages all search state: keyword, debounce, loading, results, drawer
  * visibility for desktop and mobile, and highlight sync.
  */
-export function useSearchController (
+export const useSearchController = (
   app: ICalendarApp,
   searchConfig: CalendarSearchProps | undefined,
-): SearchController {
+): SearchController => {
   const [ searchKeyword, setSearchKeyword ] = useState ( "" )
   const [ isSearchOpen, setIsSearchOpen ] = useState ( false )
   const [ isMobileSearchOpen, setIsMobileSearchOpen ] = useState ( false )

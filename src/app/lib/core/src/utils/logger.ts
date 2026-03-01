@@ -8,10 +8,27 @@ type LogLevel = "log" | "warn" | "error" | "debug"
 class Logger {
   private isDevelopment: boolean
 
-  constructor () {
+  public constructor () {
     this.isDevelopment =
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       ( globalThis as unknown as { process?: { env?: { NODE_ENV?: string } } } )
         .process?.env?.NODE_ENV !== "production"
+  }
+
+  public log ( message: string, ...args: unknown[] ): void {
+    this.formatMessage ( "log", message, ...args )
+  }
+
+  public warn ( message: string, ...args: unknown[] ): void {
+    this.formatMessage ( "warn", message, ...args )
+  }
+
+  public error ( message: string, ...args: unknown[] ): void {
+    this.formatMessage ( "error", message, ...args )
+  }
+
+  public debug ( message: string, ...args: unknown[] ): void {
+    this.formatMessage ( "debug", message, ...args )
   }
 
   private formatMessage (
@@ -40,22 +57,6 @@ class Logger {
       default:
         break
     }
-  }
-
-  log ( message: string, ...args: unknown[] ): void {
-    this.formatMessage ( "log", message, ...args )
-  }
-
-  warn ( message: string, ...args: unknown[] ): void {
-    this.formatMessage ( "warn", message, ...args )
-  }
-
-  error ( message: string, ...args: unknown[] ): void {
-    this.formatMessage ( "error", message, ...args )
-  }
-
-  debug ( message: string, ...args: unknown[] ): void {
-    this.formatMessage ( "debug", message, ...args )
   }
 }
 

@@ -40,9 +40,10 @@ export class CalendarApp implements ICalendarApp {
   private listeners: Set<( app: ICalendarApp ) => void>
   private undoStack: Array<{ type: string; data: unknown }> = []
   private pendingSnapshot: Event[] | null = null
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   private readonly MAX_UNDO_STACK = 50
 
-  constructor ( config: CalendarAppConfig ) {
+  public constructor ( config: CalendarAppConfig ) {
     // Initialize state
     this.state = {
       currentView: config.defaultView || ViewType.WEEK,
@@ -92,55 +93,10 @@ export class CalendarApp implements ICalendarApp {
     this.handleVisibleRangeChange ( "initial" )
   }
 
-  private setupStoreListeners (): void {
-    this.store.onEventChange = ( change: EventChange ) => {
-      // Sync local state
-      this.state.events = this.store.getAllEvents ()
-
-      if ( change.type === "create" ) {
-        this.callbacks.onEventCreate ?. ( change.event )
-      } else if ( change.type === "update" ) {
-        this.callbacks.onEventUpdate ?. ( change.after )
-      } else if ( change.type === "delete" ) {
-        this.callbacks.onEventDelete ?. ( change.event.id )
-      }
-
-      this.triggerRender ()
-      this.notify ()
-    }
-
-    this.store.onEventBatchChange = ( changes: EventChange[] ) => {
-      // Sync local state
-      this.state.events = this.store.getAllEvents ()
-
-      // Trigger generic batch callback
-      this.callbacks.onEventBatchChange ?. ( changes )
-
-      this.triggerRender ()
-      this.notify ()
-    }
-  }
-
   // Subscription management
-  subscribe = ( listener: ( app: ICalendarApp ) => void ): ( () => void ) => {
+  public subscribe = ( listener: ( app: ICalendarApp ) => void ): ( () => void ) => {
     this.listeners.add ( listener )
     return () => this.listeners.delete ( listener )
-  }
-
-  private notify = (): void => {
-    this.listeners.forEach ( listener => listener ( this ) )
-  }
-
-  private pushToUndo = ( eventsSnapshot?: Event[] ): void => {
-    // Store a snapshot of events array (shallow copy)
-    this.undoStack.push ( {
-      type: "events_snapshot",
-      data: eventsSnapshot || [ ...this.state.events ],
-    } )
-
-    if ( this.undoStack.length > this.MAX_UNDO_STACK ) {
-      this.undoStack.shift ()
-    }
   }
 
   public undo = (): void => {
@@ -157,7 +113,7 @@ export class CalendarApp implements ICalendarApp {
     }
   }
 
-  getReadOnlyConfig = (): ReadOnlyConfig => {
+  public getReadOnlyConfig = (): ReadOnlyConfig => {
     const ro = this.state.readOnly
     if ( ro === true ) {
       return { draggable: false, viewable: false }
@@ -171,20 +127,8 @@ export class CalendarApp implements ICalendarApp {
     }
   }
 
-  /**
-   * Helper to check if the calendar is in any form of read-only mode.
-   * If readOnly config is present, it's considered non-editable.
-   */
-  private isInternalEditable = (): boolean => {
-    if ( this.state.readOnly === true ) return false
-    if ( typeof this.state.readOnly === "object" ) {
-      return false
-    }
-    return true
-  }
-
   // View management
-  changeView = ( view: ViewType ): void => {
+  public changeView = ( view: ViewType ): void => {
     if ( !this.state.views.has ( view ) ) {
       throw new Error ( `View ${view} is not registered` )
     }
@@ -196,7 +140,7 @@ export class CalendarApp implements ICalendarApp {
     this.notify ()
   }
 
-  getCurrentView = (): CalendarView => {
+  public getCurrentView = (): CalendarView => {
     const view = this.state.views.get ( this.state.currentView )
     if ( !view ) {
       throw new Error (
@@ -206,7 +150,7 @@ export class CalendarApp implements ICalendarApp {
     return view
   }
 
-  emitVisibleRange = (
+  public emitVisibleRange = (
     start: Date,
     end: Date,
     reason: RangeChangeReason = "navigation",
@@ -218,7 +162,7 @@ export class CalendarApp implements ICalendarApp {
     )
   }
 
-  handleVisibleRangeChange = ( reason: RangeChangeReason ): void => {
+  public handleVisibleRangeChange = ( reason: RangeChangeReason ): void => {
     const view = this.state.views.get ( this.state.currentView )
     switch ( view?.type ) {
       case ViewType.DAY: {
@@ -276,7 +220,7 @@ export class CalendarApp implements ICalendarApp {
   }
 
   // Date management
-  setCurrentDate = ( date: Date ): void => {
+  public setCurrentDate = ( date: Date ): void => {
     this.state.currentDate = new Date ( date )
     this.callbacks.onDateChange ?. ( this.state.currentDate )
     this.setVisibleMonth ( this.state.currentDate )
@@ -284,9 +228,9 @@ export class CalendarApp implements ICalendarApp {
     this.notify ()
   }
 
-  getCurrentDate = (): Date => new Date ( this.state.currentDate )
+  public getCurrentDate = (): Date => new Date ( this.state.currentDate )
 
-  setVisibleMonth = ( date: Date ): void => {
+  public setVisibleMonth = ( date: Date ): void => {
     const next = new Date ( date.getFullYear (), date.getMonth (), 1 )
     if (
       this.visibleMonth.getFullYear () === next.getFullYear () &&
@@ -295,17 +239,18 @@ export class CalendarApp implements ICalendarApp {
       return
     }
     this.visibleMonth = next
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     this.callbacks.onVisibleMonthChange ?. ( new Date ( this.visibleMonth ) )
     this.notify ()
   }
 
-  getVisibleMonth = (): Date => new Date ( this.visibleMonth )
+  public getVisibleMonth = (): Date => new Date ( this.visibleMonth )
 
-  goToToday = (): void => {
+  public goToToday = (): void => {
     this.setCurrentDate ( new Date () )
   }
 
-  goToPrevious = (): void => {
+  public goToPrevious = (): void => {
     const newDate = new Date ( this.state.currentDate )
     switch ( this.state.currentView ) {
       case ViewType.DAY:
@@ -326,7 +271,7 @@ export class CalendarApp implements ICalendarApp {
     this.setCurrentDate ( newDate )
   }
 
-  goToNext = (): void => {
+  public goToNext = (): void => {
     const newDate = new Date ( this.state.currentDate )
     switch ( this.state.currentView ) {
       case ViewType.DAY:
@@ -348,7 +293,7 @@ export class CalendarApp implements ICalendarApp {
   }
 
   // Date selection method
-  selectDate = ( date: Date ): void => {
+  public selectDate = ( date: Date ): void => {
     this.setCurrentDate ( date )
     this.callbacks.onDateChange ?. ( new Date ( date ) )
   }
@@ -438,7 +383,7 @@ export class CalendarApp implements ICalendarApp {
     this.store.endTransaction ()
   }
 
-  addEvent = ( event: Event ): void => {
+  public addEvent = ( event: Event ): void => {
     if ( !this.isInternalEditable () ) {
       logger.warn ( "Cannot add event in read-only mode" )
       return
@@ -451,7 +396,7 @@ export class CalendarApp implements ICalendarApp {
     this.store.createEvent ( event )
   }
 
-  updateEvent = (
+  public updateEvent = (
     id: string,
     eventUpdate: Partial<Event>,
     isPending?: boolean,
@@ -498,7 +443,7 @@ export class CalendarApp implements ICalendarApp {
     this.store.updateEvent ( id, eventUpdate )
   }
 
-  deleteEvent = ( id: string ): void => {
+  public deleteEvent = ( id: string ): void => {
     if ( !this.isInternalEditable () ) {
       logger.warn ( "Cannot delete event in read-only mode" )
       return
@@ -510,37 +455,37 @@ export class CalendarApp implements ICalendarApp {
     this.store.deleteEvent ( id )
   }
 
-  getAllEvents = (): Event[] => [ ...this.state.events ]
+  public getAllEvents = (): Event[] => [ ...this.state.events ]
 
-  onEventClick = ( event: Event ): void => {
+  public onEventClick = ( event: Event ): void => {
     this.callbacks.onEventClick ?. ( event )
   }
 
-  onMoreEventsClick = ( date: Date ): void => {
+  public onMoreEventsClick = ( date: Date ): void => {
     this.callbacks.onMoreEventsClick ?. ( date )
   }
 
-  highlightEvent = ( eventId: string | null ): void => {
+  public highlightEvent = ( eventId: string | null ): void => {
     if ( this.state.highlightedEventId === eventId ) return
     this.state.highlightedEventId = eventId
     this.callbacks.onRender ?. ()
     this.notify ()
   }
 
-  selectEvent = ( eventId: string | null ): void => {
+  public selectEvent = ( eventId: string | null ): void => {
     if ( this.state.selectedEventId === eventId ) return
     this.state.selectedEventId = eventId
     this.callbacks.onRender ?. ()
     this.notify ()
   }
 
-  dismissUI = (): void => {
+  public dismissUI = (): void => {
     this.callbacks.onDismissUI ?. ()
     // Also notify listeners so components can react to UI dismiss signal if they prefer
     this.notify ()
   }
 
-  getEvents = (): Event[] => {
+  public getEvents = (): Event[] => {
     const allEvents = this.getAllEvents ()
     const visibleCalendars = new Set (
       this.calendarRegistry
@@ -562,27 +507,27 @@ export class CalendarApp implements ICalendarApp {
     } )
   }
 
-  getCalendars = (): CalendarType[] => this.calendarRegistry.getAll ()
+  public getCalendars = (): CalendarType[] => this.calendarRegistry.getAll ()
 
-  reorderCalendars = ( fromIndex: number, toIndex: number ): void => {
+  public reorderCalendars = ( fromIndex: number, toIndex: number ): void => {
     this.calendarRegistry.reorder ( fromIndex, toIndex )
     this.callbacks.onRender ?. ()
     this.notify ()
   }
 
-  setCalendarVisibility = ( calendarId: string, visible: boolean ): void => {
+  public setCalendarVisibility = ( calendarId: string, visible: boolean ): void => {
     this.calendarRegistry.setVisibility ( calendarId, visible )
     this.callbacks.onRender ?. ()
     this.notify ()
   }
 
-  setAllCalendarsVisibility = ( visible: boolean ): void => {
+  public setAllCalendarsVisibility = ( visible: boolean ): void => {
     this.calendarRegistry.setAllVisibility ( visible )
     this.callbacks.onRender ?. ()
     this.notify ()
   }
 
-  updateCalendar = (
+  public updateCalendar = (
     id: string,
     updates: Partial<CalendarType>,
     isPending?: boolean,
@@ -600,21 +545,21 @@ export class CalendarApp implements ICalendarApp {
     this.notify ()
   }
 
-  createCalendar = ( calendar: CalendarType ): void => {
+  public createCalendar = ( calendar: CalendarType ): void => {
     this.calendarRegistry.register ( calendar )
     this.callbacks.onCalendarCreate ?. ( calendar )
     this.callbacks.onRender ?. ()
     this.notify ()
   }
 
-  deleteCalendar = ( id: string ): void => {
+  public deleteCalendar = ( id: string ): void => {
     this.calendarRegistry.unregister ( id )
     this.callbacks.onCalendarDelete ?. ( id )
     this.callbacks.onRender ?. ()
     this.notify ()
   }
 
-  mergeCalendars = ( sourceId: string, targetId: string ): void => {
+  public mergeCalendars = ( sourceId: string, targetId: string ): void => {
     const sourceEvents = this.store
       .getAllEvents ()
       .filter ( e => e.calendarId === sourceId )
@@ -639,36 +584,25 @@ export class CalendarApp implements ICalendarApp {
     // onRender and notify will be triggered by store callbacks
   }
 
-  getCalendarHeaderConfig = ():
+  public getCalendarHeaderConfig = ():
     | boolean
     | ( ( props: CalendarHeaderProps ) => TNode ) => this.useCalendarHeader
 
-  // Plugin management
-  private installPlugin = ( plugin: CalendarPlugin ): void => {
-    if ( this.state.plugins.has ( plugin.name ) ) {
-      logger.warn ( `Plugin ${plugin.name} is already installed` )
-      return
-    }
-
-    this.state.plugins.set ( plugin.name, plugin )
-    plugin.install ( this )
-  }
-
-  getPlugin = <T = unknown>( name: string ): T | undefined => {
+  public getPlugin = <T = unknown>( name: string ): T | undefined => {
     const plugin = this.state.plugins.get ( name )
     return plugin?.api as T
   }
 
-  hasPlugin = ( name: string ): boolean => this.state.plugins.has ( name )
+  public hasPlugin = ( name: string ): boolean => this.state.plugins.has ( name )
 
   // Get plugin configuration
-  getPluginConfig = ( pluginName: string ): Record<string, unknown> => {
+  public getPluginConfig = ( pluginName: string ): Record<string, unknown> => {
     const plugin = this.state.plugins.get ( pluginName )
     return plugin?.config || {}
   }
 
   // Update plugin configuration
-  updatePluginConfig = (
+  public updatePluginConfig = (
     pluginName: string,
     config: Record<string, unknown>,
   ): void => {
@@ -680,29 +614,29 @@ export class CalendarApp implements ICalendarApp {
   }
 
   // Get view configuration
-  getViewConfig = ( viewType: ViewType ): Record<string, unknown> => {
+  public getViewConfig = ( viewType: ViewType ): Record<string, unknown> => {
     const view = this.state.views.get ( viewType )
     return view?.config || {}
   }
 
   // Trigger render callback
-  triggerRender = (): void => {
+  public triggerRender = (): void => {
     this.callbacks.onRender ?. ()
     this.notify ()
   }
 
   // Get CalendarRegistry instance
-  getCalendarRegistry = (): CalendarRegistry => this.calendarRegistry
+  public getCalendarRegistry = (): CalendarRegistry => this.calendarRegistry
 
   // Get whether to use event detail dialog
-  getUseEventDetailDialog = (): boolean => this.useEventDetailDialog
+  public getUseEventDetailDialog = (): boolean => this.useEventDetailDialog
 
   // Get custom mobile event renderer
-  getCustomMobileEventRenderer = (): MobileEventRenderer | undefined =>
+  public getCustomMobileEventRenderer = (): MobileEventRenderer | undefined =>
     this.customMobileEventRenderer
 
   // Update configuration dynamically
-  updateConfig = ( config: Partial<CalendarAppConfig> ): void => {
+  public updateConfig = ( config: Partial<CalendarAppConfig> ): void => {
     let hasChanged = false
 
     if (
@@ -764,7 +698,7 @@ export class CalendarApp implements ICalendarApp {
    * Set theme mode
    * @param mode - Theme mode ('light', 'dark', or 'auto')
    */
-  setTheme = ( mode: ThemeMode ): void => {
+  public setTheme = ( mode: ThemeMode ): void => {
     this.calendarRegistry.setTheme ( mode )
 
     // Notify all listeners
@@ -781,14 +715,14 @@ export class CalendarApp implements ICalendarApp {
    * Get current theme mode
    * @returns Current theme mode
    */
-  getTheme = (): ThemeMode => this.calendarRegistry.getTheme ()
+  public getTheme = (): ThemeMode => this.calendarRegistry.getTheme ()
 
   /**
    * Subscribe to theme changes
    * @param callback - Function to call when theme changes
    * @returns Unsubscribe function
    */
-  subscribeThemeChange = (
+  public subscribeThemeChange = (
     callback: ( theme: ThemeMode ) => void,
   ): ( () => void ) => {
     this.themeChangeListeners.add ( callback )
@@ -803,7 +737,75 @@ export class CalendarApp implements ICalendarApp {
    * Unsubscribe from theme changes
    * @param callback - Function to remove from listeners
    */
-  unsubscribeThemeChange = ( callback: ( theme: ThemeMode ) => void ): void => {
+  public unsubscribeThemeChange = ( callback: ( theme: ThemeMode ) => void ): void => {
     this.themeChangeListeners.delete ( callback )
+  }
+
+  private notify = (): void => {
+    this.listeners.forEach ( listener => listener ( this ) )
+  }
+
+  private pushToUndo = ( eventsSnapshot?: Event[] ): void => {
+    // Store a snapshot of events array (shallow copy)
+    this.undoStack.push ( {
+      type: "events_snapshot",
+      data: eventsSnapshot || [ ...this.state.events ],
+    } )
+
+    if ( this.undoStack.length > this.MAX_UNDO_STACK ) {
+      this.undoStack.shift ()
+    }
+  }
+
+  private setupStoreListeners (): void {
+    this.store.onEventChange = ( change: EventChange ) => {
+      // Sync local state
+      this.state.events = this.store.getAllEvents ()
+
+      if ( change.type === "create" ) {
+        this.callbacks.onEventCreate ?. ( change.event )
+      } else if ( change.type === "update" ) {
+        this.callbacks.onEventUpdate ?. ( change.after )
+      } else if ( change.type === "delete" ) {
+        this.callbacks.onEventDelete ?. ( change.event.id )
+      }
+
+      this.triggerRender ()
+      this.notify ()
+    }
+
+    this.store.onEventBatchChange = ( changes: EventChange[] ) => {
+      // Sync local state
+      this.state.events = this.store.getAllEvents ()
+
+      // Trigger generic batch callback
+      this.callbacks.onEventBatchChange ?. ( changes )
+
+      this.triggerRender ()
+      this.notify ()
+    }
+  }
+
+  /**
+   * Helper to check if the calendar is in any form of read-only mode.
+   * If readOnly config is present, it's considered non-editable.
+   */
+  private isInternalEditable = (): boolean => {
+    if ( this.state.readOnly === true ) return false
+    if ( typeof this.state.readOnly === "object" ) {
+      return false
+    }
+    return true
+  }
+
+  // Plugin management
+  private installPlugin = ( plugin: CalendarPlugin ): void => {
+    if ( this.state.plugins.has ( plugin.name ) ) {
+      logger.warn ( `Plugin ${plugin.name} is already installed` )
+      return
+    }
+
+    this.state.plugins.set ( plugin.name, plugin )
+    plugin.install ( this )
   }
 }

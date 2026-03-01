@@ -129,10 +129,10 @@ export const generateWeeksData = ( centralDate: Date, monthsToLoad = 3 ) => {
  * @param totalWeeks Total number of weeks to generate
  * @returns Array of weeks data
  */
-export function generateWeekRange (
+export const generateWeekRange = (
   centerDate: Date,
   totalWeeks: number,
-): WeeksData[] {
+): WeeksData[] => {
   const weeks: WeeksData[] = []
   const startOffset = Math.floor ( totalWeeks / 2 )
 

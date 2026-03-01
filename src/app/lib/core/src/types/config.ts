@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 // Configuration-related type definitions
 
 import { ViewType } from "./core"

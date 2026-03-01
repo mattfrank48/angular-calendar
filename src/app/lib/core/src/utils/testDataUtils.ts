@@ -19,7 +19,7 @@ import { Event } from "@/types"
  * Includes various overlapping events, all-day events, and edge cases
  * @returns Array of test events
  */
-export function getTestEvents (): Event[] {
+export const getTestEvents = (): Event[] => {
   // Get current time
   const now = new Date ()
   // Get current day of week (0=Sunday, 1=Monday, ...6=Saturday)

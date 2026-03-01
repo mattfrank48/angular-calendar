@@ -9,9 +9,9 @@ import {
 /**
  * Group overlapping events using BFS
  */
-export function groupOverlappingEvents (
+export const groupOverlappingEvents = (
   events: LayoutWeekEvent[],
-): LayoutWeekEvent[][] {
+): LayoutWeekEvent[][] => {
   const groups: LayoutWeekEvent[][] = []
   const processed = new Set<string> ()
 
@@ -45,9 +45,9 @@ export function groupOverlappingEvents (
 /**
  * Analyze parallel groups - group by start time
  */
-export function analyzeParallelGroups (
+export const analyzeParallelGroups = (
   sortedEvents: LayoutWeekEvent[],
-): ParallelGroup[] {
+): ParallelGroup[] => {
   const groups: ParallelGroup[] = []
   const processed = new Set<string> ()
 

@@ -2,6 +2,7 @@ import { Event } from "./event"
 
 export type CalendarSearchEvent = Event & {
   color?: string // For calendar color
+  // eslint-disable-next-line @typescript-eslint/member-ordering
   [key: string]: unknown
 }
 

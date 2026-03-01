@@ -1,4 +1,4 @@
-import { JSX, RefObject } from "preact"
+import { RefObject, TargetedEvent } from "preact"
 
 import { WeeksData } from "./calendar"
 
@@ -25,7 +25,7 @@ export interface UseVirtualMonthScrollReturn {
   }
   scrollElementRef: RefObject<HTMLDivElement>
   handleScroll: (
-    e: JSX.TargetedEvent<HTMLDivElement, globalThis.Event>,
+    e: TargetedEvent<HTMLDivElement, globalThis.Event>,
   ) => void
   scrollToDate: ( targetDate: Date, smooth?: boolean ) => void
   handlePreviousMonth: () => void
@@ -64,12 +64,13 @@ export interface VirtualWeekItem {
 }
 
 // High-performance week data cache class
+// eslint-disable-next-line custom/filename-matches-export
 export class WeekDataCache {
   private cache = new Map<string, WeeksData> ()
   private accessOrder: string[] = []
   private maxSize: number
 
-  constructor ( maxSize: number = VIRTUAL_MONTH_SCROLL_CONFIG.BUFFER_SIZE ) {
+  public constructor ( maxSize: number = VIRTUAL_MONTH_SCROLL_CONFIG.BUFFER_SIZE ) {
     this.maxSize = maxSize
   }
 
@@ -77,7 +78,7 @@ export class WeekDataCache {
     return `${date.getFullYear ()}-${date.getMonth ()}-${date.getDate ()}`
   }
 
-  get ( weekStartDate: Date ): WeeksData | undefined {
+  public get ( weekStartDate: Date ): WeeksData | undefined {
     const key = WeekDataCache.getKey ( weekStartDate )
     const data = this.cache.get ( key )
     if ( data ) {
@@ -87,7 +88,7 @@ export class WeekDataCache {
     return undefined
   }
 
-  set ( weekStartDate: Date, data: WeeksData ): void {
+  public set ( weekStartDate: Date, data: WeeksData ): void {
     const key = WeekDataCache.getKey ( weekStartDate )
 
     if ( this.cache.size >= this.maxSize ) {
@@ -101,20 +102,20 @@ export class WeekDataCache {
     this.updateAccessOrder ( key )
   }
 
+  public getSize (): number {
+    return this.cache.size
+  }
+
+  public clear (): void {
+    this.cache.clear ()
+    this.accessOrder = []
+  }
+
   private updateAccessOrder ( key: string ): void {
     const index = this.accessOrder.indexOf ( key )
     if ( index > -1 ) {
       this.accessOrder.splice ( index, 1 )
     }
     this.accessOrder.push ( key )
-  }
-
-  getSize (): number {
-    return this.cache.size
-  }
-
-  clear (): void {
-    this.cache.clear ()
-    this.accessOrder = []
   }
 }

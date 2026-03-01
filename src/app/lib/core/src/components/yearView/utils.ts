@@ -14,10 +14,10 @@ export interface YearMultiDaySegment {
 /**
  * Groups an array of days into rows based on the number of columns per row.
  */
-export function groupDaysIntoRows (
+export const groupDaysIntoRows = (
   yearDays: Date[],
   columnsPerRow: number,
-): Date[][] {
+): Date[][] => {
   const rows: Date[][] = []
   for ( let i = 0; i < yearDays.length; i += columnsPerRow ) {
     rows.push ( yearDays.slice ( i, i + columnsPerRow ) )
@@ -29,11 +29,11 @@ export function groupDaysIntoRows (
  * Analyzes events for a specific row of days and returns segments for multi-day events.
  * It also calculates the vertical layout (visualRowIndex) to prevent overlaps.
  */
-export function analyzeMultiDayEventsForRow (
+export const analyzeMultiDayEventsForRow = (
   events: Event[],
   rowDays: Date[],
   columnsPerRow: number,
-): YearMultiDaySegment[] {
+): YearMultiDaySegment[] => {
   if ( rowDays.length === 0 ) return []
 
   const rowStart = rowDays[0]

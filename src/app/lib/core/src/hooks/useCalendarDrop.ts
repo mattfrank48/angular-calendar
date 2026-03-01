@@ -27,9 +27,9 @@ export interface CalendarDropReturn {
 /**
  * Hook to handle dropping calendar from sidebar to create events
  */
-export function useCalendarDrop (
+export const useCalendarDrop = (
   options: CalendarDropOptions,
-): CalendarDropReturn {
+): CalendarDropReturn => {
   const { app, onEventCreated } = options
 
   const handleDragOver = useCallback ( ( e: DragEvent ) => {

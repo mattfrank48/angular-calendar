@@ -223,6 +223,7 @@ export interface UseDragCommonReturn {
   getTargetDateFromPosition: ( clientX: number, clientY: number ) => Date | null
 
   // Constants
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   ONE_DAY_MS: number
 }
 

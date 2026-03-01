@@ -29,11 +29,11 @@ export interface EventDialogController {
  * `tick` is passed in from useAppSubscription so dialogProps stays fresh
  * when the underlying event is edited while the dialog is open.
  */
-export function useEventDialogController (
+export const useEventDialogController = (
   app: ICalendarApp,
   effectiveEventDetailDialog: EventDetailDialogRenderer | undefined,
   tick: number,
-): EventDialogController {
+): EventDialogController => {
   const [ detailPanelEventId, setDetailPanelEventId ] = useState<string | null> (
     null,
   )
@@ -64,7 +64,6 @@ export function useEventDialogController (
 
   // tick is included so the event object stays fresh when app state changes
   // (e.g. user edits event title while dialog is open).
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const dialogProps = useMemo<DialogProps | null> ( () => {
     if ( !effectiveEventDetailDialog || !detailPanelEventId ) return null
 
@@ -83,7 +82,6 @@ export function useEventDialogController (
       onClose: handleDialogClose,
       app,
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     tick,
     detailPanelEventId,

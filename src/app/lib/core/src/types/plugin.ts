@@ -98,6 +98,7 @@ export interface DragPluginConfig {
   supportedViews: ViewType[]
 
   // Allow additional properties
+  // eslint-disable-next-line @typescript-eslint/member-ordering
   [key: string]: unknown
 }
 

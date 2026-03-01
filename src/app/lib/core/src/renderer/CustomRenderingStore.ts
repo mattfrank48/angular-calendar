@@ -14,7 +14,7 @@ export class CustomRenderingStore {
   private overrides = new Set<string> ()
   private listeners = new Set<CustomRenderingListener> ()
 
-  constructor ( initialOverrides?: string[] ) {
+  public constructor ( initialOverrides?: string[] ) {
     if ( initialOverrides && initialOverrides.length > 0 ) {
       this.overrides = new Set ( initialOverrides )
     }
@@ -24,7 +24,7 @@ export class CustomRenderingStore {
    * Register a new custom rendering placeholder.
    * Called by the ContentSlot Preact component.
    */
-  register ( rendering: CustomRendering ): void {
+  public register ( rendering: CustomRendering ): void {
     this.renderings.set ( rendering.id, rendering )
     this.notify ()
   }
@@ -32,7 +32,7 @@ export class CustomRenderingStore {
   /**
    * Unregister a custom rendering placeholder.
    */
-  unregister ( id: string ): void {
+  public unregister ( id: string ): void {
     if ( this.renderings.delete ( id ) ) {
       this.notify ()
     }
@@ -42,7 +42,7 @@ export class CustomRenderingStore {
    * Set the list of generator names that have custom overrides.
    * Called by framework adapters (React/etc.)
    */
-  setOverrides ( names: string[] ): void {
+  public setOverrides ( names: string[] ): void {
     this.overrides = new Set ( names )
     this.notify ()
   }
@@ -50,7 +50,7 @@ export class CustomRenderingStore {
   /**
    * Check if a specific generator has a custom override.
    */
-  isOverridden ( generatorName: string ): boolean {
+  public isOverridden ( generatorName: string ): boolean {
     return this.overrides.has ( generatorName )
   }
 
@@ -58,7 +58,7 @@ export class CustomRenderingStore {
    * Subscribe to updates of the renderings map.
    * Called by the framework adapter (React/etc.)
    */
-  subscribe ( listener: CustomRenderingListener ): () => void {
+  public subscribe ( listener: CustomRenderingListener ): () => void {
     this.listeners.add ( listener )
     // Initial sync
     listener ( this.renderings )

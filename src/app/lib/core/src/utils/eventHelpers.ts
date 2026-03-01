@@ -75,10 +75,10 @@ export interface CreateTimezoneEventParams {
 /**
  * Convert input to Temporal type for local events
  */
-function normalizeLocalTime (
+const normalizeLocalTime = (
   time: Date | Temporal.PlainDate | Temporal.PlainDateTime,
   allDay: boolean = false,
-): Temporal.PlainDate | Temporal.PlainDateTime {
+): Temporal.PlainDate | Temporal.PlainDateTime => {
   // Already Temporal type - return as is
   if (
     time instanceof Temporal.PlainDate ||
@@ -98,10 +98,10 @@ function normalizeLocalTime (
 /**
  * Convert input to ZonedDateTime
  */
-function normalizeZonedTime (
+const normalizeZonedTime = (
   time: Date | Temporal.ZonedDateTime,
   timeZone: string,
-): Temporal.ZonedDateTime {
+): Temporal.ZonedDateTime => {
   // Already ZonedDateTime - return as is
   if ( time instanceof Temporal.ZonedDateTime ) {
     return time
@@ -155,7 +155,7 @@ function normalizeZonedTime (
  *   allDay: true,
  * });
  */
-export function createEvent ( params: CreateEventParams ): Event {
+export const createEvent = ( params: CreateEventParams ): Event => {
   const start = normalizeLocalTime ( params.start, params.allDay )
   const end = normalizeLocalTime ( params.end, params.allDay )
 
@@ -207,7 +207,7 @@ export function createEvent ( params: CreateEventParams ): Event {
  *   timeZone: 'Asia/Shanghai', // Only used if start/end are Date objects
  * });
  */
-export function createTimezoneEvent ( params: CreateTimezoneEventParams ): Event {
+export const createTimezoneEvent = ( params: CreateTimezoneEventParams ): Event => {
   const start = normalizeZonedTime ( params.start, params.timeZone )
   const end = normalizeZonedTime ( params.end, params.timeZone )
 
@@ -230,16 +230,16 @@ export function createTimezoneEvent ( params: CreateTimezoneEventParams ): Event
 /**
  * Create multiple local events at once
  */
-export function createEvents ( paramsArray: CreateEventParams[] ): Event[] {
+export const createEvents = ( paramsArray: CreateEventParams[] ): Event[] => {
   return paramsArray.map ( params => createEvent ( params ) )
 }
 
 /**
  * Create multiple timezone-aware events at once
  */
-export function createTimezoneEvents (
+export const createTimezoneEvents = (
   paramsArray: CreateTimezoneEventParams[],
-): Event[] {
+): Event[] => {
   return paramsArray.map ( params => createTimezoneEvent ( params ) )
 }
 
@@ -250,7 +250,7 @@ export function createTimezoneEvents (
 /**
  * Quick create all-day event
  */
-export function createAllDayEvent (
+export const createAllDayEvent = (
   id: string,
   title: string,
   date: Date,
@@ -258,7 +258,7 @@ export function createAllDayEvent (
     CreateEventParams,
     "id" | "title" | "start" | "end" | "allDay"
   >,
-): Event {
+): Event => {
   return createEvent ( {
     id,
     title,
@@ -272,13 +272,13 @@ export function createAllDayEvent (
 /**
  * Quick create timed event
  */
-export function createTimedEvent (
+export const createTimedEvent = (
   id: string,
   title: string,
   start: Date,
   end: Date,
   options?: Omit<CreateEventParams, "id" | "title" | "start" | "end">,
-): Event {
+): Event => {
   return createEvent ( {
     id,
     title,
@@ -296,7 +296,7 @@ export function createTimedEvent (
  * Convert legacy Date-based event to Temporal-based event
  * @deprecated Use createEvent() directly with Date objects instead
  */
-export function convertDateEvent (
+export const convertDateEvent = (
   id: string,
   title: string,
   startDate: Date,
@@ -307,7 +307,7 @@ export function convertDateEvent (
     calendarId?: string
     meta?: Record<string, unknown>
   },
-): Event {
+): Event => {
   return createEvent ( {
     id,
     title,
@@ -322,7 +322,7 @@ export function convertDateEvent (
  * Convert legacy Date-based event to timezone-aware event
  * @deprecated Use createTimezoneEvent() directly with Date objects instead
  */
-export function convertDateEventWithTimeZone (
+export const convertDateEventWithTimeZone = (
   id: string,
   title: string,
   startDate: Date,
@@ -333,7 +333,7 @@ export function convertDateEventWithTimeZone (
     calendarId?: string
     meta?: Record<string, unknown>
   },
-): Event {
+): Event => {
   return createTimezoneEvent ( {
     id,
     title,

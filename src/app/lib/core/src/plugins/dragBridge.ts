@@ -7,7 +7,7 @@ type DragForViewFn = (
 
 let impl: DragForViewFn | null = null
 
-export function registerDragImplementation ( fn: DragForViewFn ) {
+export const registerDragImplementation = ( fn: DragForViewFn ) => {
   impl = fn
 }
 
@@ -33,10 +33,10 @@ const NO_OP: DragHookReturn = {
   isDragging: false,
 }
 
-export function useDragForView (
+export const useDragForView = (
   app: ICalendarApp,
   options: DragHookOptions,
-): DragHookReturn {
+): DragHookReturn => {
   if ( impl ) return impl ( app, options )
   return NO_OP
 }

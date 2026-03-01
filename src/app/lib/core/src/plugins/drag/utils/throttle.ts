@@ -2,10 +2,10 @@
  * Creates a throttled function that only invokes the provided function at most once
  * per every wait milliseconds.
  */
-export function throttle<T extends ( ...args: unknown[] ) => unknown> (
+export const throttle = <T extends ( ...args: unknown[] ) => unknown> (
   func: T,
   wait: number,
-): T & { cancel: () => void } {
+): T & { cancel: () => void } => {
   let timeout: ReturnType<typeof setTimeout> | null = null
   let previous = 0
 

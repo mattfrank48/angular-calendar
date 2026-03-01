@@ -19,10 +19,10 @@ import {
  * @param options - Import options
  * @returns Result object containing success flag, events, and errors
  */
-export function parseICS (
+export const parseICS = (
   icsContent: string,
   options: ICSImportOptions = {},
-): ICSImportResult {
+): ICSImportResult => {
   const result: ICSImportResult = {
     success: false,
     events: [],

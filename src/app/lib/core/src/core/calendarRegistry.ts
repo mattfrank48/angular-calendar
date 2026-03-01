@@ -187,7 +187,7 @@ export class CalendarRegistry {
   private defaultCalendarId: string
   private currentTheme: ThemeMode
 
-  constructor (
+  public constructor (
     customCalendars?: CalendarType[],
     defaultCalendarId?: string,
     theme: ThemeMode = "light",
@@ -217,221 +217,9 @@ export class CalendarRegistry {
   }
 
   /**
-   * Register a new calendar type
-   */
-  register ( calendar: CalendarType ): void {
-    this.calendars.set ( calendar.id, calendar )
-  }
-
-  /**
-   * Unregister a calendar type
-   */
-  unregister ( calendarId: string ): boolean {
-    return this.calendars.delete ( calendarId )
-  }
-
-  /**
-   * Get a calendar type by ID
-   */
-  get ( calendarId: string ): CalendarType | undefined {
-    return this.calendars.get ( calendarId )
-  }
-
-  /**
-   * Get all calendar types
-   */
-  getAll (): CalendarType[] {
-    return Array.from ( this.calendars.values () )
-  }
-
-  /**
-   * Get visible calendar types
-   */
-  getVisible (): CalendarType[] {
-    return this.getAll ().filter ( cal => cal.isVisible !== false )
-  }
-
-  /**
-   * Check if a calendar exists
-   */
-  has ( calendarId: string ): boolean {
-    return this.calendars.has ( calendarId )
-  }
-
-  /**
-   * Reorder calendars
-   * @param fromIndex - Source index
-   * @param toIndex - Destination index
-   */
-  reorder ( fromIndex: number, toIndex: number ): void {
-    const entries = Array.from ( this.calendars.entries () )
-    if (
-      fromIndex < 0 ||
-      fromIndex >= entries.length ||
-      toIndex < 0 ||
-      toIndex >= entries.length
-    ) {
-      return
-    }
-
-    const [ removed ] = entries.splice ( fromIndex, 1 )
-    entries.splice ( toIndex, 0, removed )
-
-    this.calendars.clear ()
-    entries.forEach ( ( [ key, value ] ) => {
-      this.calendars.set ( key, value )
-    } )
-  }
-
-  /**
-   * Update visibility of a specific calendar type
-   */
-  setVisibility ( calendarId: string, visible: boolean ): void {
-    const calendar = this.calendars.get ( calendarId )
-    if ( !calendar ) return
-
-    this.calendars.set ( calendarId, {
-      ...calendar,
-      isVisible: visible,
-    } )
-  }
-
-  /**
-   * Update visibility for all calendar types
-   */
-  setAllVisibility ( visible: boolean ): void {
-    this.calendars.forEach ( ( calendar, id ) => {
-      this.calendars.set ( id, {
-        ...calendar,
-        isVisible: visible,
-      } )
-    } )
-  }
-
-  /**
-   * Update calendar properties
-   */
-  updateCalendar ( calendarId: string, updates: Partial<CalendarType> ): void {
-    const calendar = this.calendars.get ( calendarId )
-    if ( !calendar ) return
-
-    this.calendars.set ( calendarId, {
-      ...calendar,
-      ...updates,
-    } )
-  }
-
-  /**
-   * Set the default calendar ID
-   */
-  setDefaultCalendar ( calendarId: string ): void {
-    if ( !this.has ( calendarId ) ) {
-      throw new Error ( `Calendar type '${calendarId}' does not exist` )
-    }
-    this.defaultCalendarId = calendarId
-  }
-
-  /**
-   * Get the default calendar ID
-   */
-  getDefaultCalendarId (): string {
-    return this.defaultCalendarId
-  }
-
-  /**
-   * Get the default calendar type
-   */
-  getDefaultCalendar (): CalendarType {
-    const calendar = this.get ( this.defaultCalendarId )
-    if ( !calendar ) {
-      // Fallback to first available calendar
-      return this.getAll ()[0]
-    }
-    return calendar
-  }
-
-  /**
-   * Set the current theme
-   */
-  setTheme ( theme: ThemeMode ): void {
-    this.currentTheme = theme
-  }
-
-  /**
-   * Get the current theme
-   */
-  getTheme (): ThemeMode {
-    return this.currentTheme
-  }
-
-  /**
-   * Resolve colors for a calendar ID based on current theme
-   */
-  resolveColors ( calendarId?: string, theme?: ThemeMode ): CalendarColors {
-    const activeTheme = theme || this.currentTheme
-    const isDark = CalendarRegistry.isDarkTheme ( activeTheme )
-
-    // Try to get the specified calendar
-    let calendar: CalendarType | undefined
-    if ( calendarId ) {
-      calendar = this.get ( calendarId )
-    }
-
-    // Fall back to default calendar if not found
-    if ( !calendar ) {
-      calendar = this.getDefaultCalendar ( )
-    }
-
-    // Return appropriate colors based on theme
-    if ( isDark && calendar.darkColors ) {
-      return calendar.darkColors
-    }
-    return calendar.colors
-  }
-
-  /**
-   * Get selected background color
-   */
-  getSelectedBgColor ( calendarId?: string, theme?: ThemeMode ): string {
-    const colors = this.resolveColors ( calendarId, theme )
-    return colors.eventSelectedColor
-  }
-
-  /**
-   * Get line color
-   */
-  getLineColor ( calendarId?: string, theme?: ThemeMode ): string {
-    const colors = this.resolveColors ( calendarId, theme )
-    return colors.lineColor
-  }
-
-  /**
-   * Get text color
-   */
-  getTextColor ( calendarId?: string, theme?: ThemeMode ): string {
-    const colors = this.resolveColors ( calendarId, theme )
-    return colors.textColor
-  }
-
-  /**
-   * Check if the current theme is dark
-   */
-  private static isDarkTheme ( theme: ThemeMode ): boolean {
-    if ( theme === "dark" ) return true
-    if ( theme === "light" ) return false
-
-    // For 'auto' mode, check system preference
-    if ( typeof window !== "undefined" && window.matchMedia ) {
-      return window.matchMedia ( "(prefers-color-scheme: dark)" ).matches
-    }
-
-    return false
-  }
-
-  /**
    * Validate calendar configuration
    */
-  static validate ( calendar: Partial<CalendarType> ): string[] {
+  public static validate ( calendar: Partial<CalendarType> ): string[] {
     const errors: string[] = []
 
     if ( !calendar.id ) {
@@ -461,6 +249,218 @@ export class CalendarRegistry {
 
     return errors
   }
+
+  /**
+   * Check if the current theme is dark
+   */
+  private static isDarkTheme ( theme: ThemeMode ): boolean {
+    if ( theme === "dark" ) return true
+    if ( theme === "light" ) return false
+
+    // For 'auto' mode, check system preference
+    if ( typeof window !== "undefined" && window.matchMedia ) {
+      return window.matchMedia ( "(prefers-color-scheme: dark)" ).matches
+    }
+
+    return false
+  }
+
+  /**
+   * Register a new calendar type
+   */
+  public register ( calendar: CalendarType ): void {
+    this.calendars.set ( calendar.id, calendar )
+  }
+
+  /**
+   * Unregister a calendar type
+   */
+  public unregister ( calendarId: string ): boolean {
+    return this.calendars.delete ( calendarId )
+  }
+
+  /**
+   * Get a calendar type by ID
+   */
+  public get ( calendarId: string ): CalendarType | undefined {
+    return this.calendars.get ( calendarId )
+  }
+
+  /**
+   * Get all calendar types
+   */
+  public getAll (): CalendarType[] {
+    return Array.from ( this.calendars.values () )
+  }
+
+  /**
+   * Get visible calendar types
+   */
+  public getVisible (): CalendarType[] {
+    return this.getAll ().filter ( cal => cal.isVisible !== false )
+  }
+
+  /**
+   * Check if a calendar exists
+   */
+  public has ( calendarId: string ): boolean {
+    return this.calendars.has ( calendarId )
+  }
+
+  /**
+   * Reorder calendars
+   * @param fromIndex - Source index
+   * @param toIndex - Destination index
+   */
+  public reorder ( fromIndex: number, toIndex: number ): void {
+    const entries = Array.from ( this.calendars.entries () )
+    if (
+      fromIndex < 0 ||
+      fromIndex >= entries.length ||
+      toIndex < 0 ||
+      toIndex >= entries.length
+    ) {
+      return
+    }
+
+    const [ removed ] = entries.splice ( fromIndex, 1 )
+    entries.splice ( toIndex, 0, removed )
+
+    this.calendars.clear ()
+    entries.forEach ( ( [ key, value ] ) => {
+      this.calendars.set ( key, value )
+    } )
+  }
+
+  /**
+   * Update visibility of a specific calendar type
+   */
+  public setVisibility ( calendarId: string, visible: boolean ): void {
+    const calendar = this.calendars.get ( calendarId )
+    if ( !calendar ) return
+
+    this.calendars.set ( calendarId, {
+      ...calendar,
+      isVisible: visible,
+    } )
+  }
+
+  /**
+   * Update visibility for all calendar types
+   */
+  public setAllVisibility ( visible: boolean ): void {
+    this.calendars.forEach ( ( calendar, id ) => {
+      this.calendars.set ( id, {
+        ...calendar,
+        isVisible: visible,
+      } )
+    } )
+  }
+
+  /**
+   * Update calendar properties
+   */
+  public updateCalendar ( calendarId: string, updates: Partial<CalendarType> ): void {
+    const calendar = this.calendars.get ( calendarId )
+    if ( !calendar ) return
+
+    this.calendars.set ( calendarId, {
+      ...calendar,
+      ...updates,
+    } )
+  }
+
+  /**
+   * Set the default calendar ID
+   */
+  public setDefaultCalendar ( calendarId: string ): void {
+    if ( !this.has ( calendarId ) ) {
+      throw new Error ( `Calendar type '${calendarId}' does not exist` )
+    }
+    this.defaultCalendarId = calendarId
+  }
+
+  /**
+   * Get the default calendar ID
+   */
+  public getDefaultCalendarId (): string {
+    return this.defaultCalendarId
+  }
+
+  /**
+   * Get the default calendar type
+   */
+  public getDefaultCalendar (): CalendarType {
+    const calendar = this.get ( this.defaultCalendarId )
+    if ( !calendar ) {
+      // Fallback to first available calendar
+      return this.getAll ()[0]
+    }
+    return calendar
+  }
+
+  /**
+   * Set the current theme
+   */
+  public setTheme ( theme: ThemeMode ): void {
+    this.currentTheme = theme
+  }
+
+  /**
+   * Get the current theme
+   */
+  public getTheme (): ThemeMode {
+    return this.currentTheme
+  }
+
+  /**
+   * Resolve colors for a calendar ID based on current theme
+   */
+  public resolveColors ( calendarId?: string, theme?: ThemeMode ): CalendarColors {
+    const activeTheme = theme || this.currentTheme
+    const isDark = CalendarRegistry.isDarkTheme ( activeTheme )
+
+    // Try to get the specified calendar
+    let calendar: CalendarType | undefined
+    if ( calendarId ) {
+      calendar = this.get ( calendarId )
+    }
+
+    // Fall back to default calendar if not found
+    if ( !calendar ) {
+      calendar = this.getDefaultCalendar ( )
+    }
+
+    // Return appropriate colors based on theme
+    if ( isDark && calendar.darkColors ) {
+      return calendar.darkColors
+    }
+    return calendar.colors
+  }
+
+  /**
+   * Get selected background color
+   */
+  public getSelectedBgColor ( calendarId?: string, theme?: ThemeMode ): string {
+    const colors = this.resolveColors ( calendarId, theme )
+    return colors.eventSelectedColor
+  }
+
+  /**
+   * Get line color
+   */
+  public getLineColor ( calendarId?: string, theme?: ThemeMode ): string {
+    const colors = this.resolveColors ( calendarId, theme )
+    return colors.lineColor
+  }
+
+  /**
+   * Get text color
+   */
+  public getTextColor ( calendarId?: string, theme?: ThemeMode ): string {
+    const colors = this.resolveColors ( calendarId, theme )
+    return colors.textColor
+  }
 }
 
 /**
@@ -475,7 +475,7 @@ let defaultRegistry = new CalendarRegistry ()
  * Used internally by helper functions for color resolution
  * @internal
  */
-export function getDefaultCalendarRegistry (): CalendarRegistry {
+export const getDefaultCalendarRegistry = (): CalendarRegistry => {
   return defaultRegistry
 }
 
@@ -484,7 +484,7 @@ export function getDefaultCalendarRegistry (): CalendarRegistry {
  * Used internally by CalendarApp to sync its registry with the global default
  * @internal
  */
-export function setDefaultCalendarRegistry ( registry: CalendarRegistry ): void {
+export const setDefaultCalendarRegistry = ( registry: CalendarRegistry ): void => {
   defaultRegistry = registry
 }
 
@@ -492,10 +492,10 @@ export function setDefaultCalendarRegistry ( registry: CalendarRegistry ): void 
  * Get calendar colors for a specific hex color
  * Tries to match with default calendar types, otherwise generates generic colors
  */
-export function getCalendarColorsForHex ( hex: string ): {
+export const getCalendarColorsForHex = ( hex: string ): {
   colors: CalendarColors
   darkColors?: CalendarColors
-} {
+} => {
   const match = DEFAULT_CALENDAR_TYPES.find (
     c => c.colors.lineColor.toLowerCase () === hex.toLowerCase (),
   )

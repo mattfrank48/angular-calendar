@@ -5,7 +5,7 @@ import {
 } from "@/components/eventLayout/types"
 import { canEventContain } from "@/components/eventLayout/utils"
 
-function countDescendants ( node: LayoutNode ): number {
+const countDescendants = ( node: LayoutNode ): number => {
   let count = 0
   for ( const child of node.children ) {
     count += 1 + countDescendants ( child )
@@ -13,10 +13,10 @@ function countDescendants ( node: LayoutNode ): number {
   return count
 }
 
-function calculateParentLoads (
+const calculateParentLoads = (
   groupNodes: LayoutNode[],
   allNodes: LayoutNode[],
-): Array<{ node: LayoutNode; load: number }> {
+): Array<{ node: LayoutNode; load: number }> => {
   const parentLevel = groupNodes[0]?.parent?.depth
   if ( parentLevel === undefined ) return []
 
@@ -26,24 +26,24 @@ function calculateParentLoads (
     .toSorted ( ( a, b ) => b.load - a.load )
 }
 
-function needsRebalancing (
+const needsRebalancing = (
   parentLoads: Array<{ node: LayoutNode; load: number }>,
-): boolean {
+): boolean => {
   if ( parentLoads.length < 2 ) return false
   return parentLoads[0].load - parentLoads.at ( -1 )!.load >= 2
 }
 
-function setParentChildRelation (
+const setParentChildRelation = (
   parent: LayoutWeekEvent,
   child: LayoutWeekEvent,
-): void {
+): void => {
   child.parentId = parent.id
   if ( !parent.children.includes ( child.id ) ) {
     parent.children.push ( child.id )
   }
 }
 
-function transferNode ( leafNode: LayoutNode, newParent: LayoutNode ): void {
+const transferNode = ( leafNode: LayoutNode, newParent: LayoutNode ): void => {
   if ( leafNode.parent ) {
     leafNode.parent.children = leafNode.parent.children.filter (
       c => c !== leafNode,
@@ -67,7 +67,7 @@ function transferNode ( leafNode: LayoutNode, newParent: LayoutNode ): void {
   }
 }
 
-function collectLeaves ( node: LayoutNode, leaves: LayoutNode[] ): void {
+const collectLeaves = ( node: LayoutNode, leaves: LayoutNode[] ): void => {
   if ( node.children.length === 0 ) {
     leaves.push ( node )
   } else {
@@ -75,10 +75,10 @@ function collectLeaves ( node: LayoutNode, leaves: LayoutNode[] ): void {
   }
 }
 
-function findTransferableLeaf (
+const findTransferableLeaf = (
   heavyRoot: LayoutNode,
   lightRoot: LayoutNode,
-): LayoutNode | null {
+): LayoutNode | null => {
   const leaves: LayoutNode[] = []
   collectLeaves ( heavyRoot, leaves )
   return (
@@ -88,9 +88,9 @@ function findTransferableLeaf (
   )
 }
 
-function rebalanceGroupLoad (
+const rebalanceGroupLoad = (
   parentLoads: Array<{ node: LayoutNode; load: number }>,
-): void {
+): void => {
   const maxIterations = 5
   let iteration = 0
 
@@ -113,10 +113,10 @@ function rebalanceGroupLoad (
   }
 }
 
-export function rebalanceLoadByGroups (
+export const rebalanceLoadByGroups = (
   parallelGroups: ParallelGroup[],
   allNodes: LayoutNode[],
-): void {
+): void => {
   for ( let i = parallelGroups.length - 1; i >= 1; i-- ) {
     const groupNodes = parallelGroups[i].events.map (
       e => allNodes.find ( node => node.event.id === e.id )!,

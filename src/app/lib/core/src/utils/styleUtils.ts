@@ -24,10 +24,10 @@ const DEFAULT_WIDTH = "240px"
  * normalizeCssWidth(undefined) // '240px'
  * ```
  */
-export function normalizeCssWidth (
+export const normalizeCssWidth = (
   width?: number | string,
   defaultWidth: string = DEFAULT_WIDTH,
-): string {
+): string => {
   if ( typeof width === "number" ) {
     return `${width}px`
   }
@@ -47,7 +47,7 @@ export function normalizeCssWidth (
  *
  * @returns true if the calendar scrollbar takes space, false otherwise
  */
-export function scrollbarTakesSpace (): boolean {
+export const scrollbarTakesSpace = (): boolean => {
   if ( typeof document === "undefined" ) return false
 
   // Override host-app ::-webkit-scrollbar { display: none } so measurement is accurate

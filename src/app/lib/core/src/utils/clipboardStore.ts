@@ -3,19 +3,19 @@ import { Event } from "@/types"
 class ClipboardStore {
   private lastCopiedEvent: Event | null = null
 
-  setEvent ( event: Event ) {
+  public setEvent ( event: Event ) {
     this.lastCopiedEvent = event
   }
 
-  getEvent (): Event | null {
+  public getEvent (): Event | null {
     return this.lastCopiedEvent
   }
 
-  hasEvent (): boolean {
+  public hasEvent (): boolean {
     return this.lastCopiedEvent !== null
   }
 
-  clear () {
+  public clear () {
     this.lastCopiedEvent = null
   }
 }

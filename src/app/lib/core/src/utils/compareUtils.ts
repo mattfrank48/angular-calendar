@@ -2,7 +2,7 @@
  * Performs a deep comparison between two values to determine if they are equivalent.
  * Supports primitives, Date objects, and plain objects/arrays.
  */
-export function isDeepEqual ( a: unknown, b: unknown ): boolean {
+export const isDeepEqual = ( a: unknown, b: unknown ): boolean => {
   if ( a === b ) return true
 
   if ( a instanceof Date && b instanceof Date ) {

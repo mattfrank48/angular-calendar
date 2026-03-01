@@ -14,7 +14,7 @@ export interface AppSubscriptionResult {
  * The two setState calls inside a single subscriber let React/Preact
  * batch them into one render automatically.
  */
-export function useAppSubscription ( app: ICalendarApp ): AppSubscriptionResult {
+export const useAppSubscription = ( app: ICalendarApp ): AppSubscriptionResult => {
   const [ tick, setTick ] = useState ( 0 )
   const [ selectedEventId, setSelectedEventId ] = useState<string | null> ( null )
 

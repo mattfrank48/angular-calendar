@@ -14,10 +14,10 @@ import {
 
 import { rebalanceLoadByGroups } from "./rebalance"
 
-function checkLoadBalanceParallel (
+const checkLoadBalanceParallel = (
   parentGroup: ParallelGroup,
   childGroup: ParallelGroup,
-): boolean {
+): boolean => {
   for ( const parentEvent of parentGroup.events ) {
     for ( const childEvent of childGroup.events ) {
       if ( !eventsOverlap ( parentEvent, childEvent ) ) continue
@@ -31,10 +31,10 @@ function checkLoadBalanceParallel (
   return false
 }
 
-export function canGroupContain (
+export const canGroupContain = (
   parentGroup: ParallelGroup,
   childGroup: ParallelGroup,
-): boolean {
+): boolean => {
   const timeDiff = childGroup.startHour - parentGroup.startHour
 
   // Check load balance parallel
@@ -57,11 +57,11 @@ export function canGroupContain (
   return false
 }
 
-export function findBestParentInGroup (
+export const findBestParentInGroup = (
   childEvent: LayoutWeekEvent,
   parentGroup: ParallelGroup,
   allEvents: LayoutWeekEvent[],
-): LayoutWeekEvent | null {
+): LayoutWeekEvent | null => {
   const validParents = parentGroup.events.filter ( p =>
     canEventContain ( p, childEvent ),
   )
@@ -90,11 +90,11 @@ export function findBestParentInGroup (
   return parentLoads[0].parent
 }
 
-function findParentWithMinLoad (
+const findParentWithMinLoad = (
   currentChild: LayoutWeekEvent,
   validParents: LayoutWeekEvent[],
   children: LayoutWeekEvent[],
-): LayoutWeekEvent | null {
+): LayoutWeekEvent | null => {
   if ( validParents.length === 0 ) return null
 
   let minLoad = Infinity
@@ -125,18 +125,18 @@ function findParentWithMinLoad (
   return isLongest ? candidates[0] : candidates.at ( -1 ) || null
 }
 
-function setRelation ( parent: LayoutWeekEvent, child: LayoutWeekEvent ) {
+const setRelation = ( parent: LayoutWeekEvent, child: LayoutWeekEvent ) => {
   child.parentId = parent.id
   if ( !parent.children.includes ( child.id ) ) {
     parent.children.push ( child.id )
   }
 }
 
-export function optimizeChildAssignments (
+export const optimizeChildAssignments = (
   childEvents: LayoutWeekEvent[],
   parentGroup: ParallelGroup,
   allEvents: LayoutWeekEvent[],
-): Array<{ child: LayoutWeekEvent; parent: LayoutWeekEvent }> {
+): Array<{ child: LayoutWeekEvent; parent: LayoutWeekEvent }> => {
   const assignments: Array<{
     child: LayoutWeekEvent
     parent: LayoutWeekEvent
@@ -208,10 +208,10 @@ export function optimizeChildAssignments (
 /**
  * Build nested structure for overlapping events
  */
-export function buildNestedStructure (
+export const buildNestedStructure = (
   parallelGroups: ParallelGroup[],
   allEvents: LayoutWeekEvent[],
-): LayoutNode[] {
+): LayoutNode[] => {
   const allNodes: LayoutNode[] = []
   const nodeMap = new Map<string, LayoutNode> ()
 

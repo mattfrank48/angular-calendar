@@ -3,7 +3,7 @@ import { extractHourFromDate, getEventEndHour } from "@/utils/helpers"
 
 import { LayoutWeekEvent } from "./types"
 
-export function toLayoutEvent ( event: Event ): LayoutWeekEvent {
+export const toLayoutEvent = ( event: Event ): LayoutWeekEvent => {
   return {
     ...event,
     parentId: undefined,
@@ -14,21 +14,21 @@ export function toLayoutEvent ( event: Event ): LayoutWeekEvent {
   }
 }
 
-export function getStartHour ( event: LayoutWeekEvent ): number {
+export const getStartHour = ( event: LayoutWeekEvent ): number => {
   return event._startHour ?? extractHourFromDate ( event.start )
 }
 
-export function getEndHour ( event: LayoutWeekEvent ): number {
+export const getEndHour = ( event: LayoutWeekEvent ): number => {
   return event._endHour ?? getEventEndHour ( event )
 }
 
 /**
  * Check if two events overlap
  */
-export function eventsOverlap (
+export const eventsOverlap = (
   event1: LayoutWeekEvent,
   event2: LayoutWeekEvent,
-): boolean {
+): boolean => {
   if ( event1.day !== event2.day || event1.allDay || event2.allDay ) return false
   return (
     getStartHour ( event1 ) < getEndHour ( event2 ) &&
@@ -41,10 +41,10 @@ export function eventsOverlap (
  * @param extendedEvent Potential extended event
  * @param otherEvent Other event
  */
-export function isExtendedEventParallel (
+export const isExtendedEventParallel = (
   extendedEvent: LayoutWeekEvent,
   otherEvent: LayoutWeekEvent,
-): boolean {
+): boolean => {
   const duration = getEndHour ( extendedEvent ) - getStartHour ( extendedEvent )
 
   // Only consider as extended event if duration exceeds 1.25 hours
@@ -63,10 +63,10 @@ export function isExtendedEventParallel (
 /**
  * Check parallel relationship of extended events
  */
-export function checkExtendedEventParallel (
+export const checkExtendedEventParallel = (
   event1: LayoutWeekEvent,
   event2: LayoutWeekEvent,
-): boolean {
+): boolean => {
   // Ensure events overlap
   if ( !eventsOverlap ( event1, event2 ) ) return false
 
@@ -88,11 +88,11 @@ import { LAYOUT_CONFIG } from "./constants"
 /**
  * Check if two events should be displayed in parallel
  */
-export function shouldBeParallel (
+export const shouldBeParallel = (
   event1: LayoutWeekEvent,
   event2: LayoutWeekEvent,
   config: typeof LAYOUT_CONFIG = LAYOUT_CONFIG,
-): boolean {
+): boolean => {
   if ( !eventsOverlap ( event1, event2 ) ) return false
 
   const startTimeDiff = Math.abs ( getStartHour ( event1 ) - getStartHour ( event2 ) )
@@ -117,10 +117,10 @@ export function shouldBeParallel (
 /**
  * Check if parent event can contain child event
  */
-export function canEventContain (
+export const canEventContain = (
   parent: LayoutWeekEvent,
   child: LayoutWeekEvent,
-): boolean {
+): boolean => {
   const strictContain =
     getStartHour ( parent ) <= getStartHour ( child ) &&
     getEndHour ( parent ) >= getEndHour ( child )

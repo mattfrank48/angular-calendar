@@ -8,7 +8,7 @@ export interface ResponsiveResult {
  * Tracks viewport width and returns whether the current breakpoint is mobile
  * (≤768 px).  Subscribes to window resize to stay current.
  */
-export function useResponsive (): ResponsiveResult {
+export const useResponsive = (): ResponsiveResult => {
   const [ isMobile, setIsMobile ] = useState ( false )
 
   useEffect ( () => {

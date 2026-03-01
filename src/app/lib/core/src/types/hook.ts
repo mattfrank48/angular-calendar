@@ -19,7 +19,7 @@ export interface UseVirtualScrollProps {
   onCurrentYearChange?: ( year: number ) => void
 }
 
-import { JSX, RefObject } from "preact"
+import { RefObject, TargetedEvent } from "preact"
 
 /**
  * Virtual scroll item interface (YearView)
@@ -39,7 +39,7 @@ export interface UseVirtualScrollReturn {
   }
   scrollElementRef: RefObject<HTMLDivElement>
   handleScroll: (
-    e: JSX.TargetedEvent<HTMLDivElement, globalThis.Event>,
+    e: TargetedEvent<HTMLDivElement, globalThis.Event>,
   ) => void
   scrollToYear: ( targetYear: number, smooth?: boolean ) => void
   handlePreviousYear: () => void

@@ -1442,6 +1442,7 @@ export const useDragHandlers = (
         // Check if it's a segment of multi-day event
         const segmentInfo = (
           event as unknown as {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             _segmentInfo?: {
               dayIndex: number
               startHour: number

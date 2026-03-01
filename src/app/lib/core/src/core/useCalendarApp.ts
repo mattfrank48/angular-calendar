@@ -18,9 +18,9 @@ import { isDeepEqual } from "@/utils/helpers"
 
 import { CalendarApp } from "./CalendarApp"
 
-export function useCalendarApp (
+export const useCalendarApp = (
   config: CalendarAppConfig,
-): UseCalendarAppReturn {
+): UseCalendarAppReturn => {
   // Create calendar application instance
   const app = useMemo ( () => new CalendarApp ( config ), [] )
 

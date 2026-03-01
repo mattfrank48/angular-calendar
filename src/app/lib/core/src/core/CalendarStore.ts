@@ -13,6 +13,10 @@ import { Event } from "@/types/event"
  * Note: Business logic (validation, overlaps, etc.) belongs in plugins, not here.
  */
 export class CalendarStore {
+  // Callbacks
+  public onEventChange?: ( change: EventChange ) => void | Promise<void>
+  public onEventBatchChange?: ( changes: EventChange[] ) => void | Promise<void>
+
   // In-memory storage
   private events = new Map<string, Event> ()
 
@@ -20,12 +24,73 @@ export class CalendarStore {
   private isInTransaction = false
   private pendingChanges: EventChange[] = []
 
-  // Callbacks
-  public onEventChange?: ( change: EventChange ) => void | Promise<void>
-  public onEventBatchChange?: ( changes: EventChange[] ) => void | Promise<void>
-
-  constructor ( initialEvents: Event[] = [] ) {
+  public constructor ( initialEvents: Event[] = [] ) {
     initialEvents.forEach ( e => this.events.set ( e.id, e ) )
+  }
+
+  /**
+   * Pure function to normalize a list of changes.
+   * Merges multiple changes for the same ID into a single effective change.
+   */
+  private static normalizeChanges ( changes: EventChange[] ): EventChange[] {
+    // Map to track the net effect for each event ID
+    const changeMap = new Map<string, EventChange> ()
+
+    for ( const change of changes ) {
+      const id =
+        change.type === "delete"
+          ? change.event.id
+          : change.type === "update"
+            ? change.after.id
+            : change.event.id
+
+      const prev = changeMap.get ( id )
+
+      if ( !prev ) {
+        changeMap.set ( id, change )
+        continue
+      }
+
+      // Merge logic based on the type of the previous change
+      if ( prev.type === "create" ) {
+        // PREV: Create(A)
+        if ( change.type === "update" ) {
+          // + CURR: Update(A->B)
+          // = Create(B)
+          changeMap.set ( id, { type: "create", event: change.after } )
+        } else if ( change.type === "delete" ) {
+          // + CURR: Delete(A)
+          // = Cancel out
+          changeMap.delete ( id )
+        }
+      } else if ( prev.type === "update" ) {
+        // PREV: Update(A->B)
+        if ( change.type === "update" ) {
+          // + CURR: Update(B->C)
+          // = Update(A->C)
+          changeMap.set ( id, {
+            type: "update",
+            before: prev.before,
+            after: change.after,
+          } )
+        } else if ( change.type === "delete" ) {
+          // + CURR: Delete(B)
+          // = Delete(A)  (The original state A is now gone)
+          changeMap.set ( id, { type: "delete", event: prev.before } )
+        }
+      } else if ( prev.type === "delete" && change.type === "create" ) {
+        // PREV: Delete(A)
+        // + CURR: Create(B) (where B.id === A.id)
+        // = Update(A->B)
+        changeMap.set ( id, {
+          type: "update",
+          before: prev.event,
+          after: change.event,
+        } )
+      }
+    }
+
+    return Array.from ( changeMap.values () )
   }
 
   // Transaction Management
@@ -113,70 +178,5 @@ export class CalendarStore {
     } else {
       this.onEventChange ?. ( change )
     }
-  }
-
-  /**
-   * Pure function to normalize a list of changes.
-   * Merges multiple changes for the same ID into a single effective change.
-   */
-  private static normalizeChanges ( changes: EventChange[] ): EventChange[] {
-    // Map to track the net effect for each event ID
-    const changeMap = new Map<string, EventChange> ()
-
-    for ( const change of changes ) {
-      const id =
-        change.type === "delete"
-          ? change.event.id
-          : change.type === "update"
-            ? change.after.id
-            : change.event.id
-
-      const prev = changeMap.get ( id )
-
-      if ( !prev ) {
-        changeMap.set ( id, change )
-        continue
-      }
-
-      // Merge logic based on the type of the previous change
-      if ( prev.type === "create" ) {
-        // PREV: Create(A)
-        if ( change.type === "update" ) {
-          // + CURR: Update(A->B)
-          // = Create(B)
-          changeMap.set ( id, { type: "create", event: change.after } )
-        } else if ( change.type === "delete" ) {
-          // + CURR: Delete(A)
-          // = Cancel out
-          changeMap.delete ( id )
-        }
-      } else if ( prev.type === "update" ) {
-        // PREV: Update(A->B)
-        if ( change.type === "update" ) {
-          // + CURR: Update(B->C)
-          // = Update(A->C)
-          changeMap.set ( id, {
-            type: "update",
-            before: prev.before,
-            after: change.after,
-          } )
-        } else if ( change.type === "delete" ) {
-          // + CURR: Delete(B)
-          // = Delete(A)  (The original state A is now gone)
-          changeMap.set ( id, { type: "delete", event: prev.before } )
-        }
-      } else if ( prev.type === "delete" && change.type === "create" ) {
-        // PREV: Delete(A)
-        // + CURR: Create(B) (where B.id === A.id)
-        // = Update(A->B)
-        changeMap.set ( id, {
-          type: "update",
-          before: prev.event,
-          after: change.event,
-        } )
-      }
-    }
-
-    return Array.from ( changeMap.values () )
   }
 }

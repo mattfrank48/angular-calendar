@@ -56,6 +56,7 @@ export interface ThemeColors {
   background?: string
   text?: string
   border?: string
+  // eslint-disable-next-line @typescript-eslint/member-ordering
   [key: string]: string | undefined
 }
 

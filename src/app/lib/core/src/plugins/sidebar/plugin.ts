@@ -19,7 +19,7 @@ import {
   normalizeCssWidth,
   generateUniKey
 } from "@/utils"
-import { getCalendarColorsForHex } from "@/core/calendarRegistry";
+import { getCalendarColorsForHex } from "@/core/calendarRegistry"
 import { h } from "preact"
 import { useState, useCallback, useMemo, useEffect } from "preact/hooks"
 
@@ -68,12 +68,13 @@ export interface SidebarPluginConfig {
     onClose: () => void,
   ) => TNode
   renderCreateCalendarDialog?: ( props: CreateCalendarDialogProps ) => TNode
+  // eslint-disable-next-line @typescript-eslint/member-ordering
   [key: string]: unknown
 }
 
-export function createSidebarPlugin (
+export const createSidebarPlugin = (
   config: SidebarPluginConfig = {},
-): CalendarPlugin {
+): CalendarPlugin => {
   return {
     name: "sidebar",
     config,

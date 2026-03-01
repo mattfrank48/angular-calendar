@@ -15,7 +15,7 @@ type SidebarBridgeFn = ( app: ICalendarApp ) => SidebarBridgeReturn
 
 let impl: SidebarBridgeFn | null = null
 
-export function registerSidebarImplementation ( fn: SidebarBridgeFn ) {
+export const registerSidebarImplementation = ( fn: SidebarBridgeFn ) => {
   impl = fn
 }
 
@@ -32,7 +32,7 @@ const NO_OP: SidebarBridgeReturn = {
   safeAreaLeft: 0,
 }
 
-export function useSidebarBridge ( app: ICalendarApp ): SidebarBridgeReturn {
+export const useSidebarBridge = ( app: ICalendarApp ): SidebarBridgeReturn => {
   if ( impl && app.hasPlugin ( "sidebar" ) ) return impl ( app )
   return NO_OP
 }

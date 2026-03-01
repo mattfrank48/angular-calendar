@@ -106,7 +106,8 @@ export const useDetailPanelPosition = ( {
       const panelWidth = panelRect.width
       const panelHeight = panelRect.height
 
-      let left: number, top: number
+      let left: number
+      let top: number
       let eventRect: DOMRect
 
       if (
@@ -158,6 +159,7 @@ export const useDetailPanelPosition = ( {
       const idealTop = eventRect.top - panelHeight / 2 + eventRect.height / 2
       const topBoundary = Math.max ( 10, calendarRect.top + 10 )
       const bottomBoundary = boundaryHeight - 10
+      // eslint-disable-next-line prefer-const
       top =
         idealTop < topBoundary
           ? topBoundary

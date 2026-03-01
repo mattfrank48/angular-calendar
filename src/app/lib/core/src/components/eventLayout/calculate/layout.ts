@@ -11,19 +11,19 @@ import {
 } from "@/components/eventLayout/utils"
 import { EventLayout } from "@/types"
 
-function getIndentStepPercent ( viewType?: "week" | "day" ): number {
+const getIndentStepPercent = ( viewType?: "week" | "day" ): number => {
   return viewType === "day" ? 0.5 : 2.5
 }
 
-function calculateEventImportance ( event: LayoutWeekEvent ): number {
+const calculateEventImportance = ( event: LayoutWeekEvent ): number => {
   const duration = getEndHour ( event ) - getStartHour ( event )
   return Math.max ( 0.1, Math.min ( 1.0, duration / 4 ) )
 }
 
-function findBranchRootIndent (
+const findBranchRootIndent = (
   node: LayoutNode,
   viewType?: "week" | "day",
-): number | null {
+): number | null => {
   let current = node
   while ( current.parent && current.parent.depth > 0 ) current = current.parent
   return current.depth === 1
@@ -31,7 +31,7 @@ function findBranchRootIndent (
     : null
 }
 
-function shouldChildrenBeParallel ( childEvents: LayoutWeekEvent[] ): boolean {
+const shouldChildrenBeParallel = ( childEvents: LayoutWeekEvent[] ): boolean => {
   if ( childEvents.length < 2 ) return false
   for ( let i = 0; i < childEvents.length; i++ ) {
     for ( let j = i + 1; j < childEvents.length; j++ ) {
@@ -42,13 +42,13 @@ function shouldChildrenBeParallel ( childEvents: LayoutWeekEvent[] ): boolean {
   return false
 }
 
-function calculateNodeLayoutWithVirtualParallel (
+const calculateNodeLayoutWithVirtualParallel = (
   node: LayoutNode,
   baseLeft: number,
   availableWidth: number,
   layoutMap: Map<string, EventLayout>,
   params: LayoutCalculationParams = {},
-): void {
+): void => {
   const indentStep = getIndentStepPercent ( params.viewType )
   let finalIndentOffset = node.depth * indentStep
 
@@ -120,13 +120,13 @@ function calculateNodeLayoutWithVirtualParallel (
   }
 }
 
-function calculateParallelChildrenLayout (
+const calculateParallelChildrenLayout = (
   children: LayoutNode[],
   parentLeft: number,
   parentWidth: number,
   layoutMap: Map<string, EventLayout>,
   params: LayoutCalculationParams = {},
-): void {
+): void => {
   const childCount = children.length
   const firstChildDepth = children[0].depth
   const indentStep = getIndentStepPercent ( params.viewType )
@@ -224,11 +224,11 @@ function calculateParallelChildrenLayout (
 /**
  * Calculate layout from nested structure
  */
-export function calculateLayoutFromStructure (
+export const calculateLayoutFromStructure = (
   rootNodes: LayoutNode[],
   layoutMap: Map<string, EventLayout>,
   params: LayoutCalculationParams = {},
-): void {
+): void => {
   const edgeMargin =
     params.viewType === "day" ? 0 : LAYOUT_CONFIG.EDGE_MARGIN_PERCENT
   const totalWidth = 100 - edgeMargin

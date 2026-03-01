@@ -1,4 +1,4 @@
-import { JSX } from "preact"
+import { TargetedEvent } from "preact"
 import {
   useState,
   useEffect,
@@ -369,7 +369,7 @@ export const useVirtualMonthScroll = ( {
 
   // Scroll handler
   const handleScroll = useCallback (
-    ( e: JSX.TargetedEvent<HTMLDivElement, globalThis.Event> ) => {
+    ( e: TargetedEvent<HTMLDivElement, globalThis.Event> ) => {
       const now = performance.now ()
       if (
         now - lastScrollTime.current <

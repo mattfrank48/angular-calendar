@@ -6,10 +6,10 @@
  * @param wait - The number of milliseconds to throttle invocations to
  * @returns The throttled function
  */
-export function throttle<T extends ( ...args: unknown[] ) => unknown> (
+export const throttle = <T extends ( ...args: unknown[] ) => unknown> (
   func: T,
   wait: number,
-): T & { cancel: () => void } {
+): T & { cancel: () => void } => {
   let timeout: ReturnType<typeof setTimeout> | null = null
   let previous = 0
 
