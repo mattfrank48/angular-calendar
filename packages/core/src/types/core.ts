@@ -1,4 +1,3 @@
-// oxlint-disable typescript/no-explicit-any
 // Core type definitions
 import { h, AnyComponent, ComponentChildren } from "preact"
 

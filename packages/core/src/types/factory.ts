@@ -121,7 +121,6 @@ export interface YearViewConfig extends ViewFactoryConfig {
  */
 export interface ViewAdapterProps extends BaseViewProps {
   viewType: ViewType
-  // oxlint-disable-next-line typescript/no-explicit-any
   originalComponent: AnyComponent<any, any>
   config: ViewFactoryConfig
   className?: string

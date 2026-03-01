@@ -20,7 +20,6 @@
     }
   },
   "scripts": {
-    "dev": "turbo run dev",
     "lint": "npx -y eslint",
     "lint:fix": "npx -y eslint --fix",
     "tsc-verify": "npx -y tsc --noEmit"

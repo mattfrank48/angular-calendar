@@ -1,4 +1,3 @@
-// oxlint-disable typescript/no-explicit-any
 import { AnyComponent, RefObject } from "preact"
 
 import { ICalendarApp } from "@/types"

@@ -23,12 +23,7 @@
     "paths": {
       "@dayflow/core": ["packages/core/src/index.ts"],
       "@dayflow/angular": ["packages/angular/src/public-api.ts"],
-      "@dayflow/plugin-sidebar": ["packages/plugins/sidebar/src/index.ts"],
-      "@dayflow/plugin-drag": ["packages/plugins/drag/src/index.ts"],
-      "@drag/*": ["packages/plugins/drag/src/*"],
-      "@sidebar/*": ["packages/plugins/sidebar/src/*"],
       "@examples/*": ["examples/*"],
-      "@website/*": ["website/*"],
       "@/*": ["packages/core/src/*"]
     }
   },

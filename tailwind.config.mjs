@@ -2,7 +2,6 @@
 export default {
   content: [
     "./packages/core/src/**/*.{js,jsx,ts,tsx}",
-    "./packages/plugins/*/src/**/*.{js,jsx,ts,tsx}",
     "./angular-example/**/*.{ts,html}",
     "./index.html",
   ],
