@@ -4,7 +4,7 @@
 @import "@dayflow/blossom-color-picker/styles.css";
 
 /* Force scanning of all relevant source code files to extract utility classes */
-@source "../../../packages/core/*/src/**/*.{ts,tsx,html}";
+@source "../src/**/*.{ts,tsx,html}";
 
 @variant dark (.dark &);
 

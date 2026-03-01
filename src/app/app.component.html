@@ -11,7 +11,7 @@
 
     <div>
       @if (calendar(); as calendarData) {
-        <app-dayflow-calendar [calendar]="calendar()!" #calendarComponent />
+        <app-calendar [calendar]="calendar()!" #calendarComponent />
       } @else {
         <p class="text-sm text-gray-500">
           Loading calendar...

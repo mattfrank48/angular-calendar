@@ -1,4 +1,4 @@
-import { CalendarType, CalendarColors } from "../../../../packages/core"
+import { CalendarType, CalendarColors } from "../lib/core/dist"
 
 interface PaletteCalendar extends Pick<CalendarType, "id" | "name" | "icon"> {
   color: string

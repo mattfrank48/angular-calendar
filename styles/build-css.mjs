@@ -9,7 +9,7 @@ import postcss from "postcss";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, "..");
 
-const input = path.join(root, "src/styles/tailwind.css");
+const input = path.join(root, "styles/tailwind.css");
 const output = path.join(root, "src/styles.css");
 
 const css = await fs.readFile(input, "utf8");

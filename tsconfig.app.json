@@ -10,6 +10,7 @@
     "src/**/*.ts"
   ],
   "exclude": [
+    "src/app/lib/core/*",
     "src/**/*.spec.ts"
   ]
 }

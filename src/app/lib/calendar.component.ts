@@ -11,20 +11,20 @@ import {
 } from "@angular/core"
 import { CommonModule } from "@angular/common"
 import { PortalDirective } from "./portal.directive" // adjust path
-import { UseCalendarAppReturn, ICalendarApp, CalendarAppConfig, CustomRendering, CalendarApp, CalendarRenderer } from "../../../../packages/core"
+import { UseCalendarAppReturn, ICalendarApp, CalendarAppConfig, CustomRendering, CalendarApp, CalendarRenderer } from "../lib/core/dist"
 
 @Component ( {
-  selector: "app-dayflow-calendar",
+  selector: "app-calendar",
   imports: [
     CommonModule,
     PortalDirective
   ],
-  templateUrl: "./day-flow-calendar.component.html",
+  templateUrl: "./calendar.component.html",
   changeDetection: ChangeDetectionStrategy.OnPush,
   // eslint-disable-next-line @angular-eslint/use-component-view-encapsulation
   encapsulation: ViewEncapsulation.None
 } )
-export class DayFlowCalendarComponent {
+export class CalendarComponent {
   // --- Signal Inputs ---
   public calendar = input.required<ICalendarApp | UseCalendarAppReturn | CalendarAppConfig> ( )
   public collapsedSafeAreaLeft = input<number> ( )

@@ -7,11 +7,14 @@ import {
   createWeekView,
   createDayView,
   createDragPlugin,
-  createSidebarPlugin
-} from "../../../packages/core"
+  createSidebarPlugin,
+  ViewType,
+  CalendarType,
+  EventChange,
+  CalendarApp
+} from "./lib/core/dist"
 import { createKeyboardShortcutsPlugin } from "./lib/plugins/keyboard-shortcuts"
-import { ViewType, CalendarType, EventChange, CalendarApp } from "../../../packages/core"
-import { DayFlowCalendarComponent } from "./public-api"
+import { CalendarComponent } from "./public-api"
 import { getWebsiteCalendars } from "./utils/palette"
 import { generateSampleEvents } from "./utils/sampleData"
 
@@ -19,7 +22,7 @@ import { generateSampleEvents } from "./utils/sampleData"
   selector: "app-root",
   imports: [
     ThemeToggleComponent,
-    DayFlowCalendarComponent
+    CalendarComponent
   ],
   templateUrl: "./app.component.html",
   styleUrl: "./app.component.css",
@@ -29,7 +32,7 @@ import { generateSampleEvents } from "./utils/sampleData"
   public isMobile = signal ( true )
 
   public calendar = signal<CalendarApp | null> ( null )
-  public calendaref = viewChild<DayFlowCalendarComponent> ( "calendarComponent" )
+  public calendaref = viewChild<CalendarComponent> ( "calendarComponent" )
 
   public ngOnInit ( ) {
     this.resizeHandler ( )

@@ -9,7 +9,7 @@ import {
   dateToZonedDateTime,
   dateToPlainDate,
   getWeekRange,
-} from "../../../../../../packages/core"
+} from "../../core/dist"
 import { Temporal } from "temporal-polyfill"
 
 export interface KeyboardShortcutsConfig {

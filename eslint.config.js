@@ -15,6 +15,7 @@ export default defineConfig(
       "android/**/*",
       ".angular/**/*",
       ".vscode/**/*",
+      "**/*.d.ts",
     ],
   },
   {

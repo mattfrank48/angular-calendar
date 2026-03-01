@@ -1,5 +1,5 @@
-import { Event } from "../../../../packages/core"
 import { Temporal } from "temporal-polyfill"
+import { Event } from "../lib/core/dist"
 
 const calendarIds = [
   "team",
