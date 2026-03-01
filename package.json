@@ -1,10 +1,10 @@
 {
-  "name": "@iqx-limited/angular-calendar",
+  "name": "@mattfrank48/angular-calendar",
   "version": "1.0.0",
   "description": "A lightweight and elegant Angular calendar component built with Preact and Tailwind CSS.",
   "license": "MIT",
   "author": "IQX",
-  "repository": "https://github.com/IQXLimited/angular-calendar",
+  "repository": "https://github.com/mattfrank48/angular-calendar",
   "files": [
     "dist/**/*",
     "README.md",
