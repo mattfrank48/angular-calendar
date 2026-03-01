@@ -30,7 +30,7 @@ https://github.com/dayflow-js/calendar
 - 🎨 Fully customizable via Tailwind CSS classes
 - 🚀 Fast and lightweight, powered by Preact under the hood
 - 🧩 Easy integration and configuration
-- 🅰️ Compatible with modern Angular (v14+ Standalone API)
+- 🅰️ Compatible with modern Angular (v21+ Standalone API)
 
 ---
 
