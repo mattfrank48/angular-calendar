@@ -40,6 +40,7 @@ const MonthView = ({
   onDetailPanelToggle: propOnDetailPanelToggle,
 }: MonthViewProps & { calendarRef: RefObject<HTMLDivElement> }) => {
   const currentDate = app.getCurrentDate();
+
   const rawEvents = app.getEvents();
   const calendarSignature = app
     .getCalendars()

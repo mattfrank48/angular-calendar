@@ -188,7 +188,6 @@ export const useVirtualMonthScroll = ( {
   // Cached week data retrieval
   const getCachedWeekData = useCallback ( ( weekStartDate: Date ): WeeksData => {
     let weekData = weekDataCache.current.get ( weekStartDate )
-    console.log ( "weekData", weekData )
 
     if ( !weekData ) {
       weekData = generateWeekData ( weekStartDate )
@@ -642,41 +641,20 @@ export const useVirtualMonthScroll = ( {
     const nextMonth = currentDate.getMonth ()
     const nextYear = currentDate.getFullYear ()
 
+    // If the Month or Year changed (navigation triggered from App/Sidebar)
     if ( prevMonth !== nextMonth || prevYear !== nextYear ) {
-      // Check if the new date is already visible in the current viewport
-      const FIXED_WEEKS_TO_SHOW = 6
-      const startIndex = virtualData.displayStartIndex
-      const endIndex = Math.min (
-        weeksData.length - 1,
-        startIndex + FIXED_WEEKS_TO_SHOW - 1,
-      )
+      const firstDayOfMonth = new Date ( nextYear, nextMonth, 1 )
+      const monthName = getMonthName ( nextMonth, nextYear )
 
-      let isVisible = false
+      // 1. Update internal state immediately
+      targetNavigationRef.current = { month: monthName, year: nextYear }
+      setCurrentMonth ( monthName )
+      setCurrentYear ( nextYear )
+      onCurrentMonthChange ?. ( monthName, nextYear )
 
-      // Iterate through the visible weeks to see if the date is there
-      for ( let i = startIndex; i <= endIndex; i++ ) {
-        const week = weeksData[i]
-        if (
-          week &&
-          week.days.some (
-            day => day.date.toDateString () === currentDate.toDateString (),
-          )
-        ) {
-          isVisible = true
-          break
-        }
-      }
-
-      if ( !isVisible ) {
-        const firstDayOfMonth = new Date ( nextYear, nextMonth, 1 )
-        const monthName = getMonthName ( nextMonth, nextYear )
-
-        targetNavigationRef.current = { month: monthName, year: nextYear }
-        setCurrentMonth ( monthName )
-        setCurrentYear ( nextYear )
-        onCurrentMonthChange ?. ( monthName, nextYear )
-        scrollToDate ( firstDayOfMonth, true )
-      }
+      // 2. FORCE the scroll regardless of visibility
+      // This ensures the new month starts at the top of the view
+      scrollToDate ( firstDayOfMonth, true )
     }
 
     previousDateRef.current = currentDate

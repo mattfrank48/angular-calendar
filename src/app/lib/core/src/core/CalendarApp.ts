@@ -225,7 +225,7 @@ export class CalendarApp implements ICalendarApp {
     this.callbacks.onDateChange ?. ( this.state.currentDate )
     this.setVisibleMonth ( this.state.currentDate )
     this.handleVisibleRangeChange ( "navigation" )
-    this.notify ()
+    this.notify ( )
   }
 
   public getCurrentDate = (): Date => new Date ( this.state.currentDate )
@@ -247,7 +247,7 @@ export class CalendarApp implements ICalendarApp {
   public getVisibleMonth = (): Date => new Date ( this.visibleMonth )
 
   public goToToday = (): void => {
-    this.setCurrentDate ( new Date () )
+    this.setCurrentDate ( new Date ( ) )
   }
 
   public goToPrevious = (): void => {

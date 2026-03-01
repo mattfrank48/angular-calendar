@@ -27,7 +27,7 @@ import { UseCalendarAppReturn, ICalendarApp, CalendarAppConfig, CustomRendering,
 export class CalendarComponent {
   // --- Signal Inputs ---
   public calendar = input.required<ICalendarApp | UseCalendarAppReturn | CalendarAppConfig> ( )
-  public collapsedSafeAreaLeft = input<number> ( )
+  public collapsedSafeAreaLeft = input<number | null> ( null )
 
   // Templates as Signal Inputs
   public eventContent = input<TemplateRef<unknown>> ( )

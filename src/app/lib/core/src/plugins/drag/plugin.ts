@@ -33,14 +33,6 @@ export const createDragPlugin = (
     name: "drag",
     config: finalConfig,
     install: ( _app: ICalendarApp ) => {
-      if (
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        ( globalThis as unknown as { process?: { env?: { NODE_ENV?: string } } } )
-          .process?.env?.NODE_ENV !== "production"
-      ) {
-        console.log ( "[DayFlow] Drag plugin installed" )
-      }
-
       registerDragImplementation (
         ( app: ICalendarApp, options: DragHookOptions ): DragHookReturn => {
           const result = useDrag ( { ...options, app } as any )

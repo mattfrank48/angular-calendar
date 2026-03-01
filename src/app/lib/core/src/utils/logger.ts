@@ -1,5 +1,5 @@
 /**
- * Logger utility for DayFlow calendar
+ * Logger utility for AngularCalendar
  * Only logs in development mode
  */
 
@@ -39,7 +39,7 @@ class Logger {
     if ( !this.isDevelopment ) return
 
     const timestamp = new Date ().toISOString ()
-    const prefix = `[DayFlow ${level.toUpperCase ()}] ${timestamp}:`
+    const prefix = `[AngularCalendar ${level.toUpperCase ()}] ${timestamp}:`
 
     switch ( level ) {
       case "log":

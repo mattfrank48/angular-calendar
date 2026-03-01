@@ -513,6 +513,9 @@
 .inline-flex {
   display: inline-flex;
 }
+.table {
+  display: table;
+}
 .h-0\.5 {
   height: calc(var(--spacing) * 0.5);
 }

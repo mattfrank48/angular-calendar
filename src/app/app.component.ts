@@ -43,7 +43,6 @@ import { generateSampleEvents } from "./utils/sampleData"
 
   public ngOnDestroy ( ) {
     window.removeEventListener ( "resize", this.resizeHandler )
-    console.log ( "app component destroy" )
   }
 
   private resizeHandler = ( ) => {
