@@ -13,7 +13,7 @@
   "scripts": {
     "build:core": "npm run clean && npm i && cd core && tsc -p tsconfig.build.json && rollup -c && rimraf dist/types && mkdir -p ../react-core && cp -r dist/* ../react-core/ && rimraf dist && cp package.json ../react-core/",
     "build:css": "node ./styles/build-css.mjs",
-    "build:demo": "ng build --configuration=production",
+    "build:demo": "ng build --configuration=production --no-progress --base-href 'https://iqxlimited.github.io/angular-calendar/'",
     "prestart": "npm run build:core && npm i && npm run build:css",
     "start": "ng serve",
     "build": "npm run prestart && ng-packagr -p ng-packagr.json",
